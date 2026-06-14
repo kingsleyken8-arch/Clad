@@ -1,0 +1,83 @@
+import { ArrowUpRight } from "lucide-react";
+import { COMPARTMENTS } from "../data/compartments";
+import CompartmentSection from "./CompartmentSection";
+import { Reveal } from "./Reveal";
+
+export default function Compartments() {
+  return (
+    <section id="anatomy" className="relative w-full bg-black">
+      {/* ---- Intro ---- */}
+      <div className="px-6 pt-24 pb-6 text-center sm:px-10 lg:px-16 lg:pt-32">
+        <Reveal>
+          <span className="font-inter text-xs uppercase tracking-[0.3em] text-red-500">
+            Engineered To Conquer
+          </span>
+        </Reveal>
+        <Reveal delay={100}>
+          <h2 className="mx-auto mt-5 max-w-4xl font-podium text-[clamp(2.6rem,7vw,6rem)] uppercase leading-[0.95] tracking-tight text-white">
+            Anatomy of a<br />
+            Vanguard
+          </h2>
+        </Reveal>
+        <Reveal delay={200}>
+          <p className="mx-auto mt-6 max-w-xl font-inter text-sm leading-relaxed text-white/60 sm:text-base">
+            Every component engineered to a single obsession — domination of the
+            trail. Scroll to explore the machine, part by part.
+          </p>
+        </Reveal>
+      </div>
+
+      {/* ---- Compartments ---- */}
+      {COMPARTMENTS.map((compartment, i) => (
+        <CompartmentSection
+          key={compartment.id}
+          data={compartment}
+          reverse={i % 2 === 1}
+        />
+      ))}
+
+      {/* ---- Closing CTA ---- */}
+      <div className="relative border-t border-white/10 px-6 py-24 text-center sm:px-10 lg:px-16 lg:py-36">
+        <Reveal>
+          <span className="font-inter text-xs uppercase tracking-[0.3em] text-white/50">
+            One Machine. Zero Compromise.
+          </span>
+        </Reveal>
+        <Reveal delay={100}>
+          <h2 className="mx-auto mt-5 max-w-3xl font-podium text-[clamp(2.8rem,8vw,7rem)] uppercase leading-[0.92] tracking-tight text-white">
+            Built To Lead.
+          </h2>
+        </Reveal>
+        <Reveal delay={200}>
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-4 sm:gap-6">
+            <a
+              href="#"
+              className="group flex items-center gap-2 bg-red-600 px-6 py-4 font-inter text-xs uppercase tracking-widest text-white transition-colors hover:bg-red-700 sm:px-8"
+            >
+              Build Your Vanguard
+              <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            </a>
+            <a
+              href="#"
+              className="flex items-center gap-2 border border-white/30 px-6 py-4 font-inter text-xs uppercase tracking-widest text-white transition-all hover:border-white/60 hover:bg-white/10 sm:px-8"
+            >
+              Book a Test Ride
+            </a>
+          </div>
+        </Reveal>
+      </div>
+
+      {/* ---- Footer ---- */}
+      <footer className="border-t border-white/10 px-6 py-10 sm:px-10 lg:px-16">
+        <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+          <span className="font-podium text-xl font-bold uppercase tracking-wider text-white">
+            VANGUARD
+          </span>
+          <span className="font-inter text-[10px] uppercase tracking-widest text-white/40">
+            © {new Date().getFullYear()} Vanguard Cycles — Conquer The Trail
+          </span>
+        </div>
+      </footer>
+    </section>
+  );
+}
