@@ -22,7 +22,7 @@ export interface BikePart {
  * whole frame. The `origin` focal points below assume that composition.
  */
 export const BIKE_IMAGE =
-  "https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/hf_20260614_123038_4d3550c1-425e-4418-b622-51473e07b120.png";
+  "https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/hf_20260614_143446_550c41b1-7bf3-4945-8230-28fd6a41d627.png";
 
 export const BIKE_PARTS: BikePart[] = [
   {
@@ -33,7 +33,7 @@ export const BIKE_PARTS: BikePart[] = [
     description:
       "Engineered end to end — every contact point, every system, built to conquer the trail. Keep scrolling to travel its anatomy.",
     specs: [],
-    origin: [50, 52],
+    origin: [50, 50],
     scale: 1,
   },
   {
@@ -48,8 +48,8 @@ export const BIKE_PARTS: BikePart[] = [
       { value: "35mm", label: "Stem" },
       { value: "Lock-On", label: "Grips" },
     ],
-    origin: [71, 39],
-    scale: 2.6,
+    origin: [72, 33],
+    scale: 3.1,
   },
   {
     id: "wheels",
@@ -63,8 +63,8 @@ export const BIKE_PARTS: BikePart[] = [
       { value: "2.4″", label: "Tire" },
       { value: "Tubeless", label: "Setup" },
     ],
-    origin: [81, 71],
-    scale: 2.6,
+    origin: [84, 73],
+    scale: 3.0,
   },
   {
     id: "saddle",
@@ -77,8 +77,8 @@ export const BIKE_PARTS: BikePart[] = [
       { value: "170mm", label: "Dropper" },
       { value: "Carbon", label: "Rails" },
     ],
-    origin: [31, 35],
-    scale: 2.7,
+    origin: [33, 28],
+    scale: 3.1,
   },
   {
     id: "drivetrain",
@@ -92,8 +92,8 @@ export const BIKE_PARTS: BikePart[] = [
       { value: "10-52T", label: "Cassette" },
       { value: "Carbon", label: "Cranks" },
     ],
-    origin: [49, 70],
-    scale: 2.9,
+    origin: [47, 73],
+    scale: 3.2,
   },
   {
     id: "brakes",
@@ -106,7 +106,7 @@ export const BIKE_PARTS: BikePart[] = [
       { value: "4-Piston", label: "Calipers" },
       { value: "203mm", label: "Rotors" },
     ],
-    origin: [80, 64],
-    scale: 2.9,
+    origin: [81, 67],
+    scale: 3.1,
   },
 ];

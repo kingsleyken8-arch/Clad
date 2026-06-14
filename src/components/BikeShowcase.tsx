@@ -63,18 +63,25 @@ export default function BikeShowcase() {
       style={{ height: `${STEPS * 100}vh` }}
     >
       {/* Pinned stage */}
-      <div className="sticky top-0 h-screen w-full overflow-hidden">
-        {/* The bike — zooms toward each part's focal point */}
-        <img
-          src={BIKE_IMAGE}
-          alt="The VANGUARD mountain bike"
-          className="absolute inset-0 h-full w-full object-contain will-change-transform"
-          style={{
-            transform: `scale(${view.scale})`,
-            transformOrigin: `${view.ox}% ${view.oy}%`,
-            transition: "transform 250ms ease-out",
-          }}
-        />
+      <div className="sticky top-0 h-screen w-full overflow-hidden bg-black">
+        {/*
+          Aspect-locked 16:9 frame, centered and sized to fit the viewport.
+          Because the image exactly fills this box, transform-origin percentages
+          map 1:1 to positions on the image on every screen — so "Saddle"
+          really centers the saddle, "Handlebar" the handlebar, etc.
+        */}
+        <div className="absolute left-1/2 top-1/2 aspect-video w-full max-w-[177.78vh] -translate-x-1/2 -translate-y-1/2">
+          <img
+            src={BIKE_IMAGE}
+            alt="The VANGUARD mountain bike"
+            className="h-full w-full object-cover will-change-transform"
+            style={{
+              transform: `scale(${view.scale})`,
+              transformOrigin: `${view.ox}% ${view.oy}%`,
+              transition: "transform 250ms ease-out",
+            }}
+          />
+        </div>
 
         {/* Edge vignette to anchor the text */}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/10 to-transparent" />
