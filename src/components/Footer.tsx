@@ -5,11 +5,9 @@ const FOOTER_BIKE =
 
 const EXPLORE_LINKS = [
   { label: "Home", href: "#home" },
-  { label: "Frame", href: "#frame" },
-  { label: "Suspension", href: "#suspension" },
-  { label: "Drivetrain", href: "#drivetrain" },
-  { label: "Brakes", href: "#brakes" },
-  { label: "Cockpit", href: "#cockpit" },
+  { label: "The Anatomy", href: "#anatomy" },
+  { label: "Build Yours", href: "#" },
+  { label: "Book a Test Ride", href: "#" },
 ];
 
 const COMPANY_LINKS = [

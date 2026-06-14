@@ -1,13 +1,12 @@
 import { ArrowUpRight } from "lucide-react";
-import { COMPARTMENTS } from "../data/compartments";
-import CompartmentSection from "./CompartmentSection";
+import BikeShowcase from "./BikeShowcase";
 import { Reveal } from "./Reveal";
 
 export default function Compartments() {
   return (
-    <section id="anatomy" className="relative w-full bg-black">
+    <div className="relative w-full bg-black">
       {/* ---- Intro ---- */}
-      <div className="px-6 pt-24 pb-6 text-center sm:px-10 lg:px-16 lg:pt-32">
+      <div className="px-6 pt-24 pb-10 text-center sm:px-10 lg:px-16 lg:pt-32">
         <Reveal>
           <span className="font-inter text-xs uppercase tracking-[0.3em] text-red-500">
             Engineered To Conquer
@@ -21,20 +20,14 @@ export default function Compartments() {
         </Reveal>
         <Reveal delay={200}>
           <p className="mx-auto mt-6 max-w-xl font-inter text-sm leading-relaxed text-white/60 sm:text-base">
-            Every component engineered to a single obsession — domination of the
-            trail. Scroll to explore the machine, part by part.
+            One bike. Scroll to zoom through it, part by part — from the cockpit
+            in your hands to the chain that drives it forward.
           </p>
         </Reveal>
       </div>
 
-      {/* ---- Compartments ---- */}
-      {COMPARTMENTS.map((compartment, i) => (
-        <CompartmentSection
-          key={compartment.id}
-          data={compartment}
-          reverse={i % 2 === 1}
-        />
-      ))}
+      {/* ---- Pinned scroll-zoom showcase ---- */}
+      <BikeShowcase />
 
       {/* ---- Closing CTA ---- */}
       <div className="relative px-6 py-24 text-center sm:px-10 lg:px-16 lg:py-36">
@@ -66,6 +59,6 @@ export default function Compartments() {
           </div>
         </Reveal>
       </div>
-    </section>
+    </div>
   );
 }
