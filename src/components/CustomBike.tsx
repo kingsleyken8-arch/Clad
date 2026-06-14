@@ -47,7 +47,7 @@ export default function CustomBike() {
             <DetailImage
               src={IMG_COCKPIT}
               alt="VANGUARD cockpit detail"
-              className="aspect-[3/4] h-full"
+              className="h-full min-h-[20rem]"
             />
           </Reveal>
 
