@@ -6,8 +6,8 @@ const FOOTER_BIKE =
 const EXPLORE_LINKS = [
   { label: "Home", href: "#home" },
   { label: "The Anatomy", href: "#anatomy" },
+  { label: "Why Vanguard", href: "#why" },
   { label: "Build Yours", href: "#" },
-  { label: "Book a Test Ride", href: "#" },
 ];
 
 const COMPANY_LINKS = [
