@@ -15,9 +15,9 @@ export default function RollOut() {
   return (
     <section
       id="ride"
-      className="relative w-full overflow-hidden bg-white text-neutral-900"
+      className="relative flex min-h-[92vh] w-full items-center overflow-hidden bg-white py-20 text-neutral-900 sm:py-24 lg:py-28"
     >
-      <div className="relative mx-auto h-[34rem] max-w-7xl sm:h-[40rem] lg:h-[46rem]">
+      <div className="relative mx-auto h-[34rem] w-full max-w-7xl sm:h-[40rem] lg:h-[46rem]">
         {/* Brand mark */}
         <div className="absolute left-6 top-8 z-20 flex items-center gap-3 sm:left-10 lg:left-16">
           <span className="h-3.5 w-3.5 rounded-full bg-neutral-900" />
