@@ -1,9 +1,11 @@
 import type { ReactNode } from "react";
-import { BIKE_VIDEO } from "../data/bikeParts";
 import { Reveal } from "./Reveal";
 
 const CDN =
   "https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc";
+
+const BENTO_VIDEO =
+  "https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/hf_20260614_064935_718e8f10-d996-4ce3-915c-48940bd4de11.mp4";
 
 interface CardProps {
   eyebrow: string;
@@ -33,9 +35,12 @@ function BentoCard({ eyebrow, title, description, className = "", media }: CardP
         <h3 className="mt-2 font-podium text-2xl uppercase leading-[0.95] tracking-tight text-white sm:text-3xl">
           {title}
         </h3>
-        <p className="mt-2 font-inter text-sm leading-relaxed text-white/70">
-          {description}
-        </p>
+        {/* Subtext stays hidden until the card is hovered (or focused) */}
+        <div className="grid grid-rows-[0fr] opacity-0 transition-[grid-template-rows,opacity] duration-500 ease-out group-hover:grid-rows-[1fr] group-hover:opacity-100 group-focus-within:grid-rows-[1fr] group-focus-within:opacity-100">
+          <p className="min-h-0 overflow-hidden font-inter text-sm leading-relaxed text-white/70 transition-[margin] duration-500 ease-out group-hover:mt-2 group-focus-within:mt-2">
+            {description}
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -81,12 +86,12 @@ export default function Bento() {
           {/* 1 — 360 video (large) */}
           <BentoCard
             className="sm:col-span-2 lg:col-span-2 lg:row-span-2"
-            eyebrow="360° In Motion"
-            title="See Every Angle"
-            description="Front, drive side, rear and far side — the whole machine in the round."
+            eyebrow="In Its Element"
+            title="Built To Conquer"
+            description="Watch the machine do what it was born to do — devour the trail."
             media={
               <video
-                src={BIKE_VIDEO}
+                src={BENTO_VIDEO}
                 autoPlay
                 muted
                 loop

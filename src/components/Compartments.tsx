@@ -19,13 +19,13 @@ export default function Compartments() {
         </Reveal>
         <Reveal delay={200}>
           <p className="mx-auto mt-6 max-w-xl font-inter text-sm leading-relaxed text-white/60 sm:text-base">
-            One bike, in the round. Scroll to spin it through every angle — and
-            meet the parts that make it conquer, one by one.
+            Every component engineered to a single obsession — domination of the
+            trail. Scroll to explore the machine, part by part.
           </p>
         </Reveal>
       </div>
 
-      {/* ---- Pinned 360 scroll showcase ---- */}
+      {/* ---- Pinned scroll showcase ---- */}
       <BikeShowcase />
     </div>
   );

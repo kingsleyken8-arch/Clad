@@ -24,10 +24,6 @@ export interface BikePart {
 export const BIKE_IMAGE =
   "https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/hf_20260614_123038_4d3550c1-425e-4418-b622-51473e07b120.png";
 
-/** 360° turntable video the showcase scrubs as you scroll. */
-export const BIKE_VIDEO =
-  "https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/hf_20260614_134424_9fa14864-4531-44b5-a5d3-7bd8df656180.mp4";
-
 export const BIKE_PARTS: BikePart[] = [
   {
     id: "overview",

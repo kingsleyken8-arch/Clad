@@ -1,36 +1,50 @@
 import { useEffect, useRef, useState } from "react";
-import { BIKE_IMAGE, BIKE_VIDEO, BIKE_PARTS } from "../data/bikeParts";
+import { BIKE_IMAGE, BIKE_PARTS } from "../data/bikeParts";
 
 const clamp = (v: number, min: number, max: number) =>
   Math.min(max, Math.max(min, v));
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+const easeInOutCubic = (t: number) =>
+  t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
 const STEPS = BIKE_PARTS.length;
 
 export default function BikeShowcase() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const durationRef = useRef(0);
-  const targetTimeRef = useRef(0);
+  const [view, setView] = useState({ scale: 1, ox: 50, oy: 52 });
+  // Continuous position along the steps (0 .. STEPS-1).
   const [pos, setPos] = useState(0);
 
-  // Scroll → continuous position (0 .. STEPS-1) + target video time
   useEffect(() => {
     let raf = 0;
+
     const update = () => {
       const el = sectionRef.current;
       if (!el) return;
+
       const rect = el.getBoundingClientRect();
       const total = el.offsetHeight - window.innerHeight;
       const progress = clamp(-rect.top / Math.max(total, 1), 0, 1);
-      setPos(progress * (STEPS - 1));
-      // Hold a hair before the end so the loop point never flashes.
-      targetTimeRef.current = progress * (durationRef.current * 0.985 || 0);
+      const p = progress * (STEPS - 1);
+
+      const i = clamp(Math.floor(p), 0, STEPS - 2);
+      const frac = easeInOutCubic(clamp(p - i, 0, 1));
+      const a = BIKE_PARTS[i];
+      const b = BIKE_PARTS[i + 1];
+
+      setView({
+        scale: lerp(a.scale, b.scale, frac),
+        ox: lerp(a.origin[0], b.origin[0], frac),
+        oy: lerp(a.origin[1], b.origin[1], frac),
+      });
+      setPos(p);
     };
+
     const onScroll = () => {
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(update);
     };
+
     update();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
@@ -41,31 +55,6 @@ export default function BikeShowcase() {
     };
   }, []);
 
-  // Continuous rAF loop eases the video's currentTime toward the target so
-  // the rotation feels buttery rather than snapping frame-to-frame.
-  useEffect(() => {
-    let raf = 0;
-    const tick = () => {
-      const v = videoRef.current;
-      if (v && durationRef.current > 0) {
-        const cur = v.currentTime;
-        const next = lerp(cur, targetTimeRef.current, 0.12);
-        if (Math.abs(next - cur) > 0.002) {
-          try {
-            v.currentTime = next;
-          } catch {
-            /* seeking not ready yet */
-          }
-        }
-      }
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, []);
-
-  const zoom = 1.05 + clamp(pos / (STEPS - 1), 0, 1) * 0.12;
-
   return (
     <section
       ref={sectionRef}
@@ -75,26 +64,20 @@ export default function BikeShowcase() {
     >
       {/* Pinned stage */}
       <div className="sticky top-0 h-screen w-full overflow-hidden">
-        {/* 360° bike video, scrubbed by scroll */}
-        <video
-          ref={videoRef}
-          src={BIKE_VIDEO}
-          poster={BIKE_IMAGE}
-          muted
-          playsInline
-          preload="auto"
-          onLoadedMetadata={(e) => {
-            durationRef.current = e.currentTarget.duration || 0;
-          }}
-          className="absolute inset-0 h-full w-full object-cover will-change-transform"
+        {/* The bike — zooms toward each part's focal point */}
+        <img
+          src={BIKE_IMAGE}
+          alt="The VANGUARD mountain bike"
+          className="absolute inset-0 h-full w-full object-contain will-change-transform"
           style={{
-            transform: `scale(${zoom})`,
-            transition: "transform 200ms ease-out",
+            transform: `scale(${view.scale})`,
+            transformOrigin: `${view.ox}% ${view.oy}%`,
+            transition: "transform 250ms ease-out",
           }}
         />
 
-        {/* Vignettes to seat the text */}
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/15 to-black/30" />
+        {/* Edge vignette to anchor the text */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/10 to-transparent" />
         <div className="pointer-events-none absolute inset-y-0 left-0 w-2/3 bg-gradient-to-r from-black/80 to-transparent" />
 
         {/* Progress rail */}
@@ -120,7 +103,7 @@ export default function BikeShowcase() {
           })}
         </div>
 
-        {/* Text panels — crossfade as each step becomes active */}
+        {/* Text panels — each fades in as its step becomes active */}
         {BIKE_PARTS.map((part, idx) => {
           const dist = Math.abs(pos - idx);
           const opacity = clamp(1 - dist / 0.55, 0, 1);
@@ -171,13 +154,13 @@ export default function BikeShowcase() {
           );
         })}
 
-        {/* Scroll hint, fades out after the first step */}
+        {/* Scroll hint (fades out after the first step) */}
         <div
-          className="pointer-events-none absolute bottom-8 left-1/2 z-10 -translate-x-1/2"
+          className="pointer-events-none absolute bottom-8 left-1/2 z-10 -translate-x-1/2 sm:hidden"
           style={{ opacity: clamp(1 - pos, 0, 1) }}
         >
           <span className="font-inter text-[10px] uppercase tracking-[0.3em] text-white/50">
-            Scroll to rotate
+            Scroll
           </span>
         </div>
       </div>
