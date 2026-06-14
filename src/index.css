@@ -143,4 +143,33 @@
       transparent 100%
     );
   }
+
+  /* Bike rolls out of the masked rectangle, steers left/right, rolls back
+     in (never fully). Rotation pivots near the rear wheel so the front end
+     swings. */
+  @keyframes bike-roll {
+    0% {
+      transform: translateX(9%) rotate(0deg);
+    }
+    28% {
+      transform: translateX(-6%) rotate(0deg);
+    }
+    40% {
+      transform: translateX(-6%) rotate(-2.5deg);
+    }
+    54% {
+      transform: translateX(-6%) rotate(2.5deg);
+    }
+    66% {
+      transform: translateX(-6%) rotate(0deg);
+    }
+    100% {
+      transform: translateX(9%) rotate(0deg);
+    }
+  }
+
+  .animate-bike-roll {
+    animation: bike-roll 7s ease-in-out infinite;
+    transform-origin: 84% 78%;
+  }
 }
