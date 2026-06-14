@@ -16,7 +16,10 @@ export default function Hero() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <section className="relative flex h-screen w-full flex-col overflow-hidden bg-black">
+    <section
+      id="home"
+      className="relative flex h-screen w-full flex-col overflow-hidden bg-black"
+    >
       {/* Background video */}
       <video
         className="absolute inset-0 h-full w-full object-cover"

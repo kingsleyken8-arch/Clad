@@ -37,7 +37,7 @@ export default function Compartments() {
       ))}
 
       {/* ---- Closing CTA ---- */}
-      <div className="relative border-t border-white/10 px-6 py-24 text-center sm:px-10 lg:px-16 lg:py-36">
+      <div className="relative px-6 py-24 text-center sm:px-10 lg:px-16 lg:py-36">
         <Reveal>
           <span className="font-inter text-xs uppercase tracking-[0.3em] text-white/50">
             One Machine. Zero Compromise.
@@ -66,18 +66,6 @@ export default function Compartments() {
           </div>
         </Reveal>
       </div>
-
-      {/* ---- Footer ---- */}
-      <footer className="border-t border-white/10 px-6 py-10 sm:px-10 lg:px-16">
-        <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-          <span className="font-podium text-xl font-bold uppercase tracking-wider text-white">
-            VANGUARD
-          </span>
-          <span className="font-inter text-[10px] uppercase tracking-widest text-white/40">
-            © {new Date().getFullYear()} Vanguard Cycles — Conquer The Trail
-          </span>
-        </div>
-      </footer>
     </section>
   );
 }

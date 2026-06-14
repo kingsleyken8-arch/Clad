@@ -12,12 +12,13 @@ export default function CompartmentSection({ data, reverse }: Props) {
   return (
     <div
       ref={ref}
-      className="relative grid grid-cols-1 items-center gap-10 border-t border-white/10 px-6 py-16 sm:px-10 sm:py-24 lg:grid-cols-2 lg:gap-16 lg:px-16 lg:py-32"
+      id={data.id}
+      className="relative grid scroll-mt-24 grid-cols-1 items-center gap-6 px-6 py-12 sm:px-10 sm:py-20 lg:grid-cols-2 lg:gap-12 lg:px-16 lg:py-28"
     >
-      {/* Image */}
+      {/* Image — edges feathered into the page, no box */}
       <div className={reverse ? "lg:order-2" : "lg:order-1"}>
         <div
-          className={`reveal reveal-zoom group relative overflow-hidden rounded-sm ${
+          className={`reveal reveal-zoom group relative ${
             visible ? "is-visible" : ""
           }`}
         >
@@ -25,14 +26,8 @@ export default function CompartmentSection({ data, reverse }: Props) {
             src={data.image}
             alt={`${data.name} of the VANGUARD mountain bike`}
             loading="lazy"
-            className="aspect-[3/2] w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105"
+            className="image-bleed w-full object-contain transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
           />
-          {/* legibility veil */}
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-          {/* oversized index watermark */}
-          <span className="pointer-events-none absolute bottom-1 left-3 font-podium text-7xl leading-none text-white/15 sm:text-8xl">
-            {data.index}
-          </span>
         </div>
       </div>
 

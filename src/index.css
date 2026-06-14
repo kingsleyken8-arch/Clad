@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   html,
   body,
   #root {
@@ -123,5 +127,20 @@
   .reveal.is-visible {
     opacity: 1;
     transform: translateX(0) translateY(0) scale(1);
+  }
+
+  /* Feather an image's edges into the page so it reads as a floating
+     subject on black, not a boxed photo. */
+  .image-bleed {
+    -webkit-mask-image: radial-gradient(
+      ellipse 82% 82% at 50% 50%,
+      #000 58%,
+      transparent 100%
+    );
+    mask-image: radial-gradient(
+      ellipse 82% 82% at 50% 50%,
+      #000 58%,
+      transparent 100%
+    );
   }
 }
