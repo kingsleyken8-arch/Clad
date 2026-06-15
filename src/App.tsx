@@ -4,6 +4,7 @@ import Facilities from "./components/Facilities";
 import CustomBike from "./components/CustomBike";
 import Bento from "./components/Bento";
 import RollOut from "./components/RollOut";
+import SocialProof from "./components/SocialProof";
 import ClosingCTA from "./components/ClosingCTA";
 import Footer from "./components/Footer";
 
@@ -16,6 +17,7 @@ export default function App() {
       <CustomBike />
       <Bento />
       <RollOut />
+      <SocialProof />
       <ClosingCTA />
       <Footer />
     </div>
