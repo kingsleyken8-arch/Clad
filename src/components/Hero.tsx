@@ -4,7 +4,7 @@ import { ArrowUpRight, Award, Crown, X } from "lucide-react";
 const VIDEO_SRC =
   "https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/hf_20260614_064935_718e8f10-d996-4ce3-915c-48940bd4de11.mp4";
 
-const NAV_LINKS = ["Projects", "Studio", "Offerings", "Inquire"];
+const NAV_LINKS = ["Products", "Studio", "Offerings", "Inquire"];
 
 const STATS = [
   { value: "250+", label: "Brands Transformed" },
@@ -167,9 +167,9 @@ export default function Hero() {
         <div className="animate-fade-up-delay-3 mt-8 flex flex-wrap items-center gap-4 sm:gap-6 lg:mt-10">
           <a
             href="#"
-            className="group flex items-center gap-2 bg-black px-5 py-3 font-inter text-[11px] uppercase tracking-widest text-white transition-colors hover:bg-neutral-900 sm:px-7 sm:py-4 sm:text-xs"
+            className="group flex items-center gap-2 bg-red-600 px-5 py-3 font-inter text-[11px] uppercase tracking-widest text-white transition-colors hover:bg-red-700 sm:px-7 sm:py-4 sm:text-xs"
           >
-            See Our Work
+            See Our Products
             <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
           </a>
 
