@@ -3,168 +3,81 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Glimmer Glade</title>
+    <title>Glimmer Glade — Quest</title>
     <style>
-      :root {
-        --glass-bg: rgba(255, 255, 255, 0.14);
-        --glass-brd: rgba(255, 255, 255, 0.35);
-        --glass-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      }
-      * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-      html, body { height: 100%; overflow: hidden; background: #0b0d12; }
+      * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; }
+      html, body { height: 100%; overflow: hidden; background: #0b0d12; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+      #stage { position: fixed; inset: 0; overflow: hidden; touch-action: none; }
 
-      #stage {
-        position: fixed;
-        inset: 0;
-        overflow: hidden;
-        touch-action: manipulation;
-      }
-
-      /* ---- Backgrounds (day video / night image crossfade) ---- */
-      .bg {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: opacity 1.2s ease;
-      }
+      .bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 1.2s ease; }
       #nightImg { opacity: 0; }
       body.night #dayVideo { opacity: 0; }
       body.night #nightImg { opacity: 1; }
-
-      /* Night dimming + cozy vignette */
-      #nightVeil {
-        position: absolute; inset: 0; pointer-events: none;
-        background: radial-gradient(120% 90% at 50% 35%, rgba(10,18,45,0) 35%, rgba(6,10,30,0.55) 100%);
-        opacity: 0; transition: opacity 1.2s ease;
-      }
+      #nightVeil { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity 1.2s ease;
+        background: radial-gradient(120% 90% at 50% 30%, rgba(10,18,45,0) 30%, rgba(6,10,30,0.6) 100%); }
       body.night #nightVeil { opacity: 1; }
 
       #world { position: absolute; inset: 0; }
 
-      /* ---- Characters ---- */
-      .char {
-        position: absolute;
-        transform-origin: 50% 100%;
-        will-change: transform, left, top;
-        pointer-events: auto;
-        cursor: pointer;
-        filter: drop-shadow(0 10px 12px rgba(0,0,0,0.35));
-        user-select: none;
-      }
-      .char img { width: 100%; height: 100%; object-fit: contain; display: block; pointer-events: none; }
+      .char { position: absolute; transform-origin: 50% 100%; will-change: transform, left, top; pointer-events: auto; cursor: pointer;
+        filter: drop-shadow(0 8px 10px rgba(0,0,0,0.4)); }
+      .char .frame { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: contain; object-position: bottom; display: none; pointer-events: none; }
+      .char .frame.on { display: block; }
+      .shadow { position: absolute; transform: translate(-50%, -50%); height: 2vmin; border-radius: 50%;
+        background: radial-gradient(closest-side, rgba(0,0,0,0.45), transparent); pointer-events: none; }
 
-      /* soft ground shadow under each character */
-      .shadow {
-        position: absolute;
-        transform: translate(-50%, -50%);
-        width: 9vmin; height: 2.4vmin;
-        background: radial-gradient(closest-side, rgba(0,0,0,0.4), transparent);
-        pointer-events: none;
-        transition: opacity .4s ease;
-      }
-      body.night .shadow { opacity: 0.5; }
+      .bubble { position: absolute; transform: translate(-50%,-120%) scale(0); transition: transform .35s cubic-bezier(.34,1.56,.64,1), opacity .35s; opacity: 0;
+        background: rgba(255,255,255,0.16); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,.4);
+        color: #fff; font-weight: 700; font-size: 14px; padding: 7px 13px; border-radius: 14px; box-shadow: 0 8px 24px rgba(0,0,0,.3); white-space: nowrap; pointer-events: none; z-index: 30; }
+      .bubble.show { transform: translate(-50%,-135%) scale(1); opacity: 1; }
 
-      /* speech bubble */
-      .bubble {
-        position: absolute;
-        transform: translate(-50%, -120%) scale(0);
-        background: var(--glass-bg);
-        -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
-        border: 1px solid var(--glass-brd);
-        color: #fff; font-weight: 700; font-size: 14px;
-        padding: 6px 12px; border-radius: 999px;
-        box-shadow: var(--glass-shadow);
-        white-space: nowrap; pointer-events: none;
-        transition: transform .35s cubic-bezier(.34,1.56,.64,1), opacity .35s;
-        opacity: 0;
-      }
-      .bubble.show { transform: translate(-50%, -135%) scale(1); opacity: 1; }
+      .gem { position: absolute; transform: translate(-50%,-50%); width: 30px; height: 30px; pointer-events: none;
+        background: radial-gradient(closest-side, #bff6ff, #49d6ff 60%, rgba(73,214,255,0) 72%);
+        box-shadow: 0 0 16px 6px rgba(90,220,255,.7); border-radius: 50%; animation: bobgem 1.8s ease-in-out infinite; }
+      @keyframes bobgem { 0%,100%{ transform: translate(-50%,-50%) translateY(0);} 50%{ transform: translate(-50%,-50%) translateY(-8px);} }
+      .spark { position: absolute; width: 9px; height: 9px; border-radius: 50%; background: #fff; pointer-events: none; z-index: 40; }
 
-      /* glow accents (fire / lantern / dragon) — brighter at night */
-      .glow {
-        position: absolute; transform: translate(-50%,-50%); border-radius: 50%;
-        pointer-events: none; mix-blend-mode: screen;
-        background: radial-gradient(closest-side, rgba(255,180,70,0.85), rgba(255,140,40,0) 70%);
-        opacity: 0.5; transition: opacity 1s ease;
-        animation: flicker 2.4s ease-in-out infinite;
-      }
-      body.night .glow { opacity: 0.95; }
-      @keyframes flicker { 0%,100%{ transform: translate(-50%,-50%) scale(1);} 50%{ transform: translate(-50%,-50%) scale(1.12);} }
+      .glow { position: absolute; transform: translate(-50%,-50%); border-radius: 50%; pointer-events: none; mix-blend-mode: screen;
+        background: radial-gradient(closest-side, rgba(255,180,70,.9), rgba(255,140,40,0) 70%); opacity: .45; transition: opacity 1s ease; animation: flick 2.2s ease-in-out infinite; }
+      body.night .glow { opacity: .95; }
+      @keyframes flick { 0%,100%{ transform: translate(-50%,-50%) scale(1);} 50%{ transform: translate(-50%,-50%) scale(1.14);} }
 
-      /* ---- Fireflies ---- */
-      .firefly {
-        position: absolute; width: 16px; height: 16px; border-radius: 50%;
-        background: radial-gradient(closest-side, #fff6c9, rgba(255,225,120,0.6) 50%, rgba(255,210,90,0) 75%);
-        box-shadow: 0 0 12px 4px rgba(255,224,130,0.7);
-        cursor: pointer; pointer-events: auto;
-        animation: pulse 1.6s ease-in-out infinite;
-      }
-      @keyframes pulse { 0%,100%{ opacity:.55; } 50%{ opacity:1; } }
-      .spark { position:absolute; width:8px;height:8px;border-radius:50%; background:#fff; pointer-events:none; }
+      /* HUD */
+      .hud { position: absolute; z-index: 20; }
+      .glass { background: rgba(255,255,255,0.15); -webkit-backdrop-filter: blur(20px) saturate(160%); backdrop-filter: blur(20px) saturate(160%);
+        border: 1px solid rgba(255,255,255,.38); box-shadow: 0 8px 30px rgba(0,0,0,.28); color: #fff; border-radius: 999px; }
+      #quest { top: 16px; left: 50%; transform: translateX(-50%); padding: 10px 20px; display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; }
+      #quest .gemico { width: 16px; height: 16px; border-radius: 50%; background: radial-gradient(closest-side,#bff6ff,#49d6ff); box-shadow: 0 0 10px #49d6ff; }
+      #topRight { top: 16px; right: 16px; display: flex; gap: 10px; }
+      .btn { width: 48px; height: 48px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer;
+        border: 1px solid rgba(255,255,255,.38); transition: transform .15s, background .2s; }
+      .btn:active { transform: scale(.9); } .btn:hover { background: rgba(255,255,255,.24); }
 
-      /* ---- Glass HUD ---- */
-      .hud { position: absolute; z-index: 20; display: flex; align-items: center; gap: 10px; }
-      .glass {
-        background: var(--glass-bg);
-        -webkit-backdrop-filter: blur(20px) saturate(160%); backdrop-filter: blur(20px) saturate(160%);
-        border: 1px solid var(--glass-brd);
-        box-shadow: var(--glass-shadow);
-        color: #fff; border-radius: 999px;
-      }
-      #hudTopLeft { top: 18px; left: 18px; }
-      #hudTopRight { top: 18px; right: 18px; }
-      #hudTitle { top: 18px; left: 50%; transform: translateX(-50%); }
+      /* Joystick */
+      #joy { position: absolute; z-index: 25; left: 26px; bottom: 26px; width: 130px; height: 130px; border-radius: 50%;
+        background: rgba(255,255,255,.1); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,.3);
+        touch-action: none; }
+      #knob { position: absolute; left: 50%; top: 50%; width: 56px; height: 56px; border-radius: 50%; transform: translate(-50%,-50%);
+        background: rgba(255,255,255,.55); border: 1px solid rgba(255,255,255,.7); box-shadow: 0 6px 16px rgba(0,0,0,.3); }
+      #hint { position: absolute; z-index: 20; left: 50%; bottom: 18px; transform: translateX(-50%); color: #fff; font-size: 12px; opacity: .8;
+        padding: 8px 16px; pointer-events: none; }
 
-      .counter { display: flex; align-items: center; gap: 10px; padding: 10px 18px; font-weight: 700; font-size: 16px; }
-      .counter .jar { font-size: 18px; }
-      .title { padding: 10px 20px; font-weight: 800; letter-spacing: 2px; font-size: 14px; text-transform: uppercase; }
-      .btn {
-        width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;
-        font-size: 20px; cursor: pointer; border: 1px solid var(--glass-brd);
-        transition: transform .15s ease, background .2s ease;
-      }
-      .btn:active { transform: scale(.9); }
-      .btn:hover { background: rgba(255,255,255,0.22); }
-
-      /* Warmth meter */
-      #warmthWrap { bottom: 20px; left: 18px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; }
-      #warmthBar { width: 120px; height: 8px; border-radius: 999px; background: rgba(255,255,255,0.25); overflow: hidden; }
-      #warmthFill { height: 100%; width: 0%; border-radius: 999px; background: linear-gradient(90deg, #ffd76b, #ff8a3d); transition: width .5s ease; }
-      .lbl { font-size: 12px; font-weight: 700; letter-spacing: .5px; }
-
-      /* ---- Loading + Intro ---- */
-      .overlay {
-        position: absolute; inset: 0; z-index: 50; display: flex; flex-direction: column;
-        align-items: center; justify-content: center; gap: 20px; text-align: center; padding: 24px;
-        background: radial-gradient(120% 100% at 50% 30%, #1a2238, #0a0d16);
-        color: #fff; transition: opacity .6s ease;
-      }
-      .overlay h1 { font-size: clamp(32px, 7vw, 64px); font-weight: 800; letter-spacing: 1px; }
-      .overlay p { opacity: .8; max-width: 30ch; line-height: 1.5; }
-      .play {
-        margin-top: 8px; padding: 14px 34px; font-size: 15px; font-weight: 700; letter-spacing: 1px;
-        text-transform: uppercase; cursor: pointer; color: #1a1a1a; background: #ffd76b;
-        border: none; border-radius: 999px; box-shadow: 0 10px 30px rgba(255,180,70,.4);
-        transition: transform .15s ease;
-      }
+      .overlay { position: absolute; inset: 0; z-index: 50; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; text-align: center; padding: 24px;
+        background: radial-gradient(120% 100% at 50% 30%, #1a2238, #0a0d16); color: #fff; transition: opacity .6s ease; }
+      .overlay h1 { font-size: clamp(32px,7vw,64px); font-weight: 800; }
+      .overlay p { opacity: .85; max-width: 32ch; line-height: 1.5; }
+      .play { margin-top: 6px; padding: 14px 34px; font-size: 15px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; color: #14233a; background: #ffd76b; border: none; border-radius: 999px; box-shadow: 0 10px 30px rgba(255,180,70,.4); }
       .play:active { transform: scale(.95); }
-      .spinner { width: 42px; height: 42px; border: 4px solid rgba(255,255,255,.25); border-top-color: #ffd76b; border-radius: 50%; animation: spin 1s linear infinite; }
-      @keyframes spin { to { transform: rotate(360deg); } }
-      .hidden { opacity: 0; pointer-events: none; }
-      .gone { display: none; }
+      .bar { width: 220px; height: 8px; border-radius: 999px; background: rgba(255,255,255,.2); overflow: hidden; }
+      .bar > div { height: 100%; width: 0%; background: #ffd76b; transition: width .2s; }
+      .hidden { opacity: 0; pointer-events: none; } .gone { display: none; }
 
-      /* ---- Responsive: icons-only on mobile ---- */
       @media (max-width: 640px) {
-        #hudTitle { display: none; }
-        .counter .label { display: none; }
-        .counter { padding: 10px 14px; }
-        #warmthWrap .lbl { display: none; }
-        #warmthBar { width: 84px; }
+        #quest { font-size: 13px; padding: 9px 14px; }
+        #hint { display: none; }
         .btn { width: 44px; height: 44px; }
       }
+      @media (hover: hover) and (pointer: fine) { #joy { display: none; } } /* hide joystick on desktop (use WASD/click) */
     </style>
   </head>
   <body>
@@ -172,349 +85,249 @@
       <video id="dayVideo" class="bg" autoplay muted loop playsinline
         poster="https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/hf_20260617_153416_f3c24ce5-21e3-4d27-9805-260af745c23e.png"
         src="https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/hf_20260617_153516_c3aa1dda-9b40-479c-96d5-aa29574e6c33.mp4"></video>
-      <img id="nightImg" class="bg"
-        src="https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/hf_20260617_170558_28def577-4e53-4a25-affb-be2f67ee9fc4.png" alt="" />
+      <img id="nightImg" class="bg" src="https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/hf_20260617_170558_28def577-4e53-4a25-affb-be2f67ee9fc4.png" alt="" />
       <div id="nightVeil"></div>
-
       <div id="world"></div>
 
-      <!-- HUD -->
-      <div id="hudTitle" class="hud"><div class="glass title">Glimmer Glade</div></div>
-      <div id="hudTopLeft" class="hud">
-        <div class="glass counter"><span class="jar">✨</span><span id="count">0</span><span class="label">&nbsp;Fireflies</span></div>
-      </div>
-      <div id="hudTopRight" class="hud">
+      <div id="quest" class="hud glass"><span class="gemico"></span><span id="qtext">Find 5 Glimmer-Gems</span></div>
+      <div id="topRight" class="hud">
         <div id="soundBtn" class="glass btn" title="Sound">🔈</div>
         <div id="dayNightBtn" class="glass btn" title="Day / Night">🌙</div>
       </div>
-      <div id="warmthWrap" class="hud glass">
-        <span class="lbl">Warmth</span>
-        <div id="warmthBar"><div id="warmthFill"></div></div>
-      </div>
+      <div id="joy" class="hud"><div id="knob"></div></div>
+      <div id="hint" class="glass">Move with W A S D / Arrows · or click the ground</div>
 
-      <!-- Loading -->
       <div id="loading" class="overlay">
-        <div class="spinner"></div>
-        <p>Waking up the glade…</p>
+        <h1>Glimmer Glade</h1>
+        <div class="bar"><div id="loadbar"></div></div>
+        <p>Carving the wooden toys to life…</p>
       </div>
-
-      <!-- Intro -->
       <div id="intro" class="overlay hidden gone">
         <h1>Glimmer Glade</h1>
-        <p>Tap the glowing fireflies to collect them, and tap your friends to say hello. That's it — just relax and enjoy the village. 🌿</p>
-        <button id="playBtn" class="play">Tap to Play</button>
+        <p>Help <b>Pip</b> explore the glade and gather the lost <b>Glimmer-Gems</b>. Ember the fox follows you, Hoot and Glow fly above. Walk around, scoop up the gems, then bring them back to old Bramble by the cottage!</p>
+        <button id="playBtn" class="play">Start the Adventure</button>
       </div>
     </div>
 
     <script>
-      const BASE = "https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/";
-      const SOURCES = {
-        pip:     BASE + "hf_20260617_170549_e9125265-f1b1-410b-a35c-004462fd5ebe.png",
-        ember:   BASE + "hf_20260617_170550_7b9094a8-a9b8-4783-a66e-dc961d3002c3.png",
-        hoot:    BASE + "hf_20260617_170551_4a037511-bbc6-4a99-8dd6-5e5e3067d37c.png",
-        glow:    BASE + "hf_20260617_170553_c7212707-d534-4935-b1c4-cb21decd6e9e.png",
-        bramble: BASE + "hf_20260617_170555_3eed1b99-0870-434b-9958-803f6ed1c14f.png",
+      const A = "https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/";
+      const SRC = {
+        pip_idle: A+"hf_20260617_170549_e9125265-f1b1-410b-a35c-004462fd5ebe.png",
+        pip_walk: A+"hf_20260618_123551_f387c235-b06a-4e22-a17f-2b6f67814b30.png",
+        pip_cheer:A+"hf_20260618_123556_21cff101-2b1c-4a77-bb1d-3f2f488db871.jpeg",
+        fox_idle: A+"hf_20260617_170550_7b9094a8-a9b8-4783-a66e-dc961d3002c3.png",
+        fox_run1: A+"hf_20260618_123559_2de355a9-5c14-42ce-8e7d-409bce65fc69.png",
+        fox_run2: A+"hf_20260618_123600_492825a1-2dd8-4431-910a-3b026a9d2213.png",
+        owl_up:   A+"hf_20260617_170551_4a037511-bbc6-4a99-8dd6-5e5e3067d37c.png",
+        owl_down: A+"hf_20260618_123601_df2c5330-d973-4d21-8b3b-b2b74ecb8934.png",
+        dragon_up:A+"hf_20260617_170553_c7212707-d534-4935-b1c4-cb21decd6e9e.png",
+        dragon_dn:A+"hf_20260618_123603_1355eb2c-6914-4930-a158-b3c791f57413.png",
+        bramble:  A+"hf_20260617_170555_3eed1b99-0870-434b-9958-803f6ed1c14f.png",
       };
 
       const world = document.getElementById("world");
-
-      /* ---------- Background white-removal (flood fill from edges) ---------- */
-      function loadImg(src) {
-        return new Promise((res, rej) => {
-          const im = new Image();
-          im.crossOrigin = "anonymous";
-          im.onload = () => res(im);
-          im.onerror = rej;
-          im.src = src;
-        });
-      }
-      function keyOut(img) {
-        const w = img.naturalWidth, h = img.naturalHeight;
-        const cv = document.createElement("canvas"); cv.width = w; cv.height = h;
-        const ctx = cv.getContext("2d", { willReadFrequently: true });
-        ctx.drawImage(img, 0, 0);
-        let id;
-        try { id = ctx.getImageData(0, 0, w, h); }
-        catch (e) { return img.src; } // CORS-tainted → use raw image
-        const p = id.data;
-        const vis = new Uint8Array(w * h);
-        const T = 232; // white threshold
-        const isBg = (i) => p[i*4] > T && p[i*4+1] > T && p[i*4+2] > T;
-        const stack = [];
-        const seed = (x, y) => { const i = y*w + x; if (!vis[i] && isBg(i)) { vis[i] = 1; stack.push(i); } };
-        for (let x = 0; x < w; x++) { seed(x, 0); seed(x, h - 1); }
-        for (let y = 0; y < h; y++) { seed(0, y); seed(w - 1, y); }
-        while (stack.length) {
-          const i = stack.pop(); p[i*4+3] = 0;
-          const x = i % w, y = (i / w) | 0;
-          if (x + 1 < w) seed(x + 1, y);
-          if (x - 1 >= 0) seed(x - 1, y);
-          if (y + 1 < h) seed(x, y + 1);
-          if (y - 1 >= 0) seed(x, y - 1);
-        }
-        // defringe: soften bright pixels touching transparency
-        for (let y = 1; y < h - 1; y++) {
-          for (let x = 1; x < w - 1; x++) {
-            const i = y*w + x;
-            if (p[i*4+3] === 0) continue;
-            if (p[(i-1)*4+3] === 0 || p[(i+1)*4+3] === 0 || p[(i-w)*4+3] === 0 || p[(i+w)*4+3] === 0) {
-              const lum = (p[i*4] + p[i*4+1] + p[i*4+2]) / 3;
-              if (lum > 215) p[i*4+3] = Math.max(0, 255 - (lum - 215) * 4);
-            }
-          }
-        }
-        ctx.putImageData(id, 0, 0);
-        return cv.toDataURL("image/png");
-      }
-
-      /* ---------- Helpers ---------- */
       const SW = () => world.clientWidth, SH = () => world.clientHeight;
-      const rand = (a, b) => a + Math.random() * (b - a);
+      const clamp = (v,a,b)=>Math.min(b,Math.max(a,v));
+      const rand = (a,b)=>a+Math.random()*(b-a);
 
-      function makeShadow() {
-        const s = document.createElement("div"); s.className = "shadow"; world.appendChild(s); return s;
+      /* ---- white-key (flood fill from edges) ---- */
+      function loadImg(src){ return new Promise((res,rej)=>{ const im=new Image(); im.crossOrigin="anonymous"; im.onload=()=>res(im); im.onerror=()=>rej(src); im.src=src; }); }
+      function keyOut(img){
+        const w=img.naturalWidth,h=img.naturalHeight; const cv=document.createElement("canvas"); cv.width=w; cv.height=h;
+        const ctx=cv.getContext("2d",{willReadFrequently:true}); ctx.drawImage(img,0,0);
+        let id; try{ id=ctx.getImageData(0,0,w,h);}catch(e){ return img.src; }
+        const p=id.data, vis=new Uint8Array(w*h), T=232, st=[];
+        const bg=i=>p[i*4]>T&&p[i*4+1]>T&&p[i*4+2]>T;
+        const seed=(x,y)=>{const i=y*w+x; if(!vis[i]&&bg(i)){vis[i]=1; st.push(i);} };
+        for(let x=0;x<w;x++){seed(x,0); seed(x,h-1);} for(let y=0;y<h;y++){seed(0,y); seed(w-1,y);}
+        while(st.length){const i=st.pop(); p[i*4+3]=0; const x=i%w,y=(i/w)|0;
+          if(x+1<w)seed(x+1,y); if(x-1>=0)seed(x-1,y); if(y+1<h)seed(x,y+1); if(y-1>=0)seed(x,y-1);}
+        for(let y=1;y<h-1;y++)for(let x=1;x<w-1;x++){const i=y*w+x; if(p[i*4+3]===0)continue;
+          if(p[(i-1)*4+3]===0||p[(i+1)*4+3]===0||p[(i-w)*4+3]===0||p[(i+w)*4+3]===0){
+            const l=(p[i*4]+p[i*4+1]+p[i*4+2])/3; if(l>214) p[i*4+3]=Math.max(0,255-(l-214)*4);}}
+        ctx.putImageData(id,0,0); try{ return cv.toDataURL("image/png"); }catch(e){ return img.src; }
       }
-
-      /* ---------- Character class ---------- */
-      class Character {
-        constructor(key, src, opts) {
-          this.key = key;
-          this.o = opts;
-          this.x = opts.x; this.y = opts.y;     // % of stage (feet anchor)
-          this.face = 1;
-          this.bob = Math.random() * 6.28;
-          this.el = document.createElement("div");
-          this.el.className = "char";
-          this.el.style.width = opts.size;
-          const im = document.createElement("img"); im.src = src; this.el.appendChild(im);
-          this.el.addEventListener("click", () => this.onTap());
-          world.appendChild(this.el);
-          this.shadow = makeShadow();
-          this.bubbleEl = null;
-        }
-        say(text) {
-          if (!this.bubbleEl) { this.bubbleEl = document.createElement("div"); this.bubbleEl.className = "bubble"; world.appendChild(this.bubbleEl); }
-          this.bubbleEl.textContent = text;
-          this.bubbleEl.style.left = (this.x / 100 * SW()) + "px";
-          this.bubbleEl.style.top = (this.y / 100 * SH() - this.el.clientHeight) + "px";
-          this.bubbleEl.classList.add("show");
-          clearTimeout(this._bt);
-          this._bt = setTimeout(() => this.bubbleEl.classList.remove("show"), 1600);
-        }
-        onTap() {
-          this.happy = 1; // triggers a little hop
-          game.addFirefly(this.x, this.y - 6);
-          this.say(this.o.cheer || "♥");
-          game.sound("pluck");
-        }
-        place(extraScale = 1, extraY = 0, rot = 0) {
-          const px = this.x / 100 * SW();
-          const py = this.y / 100 * SH() + extraY;
-          this.el.style.left = px + "px";
-          this.el.style.top = py + "px";
-          this.el.style.transform =
-            `translate(-50%, -100%) rotate(${rot}deg) scaleX(${this.face}) scale(${(this.o.scale||1) * extraScale})`;
-          this.shadow.style.left = px + "px";
-          this.shadow.style.top = py + "px";
-          this.shadow.style.width = (this.el.clientWidth * 0.6) + "px";
-        }
-      }
-
-      /* ---------- Game ---------- */
-      const game = {
-        chars: {}, fireflies: [], count: 0, warmth: 0, audioOn: false, ac: null, last: 0,
-        sound(type) {
-          if (!this.audioOn) return;
-          try {
-            if (!this.ac) this.ac = new (window.AudioContext || window.webkitAudioContext)();
-            const t = this.ac.currentTime, o = this.ac.createOscillator(), g = this.ac.createGain();
-            o.connect(g); g.connect(this.ac.destination);
-            if (type === "pluck") { o.frequency.value = 720; g.gain.setValueAtTime(.18, t); o.frequency.exponentialRampToValueAtTime(1100, t + .12); }
-            else { o.frequency.value = 320; g.gain.setValueAtTime(.12, t); }
-            g.gain.exponentialRampToValueAtTime(.0001, t + .3);
-            o.start(t); o.stop(t + .32);
-          } catch (e) {}
-        },
-        addFirefly(xp, yp) {
-          const f = document.createElement("div"); f.className = "firefly";
-          const fx = xp == null ? rand(8, 92) : xp + rand(-3, 3);
-          const fy = yp == null ? rand(18, 70) : yp + rand(-3, 3);
-          const o = { el: f, x: fx, y: fy, t: Math.random() * 6.28, sp: rand(.3, .8), amp: rand(2, 5) };
-          f.addEventListener("click", (e) => { e.stopPropagation(); this.collect(o); });
-          world.appendChild(f); this.fireflies.push(o); this.posFirefly(o);
-        },
-        posFirefly(o) {
-          o.el.style.left = (o.x / 100 * SW()) + "px";
-          o.el.style.top = (o.y / 100 * SH()) + "px";
-        },
-        collect(o) {
-          const i = this.fireflies.indexOf(o); if (i < 0) return;
-          this.fireflies.splice(i, 1);
-          const r = o.el.getBoundingClientRect();
-          o.el.remove();
-          this.count++; document.getElementById("count").textContent = this.count;
-          this.warmth = Math.min(100, this.warmth + 4);
-          document.getElementById("warmthFill").style.width = this.warmth + "%";
-          document.documentElement.style.setProperty("--warm", this.warmth);
-          this.sound("pluck");
-          // sparkle burst
-          for (let k = 0; k < 6; k++) {
-            const s = document.createElement("div"); s.className = "spark";
-            s.style.left = r.left + "px"; s.style.top = r.top + "px";
-            document.body.appendChild(s);
-            const ang = Math.random() * 6.28, d = 20 + Math.random() * 30;
-            s.animate([{ transform: "translate(0,0)", opacity: 1 }, { transform: `translate(${Math.cos(ang)*d}px,${Math.sin(ang)*d}px)`, opacity: 0 }], { duration: 500, easing: "ease-out" }).onfinish = () => s.remove();
-          }
-          setTimeout(() => this.addFirefly(), rand(600, 1600));
-        },
-        toggleNight() {
-          document.body.classList.toggle("night");
-          const on = document.body.classList.contains("night");
-          document.getElementById("dayNightBtn").textContent = on ? "☀️" : "🌙";
-        },
-      };
-      window.game = game;
-
-      /* ---------- Boot ---------- */
-      async function boot() {
-        // Key out backgrounds for all characters
-        const keyed = {};
-        await Promise.all(Object.entries(SOURCES).map(async ([k, src]) => {
-          try { const im = await loadImg(src); keyed[k] = keyOut(im); }
-          catch (e) { keyed[k] = src; }
+      const keyed = {};
+      async function prepAssets(onProg){
+        const entries=Object.entries(SRC); let done=0;
+        await Promise.all(entries.map(async([k,src])=>{
+          try{ const im=await loadImg(src); keyed[k]=keyOut(im);}catch(e){ keyed[k]=src; }
+          done++; onProg(done/entries.length);
         }));
+      }
 
-        // Create characters with positions (% of stage) and behaviours
-        game.chars.bramble = new Character("bramble", keyed.bramble, { x: 63, y: 60, size: "clamp(90px,15vw,180px)", scale: 1, cheer: "Welcome!" });
-        game.chars.pip     = new Character("pip",     keyed.pip,     { x: 18, y: 78, size: "clamp(80px,13vw,160px)", scale: 1, cheer: "Hi!" });
-        game.chars.ember   = new Character("ember",   keyed.ember,   { x: 30, y: 90, size: "clamp(64px,10vw,120px)", scale: 1, cheer: "Yip!" });
-        game.chars.glow    = new Character("glow",    keyed.glow,    { x: 72, y: 30, size: "clamp(64px,10vw,120px)", scale: 1, cheer: "Rawr!" });
-        game.chars.hoot    = new Character("hoot",    keyed.hoot,    { x: 85, y: 34, size: "clamp(60px,9vw,110px)",  scale: 1, cheer: "Hoo!" });
+      /* ---- Character (frame animated) ---- */
+      class Char {
+        constructor(frameKeys, opts){
+          this.o=opts; this.x=opts.x; this.y=opts.y; this.face=1; this.t=0; this.fi=0; this.state="idle";
+          this.el=document.createElement("div"); this.el.className="char"; this.el.style.height=opts.h;
+          this.el.style.aspectRatio="3/4";
+          this.frames={};
+          frameKeys.forEach((k,idx)=>{ const im=document.createElement("img"); im.className="frame"+(idx===0?" on":""); im.src=keyed[k]; this.el.appendChild(im); this.frames[k]=im; this.cur=this.frames[k]; });
+          this.el.addEventListener("click",(e)=>{ e.stopPropagation(); opts.onTap&&opts.onTap(this); });
+          world.appendChild(this.el);
+          this.shadow=document.createElement("div"); this.shadow.className="shadow"; world.appendChild(this.shadow);
+        }
+        show(k){ if(this.frames[k]&&this.cur!==this.frames[k]){ this.cur.classList.remove("on"); this.cur=this.frames[k]; this.cur.classList.add("on"); } }
+        say(text){
+          if(!this.b){ this.b=document.createElement("div"); this.b.className="bubble"; world.appendChild(this.b); }
+          this.b.textContent=text; this.b.style.left=this.x+"px"; this.b.style.top=(this.y-this.el.clientHeight)+"px";
+          this.b.classList.add("show"); clearTimeout(this._bt); this._bt=setTimeout(()=>this.b.classList.remove("show"),1500);
+        }
+        place(bobY=0, squash=1){
+          this.el.style.left=this.x+"px"; this.el.style.top=(this.y+bobY)+"px";
+          this.el.style.transform=`translate(-50%,-100%) scaleX(${this.face}) scaleY(${squash})`;
+          const sw=this.el.clientWidth*0.55;
+          this.shadow.style.left=this.x+"px"; this.shadow.style.top=this.y+"px"; this.shadow.style.width=sw+"px";
+        }
+      }
 
-        // glows: fire + lantern + dragon
-        const fireGlow = document.createElement("div"); fireGlow.className = "glow"; world.appendChild(fireGlow);
-        const lampGlow = document.createElement("div"); lampGlow.className = "glow"; world.appendChild(lampGlow);
-        game._glows = { fireGlow, lampGlow };
+      /* ---- Game ---- */
+      const game = {
+        gems:[], collected:0, need:5, audioOn:false, ac:null, last:0, target:null,
+        keys:{}, joy:{x:0,y:0,active:false},
+        sound(type){ if(!this.audioOn)return; try{ if(!this.ac)this.ac=new(window.AudioContext||window.webkitAudioContext)();
+          const t=this.ac.currentTime,o=this.ac.createOscillator(),g=this.ac.createGain(); o.connect(g);g.connect(this.ac.destination);
+          if(type==="gem"){o.frequency.setValueAtTime(660,t); o.frequency.exponentialRampToValueAtTime(1320,t+.15); g.gain.setValueAtTime(.2,t);}
+          else if(type==="win"){o.frequency.setValueAtTime(523,t);o.frequency.setValueAtTime(784,t+.12);o.frequency.setValueAtTime(1046,t+.24);g.gain.setValueAtTime(.22,t);}
+          else {o.frequency.value=400;g.gain.setValueAtTime(.12,t);}
+          g.gain.exponentialRampToValueAtTime(.0001,t+.4); o.start(t);o.stop(t+.42);}catch(e){} },
+        spawnGems(){
+          const spots=[[.30,.55],[.46,.40],[.62,.52],[.78,.62],[.70,.30],[.40,.68],[.86,.42]];
+          this.gems.forEach(g=>g.el.remove()); this.gems=[];
+          const pick=spots.sort(()=>Math.random()-.5).slice(0,this.need);
+          pick.forEach(([fx,fy])=>{ const el=document.createElement("div"); el.className="gem"; world.appendChild(el);
+            this.gems.push({el,x:fx*SW(),y:fy*SH(),fx,fy}); });
+          this.layoutGems();
+        },
+        layoutGems(){ this.gems.forEach(g=>{ g.x=g.fx*SW(); g.y=g.fy*SH(); g.el.style.left=g.x+"px"; g.el.style.top=g.y+"px"; }); },
+        burst(px,py,color){ for(let k=0;k<10;k++){ const s=document.createElement("div"); s.className="spark"; s.style.background=color||"#fff";
+          s.style.left=px+"px"; s.style.top=py+"px"; world.appendChild(s); const a=Math.random()*6.28,d=24+Math.random()*38;
+          s.animate([{transform:"translate(0,0)",opacity:1},{transform:`translate(${Math.cos(a)*d}px,${Math.sin(a)*d}px)`,opacity:0}],{duration:600,easing:"ease-out"}).onfinish=()=>s.remove(); } },
+        toggleNight(){ document.body.classList.toggle("night"); const on=document.body.classList.contains("night");
+          document.getElementById("dayNightBtn").textContent=on?"☀️":"🌙"; },
+      };
+      window.game=game;
+      let pip,fox,owl,dragon,bramble, fireGlow, lampGlow;
 
-        for (let i = 0; i < 9; i++) game.addFirefly();
+      async function boot(){
+        await prepAssets(p=>{ document.getElementById("loadbar").style.width=(p*100)+"%"; });
+
+        bramble=new Char(["bramble"],{x:.60*SW(),y:.58*SH(),h:"clamp(120px,24vh,260px)",onTap:talkBramble});
+        pip=new Char(["pip_idle","pip_walk","pip_cheer"],{x:.5*SW(),y:.82*SH(),h:"clamp(110px,22vh,240px)",onTap:c=>{c.say("Let's go!");}});
+        fox=new Char(["fox_idle","fox_run1","fox_run2"],{x:.42*SW(),y:.86*SH(),h:"clamp(70px,14vh,150px)",onTap:c=>{c.say("Yip!");game.sound("tap");}});
+        owl=new Char(["owl_up","owl_down"],{x:.8*SW(),y:.3*SH(),h:"clamp(64px,12vh,130px)",onTap:c=>{c.say("Hoo! Gems sparkle blue.");game.sound("tap");}});
+        dragon=new Char(["dragon_up","dragon_dn"],{x:.24*SW(),y:.32*SH(),h:"clamp(64px,12vh,130px)",onTap:c=>{c.say("Rawr!");game.sound("tap");}});
+        owl.flyT=Math.random()*6.28; dragon.flyT=Math.random()*6.28;
+        owl.homeX=.8; owl.homeY=.28; dragon.homeX=.24; dragon.homeY=.32;
+
+        fireGlow=document.createElement("div"); fireGlow.className="glow"; world.appendChild(fireGlow);
+        lampGlow=document.createElement("div"); lampGlow.className="glow"; world.appendChild(lampGlow);
+
+        game.spawnGems();
 
         document.getElementById("loading").classList.add("hidden");
-        setTimeout(() => { const l = document.getElementById("loading"); l.classList.add("gone"); }, 600);
-        const intro = document.getElementById("intro");
-        intro.classList.remove("gone"); requestAnimationFrame(() => intro.classList.remove("hidden"));
-
+        setTimeout(()=>document.getElementById("loading").classList.add("gone"),600);
+        const intro=document.getElementById("intro"); intro.classList.remove("gone"); requestAnimationFrame(()=>intro.classList.remove("hidden"));
         requestAnimationFrame(loop);
       }
 
-      /* ---------- Pip's chore state machine ---------- */
-      const pipPlan = [
-        { x: 18, y: 78, wait: 800 },   // woodpile
-        { x: 32, y: 80, wait: 1200, action: "fire" }, // to the fire, drop wood
-        { x: 52, y: 62, wait: 400 },   // to the door
-        { x: 52, y: 62, wait: 2200, action: "enter" }, // go inside
-        { x: 18, y: 78, wait: 600 },   // come back out to woodpile
-      ];
-      let pipStep = 0, pipPhase = "walk", pipTimer = 0;
-      const SPEED = 6; // % per second
-
-      function updatePip(c, dt) {
-        const target = pipPlan[pipStep];
-        if (pipPhase === "walk") {
-          const dx = target.x - c.x, dy = target.y - c.y;
-          const dist = Math.hypot(dx, dy);
-          if (dist < 0.6) { pipPhase = "wait"; pipTimer = target.wait; if (target.action === "fire") flareFire(); }
-          else {
-            c.face = dx >= 0 ? 1 : -1;
-            const step = SPEED * dt;
-            c.x += dx / dist * step; c.y += dy / dist * step;
-          }
-          c.bob += dt * 10;
-          c.place(1, Math.sin(c.bob) * 3);
-        } else {
-          pipTimer -= dt * 1000;
-          // "enter house": fade out then back in
-          if (target.action === "enter") {
-            const half = target.wait / 2;
-            c.el.style.opacity = pipTimer > half ? (pipTimer - half) / half : (1 - pipTimer / half);
-            c.shadow.style.opacity = c.el.style.opacity;
-          }
-          c.place(1, 0);
-          if (pipTimer <= 0) {
-            c.el.style.opacity = 1; c.shadow.style.opacity = "";
-            pipStep = (pipStep + 1) % pipPlan.length; pipPhase = "walk";
-          }
-        }
+      function talkBramble(){
+        if(game.collected>=game.need){
+          game.say && 0; bramble.say("You found them all! Hooray! 🎉");
+          pip.state="cheer"; pip.cheerT=1.8; game.sound("win"); game.burst(pip.x,pip.y-pip.el.clientHeight*0.5,"#ffd76b");
+          setTimeout(()=>{ game.collected=0; updateQuest(); game.spawnGems(); bramble.say("Can you find 5 more?"); },2000);
+        } else { bramble.say(`Bring me ${game.need-game.collected} more gems!`); }
       }
-      function flareFire() {
-        const g = game._glows.fireGlow;
-        g.animate([{ opacity: getComputedStyle(g).opacity }, { opacity: 1 }, { opacity: document.body.classList.contains("night") ? .95 : .5 }], { duration: 700 });
-        game.chars.pip && game.chars.pip.say("🔥");
-      }
+      function updateQuest(){ document.getElementById("qtext").textContent = game.collected>=game.need ? "Take them to Bramble!" : `Gems  ${game.collected} / ${game.need}`; }
 
-      /* ---------- Ember roams ---------- */
-      let foxDir = 1, foxWait = 0;
-      function updateFox(c, dt) {
-        if (foxWait > 0) { foxWait -= dt * 1000; c.place(1, 0); return; }
-        c.x += foxDir * 4 * dt; c.face = foxDir;
-        if (c.x > 46) { foxDir = -1; foxWait = rand(700, 1600); }
-        if (c.x < 16) { foxDir = 1; foxWait = rand(700, 1600); }
-        c.bob += dt * 12; c.place(1, Math.sin(c.bob) * 2);
-      }
+      /* ---- input ---- */
+      addEventListener("keydown",e=>{game.keys[e.key.toLowerCase()]=true;});
+      addEventListener("keyup",e=>{game.keys[e.key.toLowerCase()]=false;});
+      world.addEventListener("pointerdown",e=>{ if(e.target.closest(".char"))return; game.target={x:e.clientX,y:e.clientY}; });
+      // joystick
+      const joy=document.getElementById("joy"), knob=document.getElementById("knob");
+      let joyId=null;
+      joy.addEventListener("pointerdown",e=>{ joyId=e.pointerId; game.joy.active=true; joy.setPointerCapture(e.pointerId); moveKnob(e); });
+      joy.addEventListener("pointermove",e=>{ if(joyId===e.pointerId) moveKnob(e); });
+      const endJoy=e=>{ if(joyId===e.pointerId){ joyId=null; game.joy.active=false; game.joy.x=0; game.joy.y=0; knob.style.transform="translate(-50%,-50%)"; } };
+      joy.addEventListener("pointerup",endJoy); joy.addEventListener("pointercancel",endJoy);
+      function moveKnob(e){ const r=joy.getBoundingClientRect(); let dx=e.clientX-(r.left+r.width/2), dy=e.clientY-(r.top+r.height/2);
+        const max=r.width/2, d=Math.hypot(dx,dy); if(d>max){dx=dx/d*max; dy=dy/d*max;} game.joy.x=dx/max; game.joy.y=dy/max;
+        knob.style.transform=`translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`; }
 
-      /* ---------- main loop ---------- */
-      let hootT = 0;
-      function loop(ts) {
-        const dt = Math.min(0.05, (ts - (game.last || ts)) / 1000); game.last = ts;
-        const { pip, ember, glow, hoot, bramble } = game.chars;
+      /* ---- main loop ---- */
+      function loop(ts){
+        const dt=Math.min(.05,(ts-(game.last||ts))/1000); game.last=ts;
+        const W=SW(),H=SH();
 
-        updatePip(pip, dt);
-        updateFox(ember, dt);
+        // input vector
+        let vx=0,vy=0;
+        if(game.keys["w"]||game.keys["arrowup"])vy-=1;
+        if(game.keys["s"]||game.keys["arrowdown"])vy+=1;
+        if(game.keys["a"]||game.keys["arrowleft"])vx-=1;
+        if(game.keys["d"]||game.keys["arrowright"])vx+=1;
+        if(game.joy.active){ vx+=game.joy.x; vy+=game.joy.y; }
+        let usingDir = (vx||vy);
+        if(usingDir) game.target=null;
+        if(game.target){ const dx=game.target.x-pip.x, dy=game.target.y-pip.y, d=Math.hypot(dx,dy);
+          if(d>6){ vx=dx/d; vy=dy/d; } else game.target=null; }
+        const vlen=Math.hypot(vx,vy); if(vlen>1){vx/=vlen;vy/=vlen;}
+        const moving = (vx||vy);
 
-        // dragon hovers
-        glow.bob += dt * 3;
-        glow.place(1 + Math.sin(glow.bob*2)*0.02, Math.sin(glow.bob) * 10);
+        // move pip
+        const SP=Math.min(W,H)*0.45; // px/sec
+        pip.x=clamp(pip.x+vx*SP*dt, W*0.06, W*0.94);
+        pip.y=clamp(pip.y+vy*SP*dt, H*0.30, H*0.95);
+        if(vx) pip.face = vx<0?-1:1;
 
-        // owl idle + periodic hoot
-        hoot.bob += dt * 4;
-        let hScale = 1; hootT += dt;
-        if (hootT > 5) { hootT = 0; hoot.say("Hoo!"); game.sound("hoot"); }
-        hoot.place(1, Math.sin(hoot.bob) * 2);
+        // pip animation
+        if(pip.state==="cheer"){ pip.cheerT-=dt; pip.show("pip_cheer"); pip.place(Math.sin(ts/120)*4); if(pip.cheerT<=0)pip.state="idle"; }
+        else if(moving){ pip.t+=dt; const step=Math.sin(pip.t*12); pip.show(step>0?"pip_walk":"pip_idle"); pip.place(-Math.abs(Math.sin(pip.t*12))*5, 1+Math.sin(pip.t*24)*0.03); }
+        else { pip.show("pip_idle"); pip.place(0); }
 
-        // elder waves (gentle rocking)
-        bramble.bob += dt * 2.2;
-        bramble.place(1, 0, Math.sin(bramble.bob) * 3);
+        // fox follows pip
+        const fdx=pip.x-fox.x, fdy=(pip.y+20)-fox.y, fd=Math.hypot(fdx,fdy);
+        const foxMoving=fd>W*0.10;
+        if(foxMoving){ const fs=SP*1.05; fox.x+=fdx/fd*fs*dt; fox.y+=fdy/fd*fs*dt; fox.face=fdx<0?-1:1; fox.t+=dt;
+          fox.show(Math.sin(fox.t*16)>0?"fox_run1":"fox_run2"); fox.place(-Math.abs(Math.sin(fox.t*16))*6); }
+        else { fox.show("fox_idle"); fox.t+=dt; fox.place(Math.sin(fox.t*3)*2); }
 
-        // position glows near fire & elder lantern
-        const fg = game._glows.fireGlow, lg = game._glows.lampGlow;
-        fg.style.left = (32/100*SW()) + "px"; fg.style.top = (80/100*SH()) + "px"; fg.style.width = fg.style.height = "16vmin";
-        lg.style.left = (60/100*SW()) + "px"; lg.style.top = (60/100*SH()) + "px"; lg.style.width = lg.style.height = "7vmin";
+        // flyers: wander + flap
+        flyer(owl,ts,dt,W,H); flyer(dragon,ts,dt,W,H);
 
-        // drift fireflies
-        for (const o of game.fireflies) {
-          o.t += dt * o.sp;
-          o.el.style.transform = `translate(${Math.sin(o.t)*o.amp*4}px, ${Math.cos(o.t*0.8)*o.amp*4}px)`;
-        }
+        // bramble idle wave
+        bramble.t+=dt; bramble.el.style.left=bramble.x+"px"; bramble.el.style.top=bramble.y+"px";
+        bramble.el.style.transform=`translate(-50%,-100%) rotate(${Math.sin(bramble.t*2)*2.5}deg)`;
+        bramble.shadow.style.left=bramble.x+"px"; bramble.shadow.style.top=bramble.y+"px"; bramble.shadow.style.width=bramble.el.clientWidth*0.55+"px";
+
+        // glows
+        fireGlow.style.left=.30*W+"px"; fireGlow.style.top=.74*H+"px"; fireGlow.style.width=fireGlow.style.height="15vmin";
+        lampGlow.style.left=.60*W+"px"; lampGlow.style.top=.54*H+"px"; lampGlow.style.width=lampGlow.style.height="8vmin";
+
+        // gem pickup
+        for(let i=game.gems.length-1;i>=0;i--){ const g=game.gems[i]; if(Math.hypot(g.x-pip.x,g.y-(pip.y-10))<Math.min(W,H)*0.07){
+          game.burst(g.x,g.y,"#7fe6ff"); g.el.remove(); game.gems.splice(i,1); game.collected++; updateQuest(); game.sound("gem");
+          pip.say("✨"); if(game.collected>=game.need){ bramble.say("Bring them to me!"); } } }
 
         requestAnimationFrame(loop);
       }
+      function flyer(c,ts,dt,W,H){
+        c.flyT+=dt; const ox=Math.sin(c.flyT*0.6)*0.12, oy=Math.cos(c.flyT*0.9)*0.06;
+        c.x=(c.homeX+ox)*W; c.y=(c.homeY+oy)*H; c.face=Math.cos(c.flyT*0.6)<0?-1:1;
+        const flap=Math.sin(ts/90)>0;
+        if(c===owl) c.show(flap?"owl_up":"owl_down"); else c.show(flap?"dragon_up":"dragon_dn");
+        c.place(Math.sin(ts/240)*6);
+      }
 
-      // Note: elder transform is overwritten by place(); apply wave via place override
-      // (kept simple: elder simply bobs)
+      addEventListener("resize",()=>{ game.layoutGems(); });
 
-      /* ---------- UI wiring ---------- */
-      document.getElementById("dayNightBtn").addEventListener("click", () => game.toggleNight());
-      document.getElementById("soundBtn").addEventListener("click", (e) => {
-        game.audioOn = !game.audioOn;
-        e.target.textContent = game.audioOn ? "🔊" : "🔈";
-        if (game.audioOn && !game.ac) { try { game.ac = new (window.AudioContext||window.webkitAudioContext)(); } catch(_){} }
-      });
-      document.getElementById("playBtn").addEventListener("click", () => {
-        const intro = document.getElementById("intro");
-        intro.classList.add("hidden"); setTimeout(() => intro.classList.add("gone"), 600);
-        game.audioOn = true; document.getElementById("soundBtn").textContent = "🔊";
-        try { game.ac = new (window.AudioContext||window.webkitAudioContext)(); } catch(_){}
-        document.getElementById("dayVideo").play().catch(()=>{});
-      });
+      document.getElementById("dayNightBtn").addEventListener("click",()=>game.toggleNight());
+      document.getElementById("soundBtn").addEventListener("click",e=>{ game.audioOn=!game.audioOn; e.target.textContent=game.audioOn?"🔊":"🔈";
+        if(game.audioOn&&!game.ac){try{game.ac=new(window.AudioContext||window.webkitAudioContext)();}catch(_){}}});
+      document.getElementById("playBtn").addEventListener("click",()=>{ const i=document.getElementById("intro"); i.classList.add("hidden"); setTimeout(()=>i.classList.add("gone"),600);
+        game.audioOn=true; document.getElementById("soundBtn").textContent="🔊"; try{game.ac=new(window.AudioContext||window.webkitAudioContext)();}catch(_){}
+        document.getElementById("dayVideo").play().catch(()=>{}); updateQuest(); bramble.say("Find my 5 Glimmer-Gems!"); });
 
       boot();
     </script>
