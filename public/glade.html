@@ -3,331 +3,273 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Glimmer Glade — Quest</title>
+    <title>Glimmer Farm</title>
     <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; }
-      html, body { height: 100%; overflow: hidden; background: #0b0d12; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-      #stage { position: fixed; inset: 0; overflow: hidden; touch-action: none; }
+      * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; -webkit-user-select:none; user-select:none; }
+      html,body { height:100%; overflow:hidden; background:#0b0d12; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+      #stage { position:fixed; inset:0; overflow:hidden; touch-action:none; }
+      #bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+      #world { position:absolute; inset:0; }
 
-      .bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 1.2s ease; }
-      #nightImg { opacity: 0; }
-      body.night #dayVideo { opacity: 0; }
-      body.night #nightImg { opacity: 1; }
-      #nightVeil { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity 1.2s ease;
-        background: radial-gradient(120% 90% at 50% 30%, rgba(10,18,45,0) 30%, rgba(6,10,30,0.6) 100%); }
-      body.night #nightVeil { opacity: 1; }
+      .char { position:absolute; transform-origin:50% 100%; will-change:transform,left,top; pointer-events:auto; cursor:pointer; filter:drop-shadow(0 8px 9px rgba(0,0,0,.38)); }
+      .char .frame { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; object-position:bottom; display:none; pointer-events:none; }
+      .char .frame.on { display:block; }
+      .shadow { position:absolute; transform:translate(-50%,-50%); height:1.8vmin; border-radius:50%; background:radial-gradient(closest-side,rgba(0,0,0,.4),transparent); pointer-events:none; }
 
-      #world { position: absolute; inset: 0; }
+      .item { position:absolute; transform:translate(-50%,-50%); font-size:clamp(22px,3.4vw,34px); pointer-events:none; filter:drop-shadow(0 3px 4px rgba(0,0,0,.35)); animation:bobit 1.6s ease-in-out infinite; }
+      @keyframes bobit { 0%,100%{ transform:translate(-50%,-50%) translateY(0);} 50%{ transform:translate(-50%,-50%) translateY(-7px);} }
+      .plot { position:absolute; transform:translate(-50%,-50%); width:clamp(46px,8vw,80px); height:clamp(34px,6vw,60px); border-radius:12px;
+        background:rgba(80,45,20,.35); border:2px dashed rgba(255,255,255,.35); display:flex; align-items:center; justify-content:center; font-size:clamp(22px,4vw,40px); cursor:pointer; pointer-events:auto; }
+      .plot.ripe { background:rgba(255,210,80,.25); border-color:rgba(255,210,80,.8); box-shadow:0 0 16px rgba(255,210,80,.5); }
 
-      .char { position: absolute; transform-origin: 50% 100%; will-change: transform, left, top; pointer-events: auto; cursor: pointer;
-        filter: drop-shadow(0 8px 10px rgba(0,0,0,0.4)); }
-      .char .frame { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: contain; object-position: bottom; display: none; pointer-events: none; }
-      .char .frame.on { display: block; }
-      .shadow { position: absolute; transform: translate(-50%, -50%); height: 2vmin; border-radius: 50%;
-        background: radial-gradient(closest-side, rgba(0,0,0,0.45), transparent); pointer-events: none; }
+      .bubble { position:absolute; transform:translate(-50%,-120%) scale(0); transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .3s; opacity:0; z-index:30;
+        background:rgba(255,255,255,.92); color:#222; font-weight:800; font-size:18px; padding:5px 11px; border-radius:14px; box-shadow:0 6px 18px rgba(0,0,0,.3); white-space:nowrap; pointer-events:none; }
+      .bubble.show { transform:translate(-50%,-135%) scale(1); opacity:1; }
+      .pop { position:absolute; transform:translate(-50%,-50%); font-weight:900; color:#ffe06a; font-size:20px; pointer-events:none; text-shadow:0 2px 4px rgba(0,0,0,.4); z-index:40; }
 
-      .bubble { position: absolute; transform: translate(-50%,-120%) scale(0); transition: transform .35s cubic-bezier(.34,1.56,.64,1), opacity .35s; opacity: 0;
-        background: rgba(255,255,255,0.16); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,.4);
-        color: #fff; font-weight: 700; font-size: 14px; padding: 7px 13px; border-radius: 14px; box-shadow: 0 8px 24px rgba(0,0,0,.3); white-space: nowrap; pointer-events: none; z-index: 30; }
-      .bubble.show { transform: translate(-50%,-135%) scale(1); opacity: 1; }
+      .hud { position:absolute; z-index:20; }
+      .glass { background:rgba(255,255,255,.16); -webkit-backdrop-filter:blur(20px) saturate(160%); backdrop-filter:blur(20px) saturate(160%); border:1px solid rgba(255,255,255,.4); box-shadow:0 8px 28px rgba(0,0,0,.28); color:#fff; border-radius:999px; }
+      #money { top:14px; left:50%; transform:translateX(-50%); padding:10px 22px; font-weight:800; font-size:clamp(18px,2.4vw,26px); display:flex; align-items:center; gap:8px; }
+      #stocks { top:14px; left:14px; display:flex; gap:8px; }
+      .chip { padding:8px 12px; font-weight:700; font-size:15px; display:flex; align-items:center; gap:5px; }
+      #right { top:14px; right:14px; display:flex; flex-direction:column; gap:10px; align-items:flex-end; }
+      .btn { padding:10px 14px; border-radius:999px; display:flex; align-items:center; gap:8px; font-weight:700; font-size:14px; cursor:pointer; border:1px solid rgba(255,255,255,.4); transition:transform .12s, background .2s; }
+      .btn:active { transform:scale(.94); }
+      .btn.dim { opacity:.45; }
+      .ico { width:40px; height:40px; justify-content:center; padding:0; font-size:20px; }
 
-      .gem { position: absolute; transform: translate(-50%,-50%); width: 30px; height: 30px; pointer-events: none;
-        background: radial-gradient(closest-side, #bff6ff, #49d6ff 60%, rgba(73,214,255,0) 72%);
-        box-shadow: 0 0 16px 6px rgba(90,220,255,.7); border-radius: 50%; animation: bobgem 1.8s ease-in-out infinite; }
-      @keyframes bobgem { 0%,100%{ transform: translate(-50%,-50%) translateY(0);} 50%{ transform: translate(-50%,-50%) translateY(-8px);} }
-      .spark { position: absolute; width: 9px; height: 9px; border-radius: 50%; background: #fff; pointer-events: none; z-index: 40; }
+      #joy { position:absolute; z-index:25; left:24px; bottom:24px; width:124px; height:124px; border-radius:50%; background:rgba(255,255,255,.1); -webkit-backdrop-filter:blur(16px); backdrop-filter:blur(16px); border:1px solid rgba(255,255,255,.3); touch-action:none; }
+      #knob { position:absolute; left:50%; top:50%; width:54px; height:54px; border-radius:50%; transform:translate(-50%,-50%); background:rgba(255,255,255,.55); border:1px solid rgba(255,255,255,.7); }
+      #hint { position:absolute; z-index:20; left:50%; bottom:16px; transform:translateX(-50%); color:#fff; font-size:12px; opacity:.85; padding:8px 16px; pointer-events:none; }
 
-      .glow { position: absolute; transform: translate(-50%,-50%); border-radius: 50%; pointer-events: none; mix-blend-mode: screen;
-        background: radial-gradient(closest-side, rgba(255,180,70,.9), rgba(255,140,40,0) 70%); opacity: .45; transition: opacity 1s ease; animation: flick 2.2s ease-in-out infinite; }
-      body.night .glow { opacity: .95; }
-      @keyframes flick { 0%,100%{ transform: translate(-50%,-50%) scale(1);} 50%{ transform: translate(-50%,-50%) scale(1.14);} }
-
-      /* HUD */
-      .hud { position: absolute; z-index: 20; }
-      .glass { background: rgba(255,255,255,0.15); -webkit-backdrop-filter: blur(20px) saturate(160%); backdrop-filter: blur(20px) saturate(160%);
-        border: 1px solid rgba(255,255,255,.38); box-shadow: 0 8px 30px rgba(0,0,0,.28); color: #fff; border-radius: 999px; }
-      #quest { top: 16px; left: 50%; transform: translateX(-50%); padding: 10px 20px; display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; }
-      #quest .gemico { width: 16px; height: 16px; border-radius: 50%; background: radial-gradient(closest-side,#bff6ff,#49d6ff); box-shadow: 0 0 10px #49d6ff; }
-      #topRight { top: 16px; right: 16px; display: flex; gap: 10px; }
-      .btn { width: 48px; height: 48px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer;
-        border: 1px solid rgba(255,255,255,.38); transition: transform .15s, background .2s; }
-      .btn:active { transform: scale(.9); } .btn:hover { background: rgba(255,255,255,.24); }
-
-      /* Joystick */
-      #joy { position: absolute; z-index: 25; left: 26px; bottom: 26px; width: 130px; height: 130px; border-radius: 50%;
-        background: rgba(255,255,255,.1); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,.3);
-        touch-action: none; }
-      #knob { position: absolute; left: 50%; top: 50%; width: 56px; height: 56px; border-radius: 50%; transform: translate(-50%,-50%);
-        background: rgba(255,255,255,.55); border: 1px solid rgba(255,255,255,.7); box-shadow: 0 6px 16px rgba(0,0,0,.3); }
-      #hint { position: absolute; z-index: 20; left: 50%; bottom: 18px; transform: translateX(-50%); color: #fff; font-size: 12px; opacity: .8;
-        padding: 8px 16px; pointer-events: none; }
-
-      .overlay { position: absolute; inset: 0; z-index: 50; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; text-align: center; padding: 24px;
-        background: radial-gradient(120% 100% at 50% 30%, #1a2238, #0a0d16); color: #fff; transition: opacity .6s ease; }
-      .overlay h1 { font-size: clamp(32px,7vw,64px); font-weight: 800; }
-      .overlay p { opacity: .85; max-width: 32ch; line-height: 1.5; }
-      .play { margin-top: 6px; padding: 14px 34px; font-size: 15px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; color: #14233a; background: #ffd76b; border: none; border-radius: 999px; box-shadow: 0 10px 30px rgba(255,180,70,.4); }
-      .play:active { transform: scale(.95); }
-      .bar { width: 220px; height: 8px; border-radius: 999px; background: rgba(255,255,255,.2); overflow: hidden; }
-      .bar > div { height: 100%; width: 0%; background: #ffd76b; transition: width .2s; }
-      .hidden { opacity: 0; pointer-events: none; } .gone { display: none; }
-
-      @media (max-width: 640px) {
-        #quest { font-size: 13px; padding: 9px 14px; }
-        #hint { display: none; }
-        .btn { width: 44px; height: 44px; }
-      }
-      @media (hover: hover) and (pointer: fine) { #joy { display: none; } } /* hide joystick on desktop (use WASD/click) */
+      .overlay { position:absolute; inset:0; z-index:50; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; text-align:center; padding:24px; background:radial-gradient(120% 100% at 50% 30%,#243a1e,#0c1208); color:#fff; transition:opacity .6s; }
+      .overlay h1 { font-size:clamp(34px,8vw,68px); font-weight:900; }
+      .overlay p { opacity:.9; max-width:34ch; line-height:1.5; }
+      .play { margin-top:6px; padding:15px 36px; font-size:16px; font-weight:800; text-transform:uppercase; letter-spacing:1px; cursor:pointer; color:#1c2b14; background:#ffd76b; border:none; border-radius:999px; box-shadow:0 10px 30px rgba(255,180,70,.4); }
+      .bar { width:220px; height:8px; border-radius:999px; background:rgba(255,255,255,.2); overflow:hidden; } .bar>div { height:100%; width:0%; background:#ffd76b; transition:width .2s; }
+      .hidden { opacity:0; pointer-events:none; } .gone { display:none; }
+      @media (max-width:640px){ .chip span.t{display:none;} .btn span.t{display:none;} #hint{display:none;} }
+      @media (hover:hover) and (pointer:fine){ #joy{display:none;} }
     </style>
   </head>
   <body>
     <div id="stage">
-      <video id="dayVideo" class="bg" autoplay muted loop playsinline
-        poster="https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/hf_20260617_153416_f3c24ce5-21e3-4d27-9805-260af745c23e.png"
-        src="https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/hf_20260617_153516_c3aa1dda-9b40-479c-96d5-aa29574e6c33.mp4"></video>
-      <img id="nightImg" class="bg" src="https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/hf_20260617_170558_28def577-4e53-4a25-affb-be2f67ee9fc4.png" alt="" />
-      <div id="nightVeil"></div>
+      <img id="bg" src="https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/hf_20260618_124843_fc7aea30-7633-4f5b-928a-499239aa1c2b.png" alt="" />
       <div id="world"></div>
 
-      <div id="quest" class="hud glass"><span class="gemico"></span><span id="qtext">Find 5 Glimmer-Gems</span></div>
-      <div id="topRight" class="hud">
-        <div id="soundBtn" class="glass btn" title="Sound">🔈</div>
-        <div id="dayNightBtn" class="glass btn" title="Day / Night">🌙</div>
+      <div id="money" class="hud glass">💰 <span id="cash">0</span></div>
+      <div id="stocks" class="hud">
+        <div class="chip glass">🥚 <span id="sEgg">0</span></div>
+        <div class="chip glass">🥛 <span id="sMilk">0</span></div>
+        <div class="chip glass">🌽 <span id="sMaize">0</span></div>
       </div>
-      <div id="joy" class="hud"><div id="knob"></div></div>
-      <div id="hint" class="glass">Move with W A S D / Arrows · or click the ground</div>
+      <div id="right" class="hud">
+        <div id="soundBtn" class="btn glass ico" title="Sound">🔈</div>
+        <div id="buyHen" class="btn glass">🐔 <span class="t">Hen</span> $20</div>
+        <div id="buyCow" class="btn glass">🐄 <span class="t">Cow</span> $40</div>
+        <div id="buyPlot" class="btn glass">🌽 <span class="t">Plot</span> $15</div>
+      </div>
 
-      <div id="loading" class="overlay">
-        <h1>Glimmer Glade</h1>
-        <div class="bar"><div id="loadbar"></div></div>
-        <p>Carving the wooden toys to life…</p>
-      </div>
+      <div id="joy" class="hud"><div id="knob"></div></div>
+      <div id="hint" class="glass">Walk Pip with W A S D / Arrows or click · gather 🥚🥛🌽 · tap a customer to sell</div>
+
+      <div id="loading" class="overlay"><h1>Glimmer Farm</h1><div class="bar"><div id="loadbar"></div></div><p>Opening the farm gates…</p></div>
       <div id="intro" class="overlay hidden gone">
-        <h1>Glimmer Glade</h1>
-        <p>Help <b>Pip</b> explore the glade and gather the lost <b>Glimmer-Gems</b>. Ember the fox follows you, Hoot and Glow fly above. Walk around, scoop up the gems, then bring them back to old Bramble by the cottage!</p>
-        <button id="playBtn" class="play">Start the Adventure</button>
+        <h1>Glimmer Farm</h1>
+        <p>Help <b>Pip</b> and <b>Pa</b> run the farm! Gather <b>🥚 eggs</b>, <b>🥛 milk</b> and <b>🌽 maize</b>, then <b>tap the customers</b> to sell. Earn coins, buy more hens, cows and plots — and grow the richest farm in the glade! 🤑</p>
+        <button id="playBtn" class="play">Open the Farm</button>
       </div>
     </div>
 
     <script>
-      const A = "https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/";
-      const SRC = {
-        pip_idle: A+"hf_20260617_170549_e9125265-f1b1-410b-a35c-004462fd5ebe.png",
-        pip_walk: A+"hf_20260618_123551_f387c235-b06a-4e22-a17f-2b6f67814b30.png",
+      const A="https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/";
+      const SRC={
+        pip_idle:A+"hf_20260617_170549_e9125265-f1b1-410b-a35c-004462fd5ebe.png",
+        pip_wl:A+"hf_20260618_123550_0654b9d0-117f-4939-9320-3d3d1febc6ae.jpeg",
+        pip_wr:A+"hf_20260618_123551_f387c235-b06a-4e22-a17f-2b6f67814b30.png",
         pip_cheer:A+"hf_20260618_123556_21cff101-2b1c-4a77-bb1d-3f2f488db871.jpeg",
-        fox_idle: A+"hf_20260617_170550_7b9094a8-a9b8-4783-a66e-dc961d3002c3.png",
-        fox_run1: A+"hf_20260618_123559_2de355a9-5c14-42ce-8e7d-409bce65fc69.png",
-        fox_run2: A+"hf_20260618_123600_492825a1-2dd8-4431-910a-3b026a9d2213.png",
-        owl_up:   A+"hf_20260617_170551_4a037511-bbc6-4a99-8dd6-5e5e3067d37c.png",
-        owl_down: A+"hf_20260618_123601_df2c5330-d973-4d21-8b3b-b2b74ecb8934.png",
-        dragon_up:A+"hf_20260617_170553_c7212707-d534-4935-b1c4-cb21decd6e9e.png",
-        dragon_dn:A+"hf_20260618_123603_1355eb2c-6914-4930-a158-b3c791f57413.png",
-        bramble:  A+"hf_20260617_170555_3eed1b99-0870-434b-9958-803f6ed1c14f.png",
+        pa:A+"hf_20260617_170555_3eed1b99-0870-434b-9958-803f6ed1c14f.png",
+        hen1:A+"hf_20260618_124850_3a3fc369-b6ec-4905-b009-99467afc27de.png",
+        hen2:A+"hf_20260618_124852_463f0f3a-062e-4d88-8099-12395508988c.png",
+        cow:A+"hf_20260618_124856_5c60ba14-4afc-45a6-ad49-0d421d21b97f.png",
+        cust:A+"hf_20260618_124859_d6aea153-3a40-4929-b915-56b49e55d50d.png",
+        car:A+"hf_20260618_124901_fe0cfec5-53c1-4fc4-b7de-c11e76cb8847.png",
       };
+      const world=document.getElementById("world");
+      const SW=()=>world.clientWidth, SH=()=>world.clientHeight;
+      const clamp=(v,a,b)=>Math.min(b,Math.max(a,v)), rand=(a,b)=>a+Math.random()*(b-a), chance=p=>Math.random()<p;
 
-      const world = document.getElementById("world");
-      const SW = () => world.clientWidth, SH = () => world.clientHeight;
-      const clamp = (v,a,b)=>Math.min(b,Math.max(a,v));
-      const rand = (a,b)=>a+Math.random()*(b-a);
+      /* white-key */
+      function loadImg(s){return new Promise((res,rej)=>{const i=new Image();i.crossOrigin="anonymous";i.onload=()=>res(i);i.onerror=()=>rej(s);i.src=s;});}
+      function keyOut(img){const w=img.naturalWidth,h=img.naturalHeight,cv=document.createElement("canvas");cv.width=w;cv.height=h;
+        const c=cv.getContext("2d",{willReadFrequently:true});c.drawImage(img,0,0);let id;try{id=c.getImageData(0,0,w,h);}catch(e){return img.src;}
+        const p=id.data,vis=new Uint8Array(w*h),T=232,st=[];const bg=i=>p[i*4]>T&&p[i*4+1]>T&&p[i*4+2]>T;
+        const sd=(x,y)=>{const i=y*w+x;if(!vis[i]&&bg(i)){vis[i]=1;st.push(i);}};
+        for(let x=0;x<w;x++){sd(x,0);sd(x,h-1);}for(let y=0;y<h;y++){sd(0,y);sd(w-1,y);}
+        while(st.length){const i=st.pop();p[i*4+3]=0;const x=i%w,y=(i/w)|0;if(x+1<w)sd(x+1,y);if(x-1>=0)sd(x-1,y);if(y+1<h)sd(x,y+1);if(y-1>=0)sd(x,y-1);}
+        for(let y=1;y<h-1;y++)for(let x=1;x<w-1;x++){const i=y*w+x;if(p[i*4+3]===0)continue;if(p[(i-1)*4+3]===0||p[(i+1)*4+3]===0||p[(i-w)*4+3]===0||p[(i+w)*4+3]===0){const l=(p[i*4]+p[i*4+1]+p[i*4+2])/3;if(l>214)p[i*4+3]=Math.max(0,255-(l-214)*4);}}
+        c.putImageData(id,0,0);try{return cv.toDataURL("image/png");}catch(e){return img.src;}}
+      const K={};
+      async function prep(on){const e=Object.entries(SRC);let d=0;await Promise.all(e.map(async([k,s])=>{try{K[k]=keyOut(await loadImg(s));}catch(_){K[k]=s;}d++;on(d/e.length);}));}
 
-      /* ---- white-key (flood fill from edges) ---- */
-      function loadImg(src){ return new Promise((res,rej)=>{ const im=new Image(); im.crossOrigin="anonymous"; im.onload=()=>res(im); im.onerror=()=>rej(src); im.src=src; }); }
-      function keyOut(img){
-        const w=img.naturalWidth,h=img.naturalHeight; const cv=document.createElement("canvas"); cv.width=w; cv.height=h;
-        const ctx=cv.getContext("2d",{willReadFrequently:true}); ctx.drawImage(img,0,0);
-        let id; try{ id=ctx.getImageData(0,0,w,h);}catch(e){ return img.src; }
-        const p=id.data, vis=new Uint8Array(w*h), T=232, st=[];
-        const bg=i=>p[i*4]>T&&p[i*4+1]>T&&p[i*4+2]>T;
-        const seed=(x,y)=>{const i=y*w+x; if(!vis[i]&&bg(i)){vis[i]=1; st.push(i);} };
-        for(let x=0;x<w;x++){seed(x,0); seed(x,h-1);} for(let y=0;y<h;y++){seed(0,y); seed(w-1,y);}
-        while(st.length){const i=st.pop(); p[i*4+3]=0; const x=i%w,y=(i/w)|0;
-          if(x+1<w)seed(x+1,y); if(x-1>=0)seed(x-1,y); if(y+1<h)seed(x,y+1); if(y-1>=0)seed(x,y-1);}
-        for(let y=1;y<h-1;y++)for(let x=1;x<w-1;x++){const i=y*w+x; if(p[i*4+3]===0)continue;
-          if(p[(i-1)*4+3]===0||p[(i+1)*4+3]===0||p[(i-w)*4+3]===0||p[(i+w)*4+3]===0){
-            const l=(p[i*4]+p[i*4+1]+p[i*4+2])/3; if(l>214) p[i*4+3]=Math.max(0,255-(l-214)*4);}}
-        ctx.putImageData(id,0,0); try{ return cv.toDataURL("image/png"); }catch(e){ return img.src; }
-      }
-      const keyed = {};
-      async function prepAssets(onProg){
-        const entries=Object.entries(SRC); let done=0;
-        await Promise.all(entries.map(async([k,src])=>{
-          try{ const im=await loadImg(src); keyed[k]=keyOut(im);}catch(e){ keyed[k]=src; }
-          done++; onProg(done/entries.length);
-        }));
+      class Char{
+        constructor(keys,opts){this.o=opts;this.x=opts.x;this.y=opts.y;this.face=opts.face||1;this.t=Math.random()*6;this.el=document.createElement("div");this.el.className="char";this.el.style.height=opts.h;this.el.style.aspectRatio="3/4";
+          this.frames={};keys.forEach((k,i)=>{const im=document.createElement("img");im.className="frame"+(i===0?" on":"");im.src=K[k];this.el.appendChild(im);this.frames[k]=im;this.cur=i===0?im:this.cur;});
+          if(opts.onTap)this.el.addEventListener("click",e=>{e.stopPropagation();opts.onTap(this);});
+          world.appendChild(this.el);this.sh=document.createElement("div");this.sh.className="shadow";world.appendChild(this.sh);}
+        show(k){const f=this.frames[k];if(f&&f!==this.cur){this.cur.classList.remove("on");this.cur=f;f.classList.add("on");}}
+        place(bob=0,sq=1){this.el.style.left=this.x+"px";this.el.style.top=(this.y+bob)+"px";this.el.style.transform=`translate(-50%,-100%) scaleX(${this.face}) scaleY(${sq})`;
+          this.sh.style.left=this.x+"px";this.sh.style.top=this.y+"px";this.sh.style.width=this.el.clientWidth*0.5+"px";}
+        say(t){if(!this.b){this.b=document.createElement("div");this.b.className="bubble";world.appendChild(this.b);}this.b.textContent=t;this.b.style.left=this.x+"px";this.b.style.top=(this.y-this.el.clientHeight)+"px";this.b.classList.add("show");clearTimeout(this._t);this._t=setTimeout(()=>this.b.classList.remove("show"),1400);}
+        remove(){this.el.remove();this.sh.remove();this.b&&this.b.remove();}
       }
 
-      /* ---- Character (frame animated) ---- */
-      class Char {
-        constructor(frameKeys, opts){
-          this.o=opts; this.x=opts.x; this.y=opts.y; this.face=1; this.t=0; this.fi=0; this.state="idle";
-          this.el=document.createElement("div"); this.el.className="char"; this.el.style.height=opts.h;
-          this.el.style.aspectRatio="3/4";
-          this.frames={};
-          frameKeys.forEach((k,idx)=>{ const im=document.createElement("img"); im.className="frame"+(idx===0?" on":""); im.src=keyed[k]; this.el.appendChild(im); this.frames[k]=im; this.cur=this.frames[k]; });
-          this.el.addEventListener("click",(e)=>{ e.stopPropagation(); opts.onTap&&opts.onTap(this); });
-          world.appendChild(this.el);
-          this.shadow=document.createElement("div"); this.shadow.className="shadow"; world.appendChild(this.shadow);
-        }
-        show(k){ if(this.frames[k]&&this.cur!==this.frames[k]){ this.cur.classList.remove("on"); this.cur=this.frames[k]; this.cur.classList.add("on"); } }
-        say(text){
-          if(!this.b){ this.b=document.createElement("div"); this.b.className="bubble"; world.appendChild(this.b); }
-          this.b.textContent=text; this.b.style.left=this.x+"px"; this.b.style.top=(this.y-this.el.clientHeight)+"px";
-          this.b.classList.add("show"); clearTimeout(this._bt); this._bt=setTimeout(()=>this.b.classList.remove("show"),1500);
-        }
-        place(bobY=0, squash=1){
-          this.el.style.left=this.x+"px"; this.el.style.top=(this.y+bobY)+"px";
-          this.el.style.transform=`translate(-50%,-100%) scaleX(${this.face}) scaleY(${squash})`;
-          const sw=this.el.clientWidth*0.55;
-          this.shadow.style.left=this.x+"px"; this.shadow.style.top=this.y+"px"; this.shadow.style.width=sw+"px";
-        }
-      }
-
-      /* ---- Game ---- */
-      const game = {
-        gems:[], collected:0, need:5, audioOn:false, ac:null, last:0, target:null,
-        keys:{}, joy:{x:0,y:0,active:false},
-        sound(type){ if(!this.audioOn)return; try{ if(!this.ac)this.ac=new(window.AudioContext||window.webkitAudioContext)();
-          const t=this.ac.currentTime,o=this.ac.createOscillator(),g=this.ac.createGain(); o.connect(g);g.connect(this.ac.destination);
-          if(type==="gem"){o.frequency.setValueAtTime(660,t); o.frequency.exponentialRampToValueAtTime(1320,t+.15); g.gain.setValueAtTime(.2,t);}
-          else if(type==="win"){o.frequency.setValueAtTime(523,t);o.frequency.setValueAtTime(784,t+.12);o.frequency.setValueAtTime(1046,t+.24);g.gain.setValueAtTime(.22,t);}
-          else {o.frequency.value=400;g.gain.setValueAtTime(.12,t);}
-          g.gain.exponentialRampToValueAtTime(.0001,t+.4); o.start(t);o.stop(t+.42);}catch(e){} },
-        spawnGems(){
-          const spots=[[.30,.55],[.46,.40],[.62,.52],[.78,.62],[.70,.30],[.40,.68],[.86,.42]];
-          this.gems.forEach(g=>g.el.remove()); this.gems=[];
-          const pick=spots.sort(()=>Math.random()-.5).slice(0,this.need);
-          pick.forEach(([fx,fy])=>{ const el=document.createElement("div"); el.className="gem"; world.appendChild(el);
-            this.gems.push({el,x:fx*SW(),y:fy*SH(),fx,fy}); });
-          this.layoutGems();
-        },
-        layoutGems(){ this.gems.forEach(g=>{ g.x=g.fx*SW(); g.y=g.fy*SH(); g.el.style.left=g.x+"px"; g.el.style.top=g.y+"px"; }); },
-        burst(px,py,color){ for(let k=0;k<10;k++){ const s=document.createElement("div"); s.className="spark"; s.style.background=color||"#fff";
-          s.style.left=px+"px"; s.style.top=py+"px"; world.appendChild(s); const a=Math.random()*6.28,d=24+Math.random()*38;
-          s.animate([{transform:"translate(0,0)",opacity:1},{transform:`translate(${Math.cos(a)*d}px,${Math.sin(a)*d}px)`,opacity:0}],{duration:600,easing:"ease-out"}).onfinish=()=>s.remove(); } },
-        toggleNight(){ document.body.classList.toggle("night"); const on=document.body.classList.contains("night");
-          document.getElementById("dayNightBtn").textContent=on?"☀️":"🌙"; },
+      const G={cash:0,egg:0,milk:0,maize:0,audioOn:false,ac:null,last:0,keys:{},joy:{x:0,y:0,active:false},target:null,
+        chickens:[],cows:[],plots:[],drops:[],customers:[],
+        PRICE:{egg:3,milk:5,maize:4},
+        sound(f){if(!this.audioOn)return;try{if(!this.ac)this.ac=new(window.AudioContext||window.webkitAudioContext)();const t=this.ac.currentTime,o=this.ac.createOscillator(),g=this.ac.createGain();o.connect(g);g.connect(this.ac.destination);const m={coin:[660,1320],pick:[520,880],win:[523,1046],err:[200,160]}[f]||[440,440];o.frequency.setValueAtTime(m[0],t);o.frequency.exponentialRampToValueAtTime(m[1],t+.14);g.gain.setValueAtTime(.18,t);g.gain.exponentialRampToValueAtTime(.0001,t+.34);o.start(t);o.stop(t+.36);}catch(e){}},
+        money(d){this.cash+=d;document.getElementById("cash").textContent=Math.floor(this.cash);refreshShop();},
+        setStock(k,v){this[k]=v;document.getElementById({egg:"sEgg",milk:"sMilk",maize:"sMaize"}[k]).textContent=v;},
+        pop(x,y,txt){const e=document.createElement("div");e.className="pop";e.textContent=txt;e.style.left=x+"px";e.style.top=y+"px";world.appendChild(e);e.animate([{transform:"translate(-50%,-50%)",opacity:1},{transform:"translate(-50%,-160%)",opacity:0}],{duration:800,easing:"ease-out"}).onfinish=()=>e.remove();},
+        burst(x,y,c){for(let k=0;k<8;k++){const s=document.createElement("div");s.className="pop";s.textContent="✨";s.style.left=x+"px";s.style.top=y+"px";world.appendChild(s);const a=Math.random()*6.28,d=20+Math.random()*30;s.animate([{transform:"translate(-50%,-50%)",opacity:1},{transform:`translate(${Math.cos(a)*d-50}%,${Math.sin(a)*d-50}%)`,opacity:0}],{duration:600}).onfinish=()=>s.remove();}},
       };
-      window.game=game;
-      let pip,fox,owl,dragon,bramble, fireGlow, lampGlow;
+      window.G=G;
+      let pip,pa;
+      const STALL={x:.56,y:.72};
+
+      /* drops (eggs/milk on the ground, walk over to collect) */
+      function addDrop(kind,fx,fy){const el=document.createElement("div");el.className="item";el.textContent=kind==="egg"?"🥚":"🥛";world.appendChild(el);
+        const d={el,kind,x:fx*SW(),y:fy*SH(),fx,fy};el.style.left=d.x+"px";el.style.top=d.y+"px";G.drops.push(d);}
+
+      /* maize plot */
+      function addPlot(fx,fy){const el=document.createElement("div");el.className="plot";world.appendChild(el);
+        const pl={el,fx,fy,grow:0,ready:false};el.addEventListener("click",e=>{e.stopPropagation();if(pl.ready)harvest(pl);});G.plots.push(pl);layoutPlots();}
+      function layoutPlots(){G.plots.forEach(p=>{p.el.style.left=p.fx*SW()+"px";p.el.style.top=p.fy*SH()+"px";});}
+      function harvest(pl){pl.ready=false;pl.grow=0;pl.el.classList.remove("ripe");pl.el.textContent="🌱";G.setStock("maize",G.maize+1);G.pop(pl.fx*SW(),pl.fy*SH(),"+🌽");G.sound("pick");}
+
+      /* customers */
+      function spawnCustomer(){
+        const wants=["egg","milk","maize"][Math.floor(Math.random()*3)];
+        const byCar=chance(.5);
+        const waitX=rand(.50,.68), waitY=rand(.74,.84);
+        const c=new Char(["cust"],{x:1.12*SW(),y:.84*SH(),h:"clamp(95px,19vh,210px)",face:-1,onTap:cc=>serve(cc)});
+        c.wants=wants; c.state="coming"; c.wx=waitX; c.wy=waitY; c.life=0; c.byCar=byCar; c.place(0);
+        if(byCar){ c.el.style.display="none"; c.car=document.createElement("img"); c.car.src=K.car; c.car.className="char"; c.car.style.height="clamp(80px,15vh,150px)"; c.car.style.aspectRatio="3/4"; c.car.style.position="absolute"; world.appendChild(c.car); c.carX=1.12; c.carParkX=rand(.80,.90); positionCar(c,SW(),SH()); }
+        else { c.say(({egg:"🥚?",milk:"🥛?",maize:"🌽?"})[wants]); }
+        G.customers.push(c);
+      }
+      function serve(c){
+        if(c.state!=="waiting")return;
+        if(G[c.wants]>0){ G.setStock(c.wants,G[c.wants]-1); const pr=G.PRICE[c.wants]; G.money(pr);
+          G.pop(c.x,c.y-c.el.clientHeight*0.6,"+$"+pr); G.burst(c.x,c.y-c.el.clientHeight*0.5); c.say("😋"); G.sound("coin");
+          c.state="leaving"; }
+        else { c.say("no "+({egg:"🥚",milk:"🥛",maize:"🌽"})[c.wants]); G.sound("err"); }
+      }
 
       async function boot(){
-        await prepAssets(p=>{ document.getElementById("loadbar").style.width=(p*100)+"%"; });
-
-        bramble=new Char(["bramble"],{x:.60*SW(),y:.58*SH(),h:"clamp(120px,24vh,260px)",onTap:talkBramble});
-        pip=new Char(["pip_idle","pip_walk","pip_cheer"],{x:.5*SW(),y:.82*SH(),h:"clamp(110px,22vh,240px)",onTap:c=>{c.say("Let's go!");}});
-        fox=new Char(["fox_idle","fox_run1","fox_run2"],{x:.42*SW(),y:.86*SH(),h:"clamp(70px,14vh,150px)",onTap:c=>{c.say("Yip!");game.sound("tap");}});
-        owl=new Char(["owl_up","owl_down"],{x:.8*SW(),y:.3*SH(),h:"clamp(64px,12vh,130px)",onTap:c=>{c.say("Hoo! Gems sparkle blue.");game.sound("tap");}});
-        dragon=new Char(["dragon_up","dragon_dn"],{x:.24*SW(),y:.32*SH(),h:"clamp(64px,12vh,130px)",onTap:c=>{c.say("Rawr!");game.sound("tap");}});
-        owl.flyT=Math.random()*6.28; dragon.flyT=Math.random()*6.28;
-        owl.homeX=.8; owl.homeY=.28; dragon.homeX=.24; dragon.homeY=.32;
-
-        fireGlow=document.createElement("div"); fireGlow.className="glow"; world.appendChild(fireGlow);
-        lampGlow=document.createElement("div"); lampGlow.className="glow"; world.appendChild(lampGlow);
-
-        game.spawnGems();
-
-        document.getElementById("loading").classList.add("hidden");
-        setTimeout(()=>document.getElementById("loading").classList.add("gone"),600);
-        const intro=document.getElementById("intro"); intro.classList.remove("gone"); requestAnimationFrame(()=>intro.classList.remove("hidden"));
+        await prep(p=>document.getElementById("loadbar").style.width=(p*100)+"%");
+        pa=new Char(["pa"],{x:STALL.x*SW()-40,y:(STALL.y+0.02)*SH(),h:"clamp(110px,22vh,240px)",onTap:()=>pa.say("Welcome!")});
+        pip=new Char(["pip_idle","pip_wl","pip_wr","pip_cheer"],{x:.45*SW(),y:.85*SH(),h:"clamp(105px,21vh,230px)",onTap:()=>pip.say("Let's farm!")});
+        addPlot(.12,.58); addPlot(.19,.70); addPlot(.10,.78);
+        G.chickens.push(makeAnimal(["hen1","hen2"],.40,.44,"clamp(56px,11vh,120px)","egg",7));
+        G.chickens.push(makeAnimal(["hen1","hen2"],.47,.50,"clamp(56px,11vh,120px)","egg",7.5));
+        G.cows.push(makeAnimal(["cow"],.64,.42,"clamp(80px,16vh,170px)","milk",11));
+        G.plots.forEach(p=>{p.el.textContent="🌱";});
+        document.getElementById("loading").classList.add("hidden");setTimeout(()=>document.getElementById("loading").classList.add("gone"),600);
+        const i=document.getElementById("intro");i.classList.remove("gone");requestAnimationFrame(()=>i.classList.remove("hidden"));
+        refreshShop();
         requestAnimationFrame(loop);
       }
-
-      function talkBramble(){
-        if(game.collected>=game.need){
-          game.say && 0; bramble.say("You found them all! Hooray! 🎉");
-          pip.state="cheer"; pip.cheerT=1.8; game.sound("win"); game.burst(pip.x,pip.y-pip.el.clientHeight*0.5,"#ffd76b");
-          setTimeout(()=>{ game.collected=0; updateQuest(); game.spawnGems(); bramble.say("Can you find 5 more?"); },2000);
-        } else { bramble.say(`Bring me ${game.need-game.collected} more gems!`); }
+      function makeAnimal(frames,fx,fy,h,produces,every){
+        const a=new Char(frames,{x:fx*SW(),y:fy*SH(),h,onTap:c=>c.say(produces==="egg"?"Cluck!":"Moo!")});
+        a.fx=fx;a.fy=fy;a.produces=produces;a.every=every;a.timer=rand(2,every);a.frames2=frames.length>1;return a;
       }
-      function updateQuest(){ document.getElementById("qtext").textContent = game.collected>=game.need ? "Take them to Bramble!" : `Gems  ${game.collected} / ${game.need}`; }
 
-      /* ---- input ---- */
-      addEventListener("keydown",e=>{game.keys[e.key.toLowerCase()]=true;});
-      addEventListener("keyup",e=>{game.keys[e.key.toLowerCase()]=false;});
-      world.addEventListener("pointerdown",e=>{ if(e.target.closest(".char"))return; game.target={x:e.clientX,y:e.clientY}; });
-      // joystick
-      const joy=document.getElementById("joy"), knob=document.getElementById("knob");
-      let joyId=null;
-      joy.addEventListener("pointerdown",e=>{ joyId=e.pointerId; game.joy.active=true; joy.setPointerCapture(e.pointerId); moveKnob(e); });
-      joy.addEventListener("pointermove",e=>{ if(joyId===e.pointerId) moveKnob(e); });
-      const endJoy=e=>{ if(joyId===e.pointerId){ joyId=null; game.joy.active=false; game.joy.x=0; game.joy.y=0; knob.style.transform="translate(-50%,-50%)"; } };
-      joy.addEventListener("pointerup",endJoy); joy.addEventListener("pointercancel",endJoy);
-      function moveKnob(e){ const r=joy.getBoundingClientRect(); let dx=e.clientX-(r.left+r.width/2), dy=e.clientY-(r.top+r.height/2);
-        const max=r.width/2, d=Math.hypot(dx,dy); if(d>max){dx=dx/d*max; dy=dy/d*max;} game.joy.x=dx/max; game.joy.y=dy/max;
-        knob.style.transform=`translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`; }
+      /* shop */
+      function refreshShop(){ const c=G.cash;
+        document.getElementById("buyHen").classList.toggle("dim",c<20);
+        document.getElementById("buyCow").classList.toggle("dim",c<40);
+        document.getElementById("buyPlot").classList.toggle("dim",c<15);
+      }
+      document.getElementById("buyHen").onclick=()=>{if(G.cash>=20){G.money(-20);const f=rand(.36,.52),g=rand(.40,.54);G.chickens.push(makeAnimal(["hen1","hen2"],f,g,"clamp(56px,11vh,120px)","egg",rand(6.5,8)));G.sound("pick");}};
+      document.getElementById("buyCow").onclick=()=>{if(G.cash>=40){G.money(-40);const f=rand(.60,.74),g=rand(.40,.52);G.cows.push(makeAnimal(["cow"],f,g,"clamp(80px,16vh,170px)","milk",rand(10,12)));G.sound("pick");}};
+      document.getElementById("buyPlot").onclick=()=>{if(G.cash>=15){G.money(-15);addPlot(rand(.08,.24),rand(.56,.80));G.plots[G.plots.length-1].el.textContent="🌱";G.sound("pick");}};
 
-      /* ---- main loop ---- */
+      /* input */
+      addEventListener("keydown",e=>G.keys[e.key.toLowerCase()]=true);
+      addEventListener("keyup",e=>G.keys[e.key.toLowerCase()]=false);
+      world.addEventListener("pointerdown",e=>{if(e.target.closest(".char")||e.target.closest(".plot"))return;G.target={x:e.clientX,y:e.clientY};});
+      const joy=document.getElementById("joy"),knob=document.getElementById("knob");let jid=null;
+      joy.addEventListener("pointerdown",e=>{jid=e.pointerId;G.joy.active=true;joy.setPointerCapture(e.pointerId);jm(e);});
+      joy.addEventListener("pointermove",e=>{if(jid===e.pointerId)jm(e);});
+      const je=e=>{if(jid===e.pointerId){jid=null;G.joy.active=false;G.joy.x=G.joy.y=0;knob.style.transform="translate(-50%,-50%)";}};
+      joy.addEventListener("pointerup",je);joy.addEventListener("pointercancel",je);
+      function jm(e){const r=joy.getBoundingClientRect();let dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2);const mx=r.width/2,d=Math.hypot(dx,dy);if(d>mx){dx=dx/d*mx;dy=dy/d*mx;}G.joy.x=dx/mx;G.joy.y=dy/mx;knob.style.transform=`translate(calc(-50% + ${dx}px),calc(-50% + ${dy}px))`;}
+
       function loop(ts){
-        const dt=Math.min(.05,(ts-(game.last||ts))/1000); game.last=ts;
-        const W=SW(),H=SH();
-
-        // input vector
+        const dt=Math.min(.05,(ts-(G.last||ts))/1000);G.last=ts;const W=SW(),H=SH();
+        // pip movement
         let vx=0,vy=0;
-        if(game.keys["w"]||game.keys["arrowup"])vy-=1;
-        if(game.keys["s"]||game.keys["arrowdown"])vy+=1;
-        if(game.keys["a"]||game.keys["arrowleft"])vx-=1;
-        if(game.keys["d"]||game.keys["arrowright"])vx+=1;
-        if(game.joy.active){ vx+=game.joy.x; vy+=game.joy.y; }
-        let usingDir = (vx||vy);
-        if(usingDir) game.target=null;
-        if(game.target){ const dx=game.target.x-pip.x, dy=game.target.y-pip.y, d=Math.hypot(dx,dy);
-          if(d>6){ vx=dx/d; vy=dy/d; } else game.target=null; }
-        const vlen=Math.hypot(vx,vy); if(vlen>1){vx/=vlen;vy/=vlen;}
-        const moving = (vx||vy);
+        if(G.keys["w"]||G.keys["arrowup"])vy--; if(G.keys["s"]||G.keys["arrowdown"])vy++;
+        if(G.keys["a"]||G.keys["arrowleft"])vx--; if(G.keys["d"]||G.keys["arrowright"])vx++;
+        if(G.joy.active){vx+=G.joy.x;vy+=G.joy.y;}
+        if(vx||vy)G.target=null;
+        if(G.target){const dx=G.target.x-pip.x,dy=G.target.y-pip.y,d=Math.hypot(dx,dy);if(d>6){vx=dx/d;vy=dy/d;}else G.target=null;}
+        const vl=Math.hypot(vx,vy);if(vl>1){vx/=vl;vy/=vl;}
+        const SP=Math.min(W,H)*0.42;
+        pip.x=clamp(pip.x+vx*SP*dt,W*.05,W*.95);pip.y=clamp(pip.y+vy*SP*dt,H*.34,H*.93);
+        if(vx)pip.face=vx<0?-1:1;
+        if(pip.cheer>0){pip.cheer-=dt;pip.show("pip_cheer");pip.place(Math.sin(ts/110)*4);}
+        else if(vx||vy){pip.t+=dt;const s=Math.sin(pip.t*11);pip.show(s>0?"pip_wr":"pip_wl");pip.place(-Math.abs(s)*5,1+Math.sin(pip.t*22)*.03);}
+        else {pip.show("pip_idle");pip.place(0);}
 
-        // move pip
-        const SP=Math.min(W,H)*0.45; // px/sec
-        pip.x=clamp(pip.x+vx*SP*dt, W*0.06, W*0.94);
-        pip.y=clamp(pip.y+vy*SP*dt, H*0.30, H*0.95);
-        if(vx) pip.face = vx<0?-1:1;
+        // pa idle wave
+        pa.t+=dt;pa.el.style.left=pa.x+"px";pa.el.style.top=pa.y+"px";pa.el.style.transform=`translate(-50%,-100%) rotate(${Math.sin(pa.t*2)*2.4}deg)`;
+        pa.sh.style.left=pa.x+"px";pa.sh.style.top=pa.y+"px";pa.sh.style.width=pa.el.clientWidth*.5+"px";
 
-        // pip animation
-        if(pip.state==="cheer"){ pip.cheerT-=dt; pip.show("pip_cheer"); pip.place(Math.sin(ts/120)*4); if(pip.cheerT<=0)pip.state="idle"; }
-        else if(moving){ pip.t+=dt; const step=Math.sin(pip.t*12); pip.show(step>0?"pip_walk":"pip_idle"); pip.place(-Math.abs(Math.sin(pip.t*12))*5, 1+Math.sin(pip.t*24)*0.03); }
-        else { pip.show("pip_idle"); pip.place(0); }
+        // animals produce + animate
+        [...G.chickens,...G.cows].forEach(a=>{a.x=a.fx*W;a.y=a.fy*H;a.t+=dt;
+          if(a.frames2){a.show(Math.sin(a.t*4)>0.6?"hen2":"hen1");} a.place(Math.sin(a.t*3)*2);
+          a.timer-=dt; if(a.timer<=0){a.timer=a.every;addDrop(a.produces,a.fx+rand(-.03,.03),a.fy+.05);a.say(a.produces==="egg"?"🥚!":"🥛!");}});
 
-        // fox follows pip
-        const fdx=pip.x-fox.x, fdy=(pip.y+20)-fox.y, fd=Math.hypot(fdx,fdy);
-        const foxMoving=fd>W*0.10;
-        if(foxMoving){ const fs=SP*1.05; fox.x+=fdx/fd*fs*dt; fox.y+=fdy/fd*fs*dt; fox.face=fdx<0?-1:1; fox.t+=dt;
-          fox.show(Math.sin(fox.t*16)>0?"fox_run1":"fox_run2"); fox.place(-Math.abs(Math.sin(fox.t*16))*6); }
-        else { fox.show("fox_idle"); fox.t+=dt; fox.place(Math.sin(fox.t*3)*2); }
+        // grow plots
+        G.plots.forEach(p=>{if(!p.ready){p.grow+=dt;const st=p.grow;p.el.textContent=st<5?"🌱":st<10?"🌿":"🌽";if(st>=12){p.ready=true;p.el.classList.add("ripe");p.el.textContent="🌽";}}});
 
-        // flyers: wander + flap
-        flyer(owl,ts,dt,W,H); flyer(dragon,ts,dt,W,H);
+        // collect drops by walking over
+        for(let i=G.drops.length-1;i>=0;i--){const d=G.drops[i];if(Math.hypot(d.x-pip.x,d.y-(pip.y-10))<Math.min(W,H)*.06){
+          d.el.remove();G.drops.splice(i,1);if(d.kind==="egg")G.setStock("egg",G.egg+1);else G.setStock("milk",G.milk+1);
+          G.pop(d.x,d.y,d.kind==="egg"?"+🥚":"+🥛");G.sound("pick");}}
+        // auto-harvest ripe plot if pip stands on it
+        G.plots.forEach(p=>{if(p.ready&&Math.hypot(p.fx*W-pip.x,p.fy*H-pip.y)<Math.min(W,H)*.06)harvest(p);});
 
-        // bramble idle wave
-        bramble.t+=dt; bramble.el.style.left=bramble.x+"px"; bramble.el.style.top=bramble.y+"px";
-        bramble.el.style.transform=`translate(-50%,-100%) rotate(${Math.sin(bramble.t*2)*2.5}deg)`;
-        bramble.shadow.style.left=bramble.x+"px"; bramble.shadow.style.top=bramble.y+"px"; bramble.shadow.style.width=bramble.el.clientWidth*0.55+"px";
-
-        // glows
-        fireGlow.style.left=.30*W+"px"; fireGlow.style.top=.74*H+"px"; fireGlow.style.width=fireGlow.style.height="15vmin";
-        lampGlow.style.left=.60*W+"px"; lampGlow.style.top=.54*H+"px"; lampGlow.style.width=lampGlow.style.height="8vmin";
-
-        // gem pickup
-        for(let i=game.gems.length-1;i>=0;i--){ const g=game.gems[i]; if(Math.hypot(g.x-pip.x,g.y-(pip.y-10))<Math.min(W,H)*0.07){
-          game.burst(g.x,g.y,"#7fe6ff"); g.el.remove(); game.gems.splice(i,1); game.collected++; updateQuest(); game.sound("gem");
-          pip.say("✨"); if(game.collected>=game.need){ bramble.say("Bring them to me!"); } } }
+        // customers
+        for(let i=G.customers.length-1;i>=0;i--){const c=G.customers[i];c.life+=dt;
+          if(c.byCar&&c.car){ // drive car in / out
+            if(c.state==="coming"){ c.carX+=(c.carParkX-c.carX)*Math.min(1,dt*2.2); positionCar(c,W,H);
+              if(Math.abs(c.carX-c.carParkX)<.01){c.state="walking"; c.el.style.display=""; c.x=c.carParkX*W; c.y=.84*H;} }
+          } else if(c.state==="coming"){ c.state="walking"; }
+          if(c.state==="walking"){ const tx=c.wx*W,ty=c.wy*H,dx=tx-c.x,dy=ty-c.y,d=Math.hypot(dx,dy);
+            if(d>4){c.x+=dx/d*SP*.7*dt;c.y+=dy/d*SP*.7*dt;c.face=dx<0?-1:1;c.place(Math.sin(c.life*10)* -4);}else{c.state="waiting";c.life=0;c.say(({egg:"🥚?",milk:"🥛?",maize:"🌽?"})[c.wants]);} }
+          else if(c.state==="waiting"){ c.place(Math.sin(c.life*3)*2);
+            // auto-serve if pip near
+            if(Math.hypot(c.x-pip.x,c.y-pip.y)<Math.min(W,H)*.10)serve(c);
+            if(c.life>14){c.state="leaving";c.say("😞");} }
+          else if(c.state==="leaving"){ const tx=(c.byCar?c.carParkX:1.12)*W,ty=(c.byCar?.84:.84)*H,dx=tx-c.x,dy=ty-c.y,d=Math.hypot(dx,dy);
+            if(d>6){c.x+=dx/d*SP*.7*dt;c.y+=dy/d*SP*.7*dt;c.face=dx<0?-1:1;c.place(Math.sin(c.life*10)*-4);}
+            else { if(c.byCar){c.el.style.display="none"; c.state="driveoff";} else {c.remove();G.customers.splice(i,1);} } }
+          else if(c.state==="driveoff"){ c.carX+=(1.2-c.carX)*Math.min(1,dt*2.2); positionCar(c,W,H); if(c.carX>1.15){c.car.remove();c.remove();G.customers.splice(i,1);} }
+        }
 
         requestAnimationFrame(loop);
       }
-      function flyer(c,ts,dt,W,H){
-        c.flyT+=dt; const ox=Math.sin(c.flyT*0.6)*0.12, oy=Math.cos(c.flyT*0.9)*0.06;
-        c.x=(c.homeX+ox)*W; c.y=(c.homeY+oy)*H; c.face=Math.cos(c.flyT*0.6)<0?-1:1;
-        const flap=Math.sin(ts/90)>0;
-        if(c===owl) c.show(flap?"owl_up":"owl_down"); else c.show(flap?"dragon_up":"dragon_dn");
-        c.place(Math.sin(ts/240)*6);
-      }
+      function positionCar(c,W,H){c.car.style.left=(c.carX*W)+"px";c.car.style.top=(.86*H)+"px";c.car.style.transform="translate(-50%,-100%) scaleX(-1)";}
 
-      addEventListener("resize",()=>{ game.layoutGems(); });
+      // spawn customers on a timer
+      setInterval(()=>{ if(document.getElementById("intro").classList.contains("gone")&&G.customers.length<5) spawnCustomer(); },4500);
 
-      document.getElementById("dayNightBtn").addEventListener("click",()=>game.toggleNight());
-      document.getElementById("soundBtn").addEventListener("click",e=>{ game.audioOn=!game.audioOn; e.target.textContent=game.audioOn?"🔊":"🔈";
-        if(game.audioOn&&!game.ac){try{game.ac=new(window.AudioContext||window.webkitAudioContext)();}catch(_){}}});
-      document.getElementById("playBtn").addEventListener("click",()=>{ const i=document.getElementById("intro"); i.classList.add("hidden"); setTimeout(()=>i.classList.add("gone"),600);
-        game.audioOn=true; document.getElementById("soundBtn").textContent="🔊"; try{game.ac=new(window.AudioContext||window.webkitAudioContext)();}catch(_){}
-        document.getElementById("dayVideo").play().catch(()=>{}); updateQuest(); bramble.say("Find my 5 Glimmer-Gems!"); });
+      document.getElementById("soundBtn").onclick=e=>{G.audioOn=!G.audioOn;e.target.textContent=G.audioOn?"🔊":"🔈";if(G.audioOn&&!G.ac){try{G.ac=new(window.AudioContext||window.webkitAudioContext)();}catch(_){}}};
+      document.getElementById("playBtn").onclick=()=>{const i=document.getElementById("intro");i.classList.add("hidden");setTimeout(()=>i.classList.add("gone"),600);G.audioOn=true;document.getElementById("soundBtn").textContent="🔊";try{G.ac=new(window.AudioContext||window.webkitAudioContext)();}catch(_){}pa.say("Let's sell, Pip!");};
+      addEventListener("resize",()=>{layoutPlots();G.drops.forEach(d=>{d.x=d.fx*SW();d.y=d.fy*SH();d.el.style.left=d.x+"px";d.el.style.top=d.y+"px";});});
 
       boot();
     </script>
