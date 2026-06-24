@@ -17,6 +17,10 @@ export const POSES = [
 ];
 
 export const IMG = {
+  // Hero
+  heroSky: `${CDN}/hf_20260624_105539_82d30857-d5cf-48c8-919d-13026037c1ac.png`,
+  heroWide: `${CDN}/hf_20260624_105712_eb5f17ac-2c94-45c0-b5a6-701e39e5e88b.png`, // wide leap, bg removed
+
   // About / Building Champions
   aboutMan: `${CDN}/hf_20260624_094159_37102222-216d-40cb-b1a3-49e4cb652a64.png`,
   aboutGirlCourt: `${CDN}/hf_20260624_102030_4836e722-89c6-4f9b-a4da-5a73f5b06133.png`,

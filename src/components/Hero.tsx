@@ -1,39 +1,45 @@
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Nav from "./Nav";
-import { POSES } from "../data/assets";
+import { IMG } from "../data/assets";
 
 /**
- * Fullscreen sky hero (matches the reference): a giant wide "PLAY STRONG."
- * wordmark with the large background-removed tennis player standing in front of
- * it, plus the bottom-left "Since 1998" info card.
+ * Fullscreen sky hero (matches the reference): a photographic clouds background,
+ * a giant wide "PLAY STRONG." wordmark, and the large background-removed tennis
+ * player filling nearly the full width in front of it, plus the bottom-left
+ * "Since 1998" info card.
  */
 export default function Hero() {
   return (
     <section
       id="home"
-      className="sky-gradient relative min-h-screen w-full overflow-hidden"
+      className="relative min-h-screen w-full overflow-hidden bg-[#5ea4e6]"
     >
-      {/* Drifting clouds */}
-      <Cloud className="animate-cloud-slow left-[-6%] top-[16%] h-40 w-[40rem] opacity-80" />
-      <Cloud className="animate-cloud-fast right-[-8%] top-[34%] h-32 w-[34rem] opacity-70" />
-      <Cloud className="animate-cloud-slow left-[8%] bottom-[10%] h-28 w-[30rem] opacity-55" />
+      {/* Photographic clouds background */}
+      <img
+        src={IMG.heroSky}
+        alt=""
+        aria-hidden="true"
+        className="animate-sky-pan absolute inset-0 h-full w-full object-cover"
+      />
+      {/* Soft brightening near the base so the page blends into white */}
+      <div className="absolute inset-x-0 bottom-0 z-[5] h-1/3 bg-gradient-to-b from-transparent to-white/30" />
 
       <Nav />
 
       {/* Giant display headline — sits behind the player */}
       <div className="absolute inset-0 z-10 flex items-center justify-center">
         <h1 className="w-full select-none px-3 text-center font-display uppercase leading-[0.9] tracking-tight text-white">
-          <span className="block whitespace-nowrap text-[clamp(3.5rem,17vw,17rem)] drop-shadow-[0_10px_40px_rgba(0,0,0,0.22)]">
+          <span className="block whitespace-nowrap text-[clamp(3.5rem,16.5vw,16rem)] drop-shadow-[0_10px_40px_rgba(0,0,0,0.22)]">
             Play&nbsp;Strong<span className="text-lime">.</span>
           </span>
         </h1>
       </div>
 
-      {/* The player — large, centred, standing on the section base */}
+      {/* The player — nearly full width, centred, standing on the section base */}
       <img
-        src={POSES[0]}
+        src={IMG.heroWide}
         alt="Tennis player leaping for a forehand"
-        className="animate-hero-drop pointer-events-none absolute bottom-0 left-1/2 z-20 h-[78vh] max-w-none -translate-x-1/2 object-contain object-bottom drop-shadow-figure sm:h-[86vh] lg:h-[94vh]"
+        className="animate-hero-drop pointer-events-none absolute bottom-0 left-1/2 z-20 w-[94vw] max-w-[1600px] -translate-x-1/2 object-contain object-bottom drop-shadow-figure"
       />
 
       {/* Bottom-left info card */}
@@ -64,14 +70,5 @@ export default function Hero() {
         </div>
       </div>
     </section>
-  );
-}
-
-function Cloud({ className = "" }: { className?: string }) {
-  return (
-    <div
-      className={`absolute rounded-full bg-white ${className}`}
-      style={{ filter: "blur(40px)" }}
-    />
   );
 }

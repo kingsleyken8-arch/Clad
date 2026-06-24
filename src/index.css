@@ -134,6 +134,19 @@
     animation: cloud-drift 18s ease-in-out infinite alternate;
   }
 
+  /* Slow parallax pan of the photographic sky background */
+  @keyframes sky-pan {
+    from {
+      transform: scale(1.08) translateX(-1.2%);
+    }
+    to {
+      transform: scale(1.08) translateX(1.2%);
+    }
+  }
+  .animate-sky-pan {
+    animation: sky-pan 44s ease-in-out infinite alternate;
+  }
+
   /* Spin for the small accent ball/arrow chips */
   @keyframes spin-slow {
     to {
@@ -176,6 +189,7 @@
     .animate-float,
     .animate-cloud-slow,
     .animate-cloud-fast,
+    .animate-sky-pan,
     .animate-spin-slow {
       animation: none !important;
     }
