@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ArrowRight, Menu, X } from "lucide-react";
 
-const LINKS = ["Training", "Programs", "Coaches", "Tournaments", "Membership"];
+const LINKS = ["Home", "Training", "Programs", "Coaches", "Tournaments", "Membership"];
 
 /** Translucent floating navbar that overlays the hero sky. */
 export default function Nav() {

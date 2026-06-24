@@ -2,41 +2,43 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import Nav from "./Nav";
 import { POSES } from "../data/assets";
 
-/** Fullscreen sky hero. The desktop figure is the fixed <ScrollCharacter>; a
- *  static inline figure is shown on mobile where the floating one is hidden. */
+/**
+ * Fullscreen sky hero (matches the reference): a giant wide "PLAY STRONG."
+ * wordmark with the large background-removed tennis player standing in front of
+ * it, plus the bottom-left "Since 1998" info card.
+ */
 export default function Hero() {
   return (
     <section
       id="home"
-      data-pose-stage="hero"
-      className="sky-gradient relative flex min-h-screen w-full flex-col overflow-hidden"
+      className="sky-gradient relative min-h-screen w-full overflow-hidden"
     >
       {/* Drifting clouds */}
-      <Cloud className="animate-cloud-slow left-[-6%] top-[18%] h-40 w-[40rem] opacity-80" />
-      <Cloud className="animate-cloud-fast right-[-8%] top-[38%] h-32 w-[34rem] opacity-70" />
-      <Cloud className="animate-cloud-slow left-[10%] bottom-[12%] h-28 w-[30rem] opacity-60" />
+      <Cloud className="animate-cloud-slow left-[-6%] top-[16%] h-40 w-[40rem] opacity-80" />
+      <Cloud className="animate-cloud-fast right-[-8%] top-[34%] h-32 w-[34rem] opacity-70" />
+      <Cloud className="animate-cloud-slow left-[8%] bottom-[10%] h-28 w-[30rem] opacity-55" />
 
       <Nav />
 
-      {/* Giant display headline */}
-      <div className="relative z-20 flex flex-1 items-center">
-        <h1 className="animate-fade-up w-full select-none px-4 text-center font-anton uppercase leading-[0.82] tracking-tight text-white sm:px-8">
-          <span className="block text-[clamp(3.2rem,15vw,13rem)] drop-shadow-[0_8px_30px_rgba(0,0,0,0.25)]">
-            Play Strong<span className="text-lime">.</span>
+      {/* Giant display headline — sits behind the player */}
+      <div className="absolute inset-0 z-10 flex items-center justify-center">
+        <h1 className="w-full select-none px-3 text-center font-display uppercase leading-[0.9] tracking-tight text-white">
+          <span className="block whitespace-nowrap text-[clamp(3.5rem,17vw,17rem)] drop-shadow-[0_10px_40px_rgba(0,0,0,0.22)]">
+            Play&nbsp;Strong<span className="text-lime">.</span>
           </span>
         </h1>
       </div>
 
-      {/* Mobile inline figure (desktop uses the fixed ScrollCharacter) */}
+      {/* The player — large, centred, standing on the section base */}
       <img
         src={POSES[0]}
         alt="Tennis player leaping for a forehand"
-        className="animate-hero-drop pointer-events-none absolute bottom-0 left-1/2 z-10 h-[58vh] -translate-x-1/2 object-contain object-bottom drop-shadow-figure lg:hidden"
+        className="animate-hero-drop pointer-events-none absolute bottom-0 left-1/2 z-20 h-[78vh] max-w-none -translate-x-1/2 object-contain object-bottom drop-shadow-figure sm:h-[86vh] lg:h-[94vh]"
       />
 
-      {/* Info card */}
-      <div className="animate-fade-up-delay-2 relative z-30 mb-10 px-4 sm:mb-14 sm:px-8">
-        <div className="max-w-xs rounded-2xl bg-white/15 p-5 backdrop-blur-md ring-1 ring-white/25">
+      {/* Bottom-left info card */}
+      <div className="absolute bottom-8 left-4 z-30 sm:left-8 sm:bottom-12">
+        <div className="animate-fade-up-delay-2 max-w-[16rem] rounded-2xl bg-white/15 p-5 backdrop-blur-md ring-1 ring-white/25">
           <p className="font-inter text-[11px] uppercase tracking-[0.25em] text-white/80">
             — Since 1998
           </p>
@@ -61,9 +63,6 @@ export default function Hero() {
           </div>
         </div>
       </div>
-
-      {/* Soft fade into the next (white) section */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-24 bg-gradient-to-b from-transparent to-paper" />
     </section>
   );
 }
@@ -71,7 +70,7 @@ export default function Hero() {
 function Cloud({ className = "" }: { className?: string }) {
   return (
     <div
-      className={`absolute rounded-full bg-white blur-2xl ${className}`}
+      className={`absolute rounded-full bg-white ${className}`}
       style={{ filter: "blur(40px)" }}
     />
   );

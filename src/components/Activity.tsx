@@ -26,7 +26,7 @@ export default function Activity() {
       data-pose-stage="activity"
       className="relative bg-[#ECECEA] py-20 sm:py-28"
     >
-      <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:pr-[27vw]">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
         {/* Section header */}
         <Reveal>
           <div className="flex items-center gap-4">
@@ -38,7 +38,7 @@ export default function Activity() {
           </div>
         </Reveal>
         <Reveal>
-          <h2 className="mt-8 max-w-2xl font-anton text-[clamp(2rem,4.4vw,3.4rem)] uppercase leading-[0.95] tracking-tight text-ink">
+          <h2 className="mt-8 max-w-2xl font-display text-[clamp(2rem,4.4vw,3.4rem)] uppercase leading-[0.95] tracking-tight text-ink">
             Your training, tracked
           </h2>
         </Reveal>

@@ -15,7 +15,7 @@ export default function About() {
       data-pose-stage="about"
       className="relative bg-paper py-20 sm:py-28"
     >
-      <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:pr-[27vw]">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
         {/* Section label row */}
         <Reveal>
           <div className="flex items-center gap-4">
@@ -30,7 +30,7 @@ export default function About() {
         {/* Heading + intro */}
         <div className="mt-10 grid gap-8 lg:grid-cols-2 lg:gap-16">
           <Reveal>
-            <h2 className="font-anton text-[clamp(2.2rem,5vw,4rem)] uppercase leading-[0.95] tracking-tight text-ink">
+            <h2 className="font-display text-[clamp(2.2rem,5vw,4rem)] uppercase leading-[0.95] tracking-tight text-ink">
               Building Champions On and Off the Court
             </h2>
           </Reveal>
@@ -94,7 +94,7 @@ export default function About() {
             <Reveal variant="right" delay={120}>
               <div className="rounded-3xl bg-white p-7 shadow-card">
                 <div className="flex items-end gap-3">
-                  <span className="font-anton text-7xl leading-none text-lime-600">
+                  <span className="font-display text-7xl leading-none text-lime-600">
                     15
                   </span>
                   <span className="mb-1 font-archivo text-xl font-extrabold uppercase leading-none text-ink">

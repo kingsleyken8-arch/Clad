@@ -4,8 +4,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        // Massive condensed display word (PLAY STRONG)
-        anton: ['"Anton"', "sans-serif"],
+        // Wide heavy display (PLAY STRONG, section titles)
+        display: ['"Archivo Black"', '"Archivo"', "sans-serif"],
         // Heavy section headings + UI
         archivo: ['"Archivo"', "sans-serif"],
         // Body, nav, captions, stats

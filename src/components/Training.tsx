@@ -15,7 +15,7 @@ export default function Training() {
       data-pose-stage="training"
       className="relative bg-paper pb-24 pt-4 sm:pb-32"
     >
-      <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:pr-[27vw]">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <Reveal>
           <div className="flex items-center gap-4">
             <span className="grid h-8 w-8 place-items-center rounded-full border border-ink/30 font-inter text-xs font-semibold">
@@ -27,7 +27,7 @@ export default function Training() {
         </Reveal>
 
         <Reveal>
-          <h2 className="mt-8 max-w-2xl font-anton text-[clamp(2rem,4.4vw,3.4rem)] uppercase leading-[0.95] tracking-tight text-ink">
+          <h2 className="mt-8 max-w-2xl font-display text-[clamp(2rem,4.4vw,3.4rem)] uppercase leading-[0.95] tracking-tight text-ink">
             Programs for every level of play
           </h2>
         </Reveal>

@@ -15,7 +15,7 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         {/* CTA band */}
         <div className="flex flex-col items-start justify-between gap-8 border-b border-white/10 pb-16 lg:flex-row lg:items-end">
-          <h2 className="font-anton text-[clamp(2.6rem,7vw,6rem)] uppercase leading-[0.88] tracking-tight">
+          <h2 className="font-display text-[clamp(2.6rem,7vw,6rem)] uppercase leading-[0.88] tracking-tight">
             Ready to
             <br />
             play strong<span className="text-lime">?</span>
@@ -73,7 +73,7 @@ export default function Footer() {
 
       {/* Oversized ghost wordmark */}
       <div className="pointer-events-none select-none px-5 text-center">
-        <span className="block font-anton text-[18vw] uppercase leading-[0.8] tracking-tight text-white/[0.04]">
+        <span className="block font-display text-[18vw] uppercase leading-[0.8] tracking-tight text-white/[0.04]">
           Acetennis
         </span>
       </div>

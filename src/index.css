@@ -23,8 +23,9 @@
 }
 
 @layer utilities {
-  .font-anton {
-    font-family: "Anton", sans-serif;
+  .font-display {
+    font-family: "Archivo Black", "Archivo", sans-serif;
+    font-weight: 400;
   }
   .font-archivo {
     font-family: "Archivo", sans-serif;
