@@ -13,7 +13,7 @@ export default function About() {
     <section
       id="about"
       data-pose-stage="about"
-      className="relative bg-paper py-20 sm:py-28"
+      className="relative z-10 bg-paper py-20 sm:py-28"
     >
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         {/* Section label row */}
