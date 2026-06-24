@@ -11,7 +11,21 @@
 html,
 body,
 #root {
-  height: 100%;
   width: 100%;
   overflow-x: hidden;
+}
+
+body {
+  font-family: "Inter", system-ui, sans-serif;
+  background: #ffffff;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Hide scrollbar for the trek-card carousel */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
