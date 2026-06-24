@@ -45,7 +45,7 @@ export default function Hero() {
       <img
         src={POSES[0]}
         alt="Tennis player leaping for a forehand"
-        className="animate-hero-drop pointer-events-none absolute bottom-[-4vh] left-[56%] z-20 h-[86vh] max-w-none -translate-x-1/2 object-contain object-bottom drop-shadow-figure sm:h-[92vh]"
+        className="animate-hero-drop pointer-events-none absolute bottom-[-5vh] left-[56%] z-20 h-[92vh] max-w-none -translate-x-1/2 object-contain object-bottom drop-shadow-figure sm:h-[101vh]"
       />
 
       {/* Bottom-left info card */}
