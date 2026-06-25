@@ -1,0 +1,1885 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>VANGUARD — Full Build Prompt</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; background:#0b0b0c; color:#e7e7e7; font-family:'Inter',system-ui,sans-serif; }
+  header { position:sticky; top:0; z-index:10; display:flex; flex-wrap:wrap; gap:12px;
+    align-items:center; justify-content:space-between; padding:16px 20px;
+    background:#111113; border-bottom:1px solid #232326; }
+  h1 { font-size:15px; font-weight:600; margin:0; letter-spacing:.04em; text-transform:uppercase; color:#fff; }
+  .sub { font-size:12px; color:#8a8a90; margin-top:2px; }
+  .btns { display:flex; gap:10px; }
+  button { font:inherit; font-size:13px; font-weight:600; cursor:pointer; border:none; border-radius:8px;
+    padding:10px 16px; color:#fff; background:#dc2626; transition:background .15s, transform .15s; }
+  button:hover { background:#b91c1c; transform:translateY(-1px); }
+  button.alt { background:#26262b; }
+  button.alt:hover { background:#34343a; }
+  #status { font-size:12px; color:#6ee7a8; align-self:center; min-width:70px; }
+  textarea { width:100%; height:calc(100vh - 70px); border:none; outline:none; resize:none;
+    background:#0b0b0c; color:#d7d7da; padding:20px; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:12.5px; line-height:1.6; white-space:pre; }
+</style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>VANGUARD — Full Build Prompt</h1>
+      <div class="sub">Every section's exact source. Click Copy, then paste anywhere.</div>
+    </div>
+    <div class="btns">
+      <span id="status"></span>
+      <button class="alt" onclick="selectAll()">Select all</button>
+      <button onclick="copyAll()">Copy</button>
+    </div>
+  </header>
+  <textarea id="prompt" readonly spellcheck="false"># BUILD PROMPT — &quot;VANGUARD&quot; full one-page site (motorcycle / brand-studio build)
+
+Build a complete, single-page, scroll-based marketing site for **VANGUARD**
+using **Vite + React 18 + TypeScript + Tailwind CSS + lucide-react**. It is a
+dark, premium one-pager: a fullscreen video hero followed by a sequence of
+scroll-revealed product sections, ending in a CTA and footer. Reproduce it
+exactly from the files below — fonts, Tailwind config, global CSS (animation
+utilities, scroll-reveal, image feather mask, bike-roll keyframes), the shared
+`useReveal` IntersectionObserver hook + `Reveal` wrapper, the `bikeParts` data,
+and every section component.
+
+## Stack &amp; dependencies
+- Vite + React 18 + TypeScript
+- Tailwind CSS (with `postcss` + `autoprefixer`)
+- lucide-react (icons)
+- No other UI libraries.
+
+## Section order (src/App.tsx)
+Hero → Compartments → Facilities → CustomBike → Bento → RollOut → SocialProof →
+FAQ → ClosingCTA → Footer. (A `BikeShowcase` component also exists in the repo
+but is NOT rendered by App — omit it.)
+
+## Notes
+- Imagery/video are Higgsfield CDN URLs embedded in the components / `bikeParts`
+  data; they load client-side in the browser. Swap them for your own assets if
+  any link expires.
+- Fonts: PODIUM Sharp (display) via onlinewebfonts + Inter via Google Fonts.
+
+---
+
+## CONFIG &amp; SHARED FILES
+
+### `index.html`
+
+Entry HTML — fonts + root.
+```html
+&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot; /&gt;
+    &lt;link rel=&quot;icon&quot; type=&quot;image/svg+xml&quot; href=&quot;/vite.svg&quot; /&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot; /&gt;
+    &lt;title&gt;VANGUARD — World-Class Digital Collective&lt;/title&gt;
+
+    &lt;!-- PODIUM Sharp (brand + headings) --&gt;
+    &lt;link
+      rel=&quot;stylesheet&quot;
+      href=&quot;https://db.onlinewebfonts.com/c/8b75d9dcff6a48c35a46656192adf019?family=FSP+DEMO+-+PODIUM+Sharp+4.11&quot;
+    /&gt;
+
+    &lt;!-- Inter (body, nav, stats, CTAs) --&gt;
+    &lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot; /&gt;
+    &lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin /&gt;
+    &lt;link
+      href=&quot;https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap&quot;
+      rel=&quot;stylesheet&quot;
+    /&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div id=&quot;root&quot;&gt;&lt;/div&gt;
+    &lt;script type=&quot;module&quot; src=&quot;/src/main.tsx&quot;&gt;&lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+```
+
+### `tailwind.config.js`
+
+Tailwind config — fontFamily.
+```js
+/** @type {import(&#x27;tailwindcss&#x27;).Config} */
+export default {
+  content: [&quot;./index.html&quot;, &quot;./src/**/*.{js,ts,jsx,tsx}&quot;],
+  theme: {
+    extend: {
+      fontFamily: {
+        podium: [&#x27;&quot;FSP DEMO - PODIUM Sharp 4.11&quot;&#x27;, &quot;sans-serif&quot;],
+        inter: [&quot;Inter&quot;, &quot;sans-serif&quot;],
+      },
+    },
+  },
+  plugins: [],
+};
+```
+
+### `src/index.css`
+
+Global CSS — base + all animation/reveal/mask/bike-roll utilities.
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    background-color: #000;
+    font-family: &quot;Inter&quot;, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@layer utilities {
+  .font-podium {
+    font-family: &quot;FSP DEMO - PODIUM Sharp 4.11&quot;, sans-serif;
+  }
+
+  .font-inter {
+    font-family: &quot;Inter&quot;, sans-serif;
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes scale-in {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .animate-fade-up {
+    opacity: 0;
+    animation: fade-up 0.8s ease-out forwards;
+  }
+
+  .animate-fade-up-delay-1 {
+    opacity: 0;
+    animation: fade-up 0.8s ease-out 0.2s forwards;
+  }
+
+  .animate-fade-up-delay-2 {
+    opacity: 0;
+    animation: fade-up 0.8s ease-out 0.4s forwards;
+  }
+
+  .animate-fade-up-delay-3 {
+    opacity: 0;
+    animation: fade-up 0.8s ease-out 0.6s forwards;
+  }
+
+  .animate-fade-up-delay-4 {
+    opacity: 0;
+    animation: fade-up 0.8s ease-out 0.8s forwards;
+  }
+
+  .animate-fade-in {
+    opacity: 0;
+    animation: fade-in 0.8s ease-out forwards;
+  }
+
+  .animate-fade-in-delay {
+    opacity: 0;
+    animation: fade-in 0.8s ease-out 0.3s forwards;
+  }
+
+  .animate-scale-in {
+    opacity: 0;
+    animation: scale-in 0.8s ease-out forwards;
+  }
+
+  /* ---- Scroll reveal (driven by IntersectionObserver) ---- */
+  .reveal {
+    opacity: 0;
+    transform: translateY(48px);
+    transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+  }
+
+  .reveal-left {
+    transform: translateX(-56px);
+  }
+
+  .reveal-right {
+    transform: translateX(56px);
+  }
+
+  .reveal-zoom {
+    transform: scale(1.12);
+    transition: opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translateX(0) translateY(0) scale(1);
+  }
+
+  /* Feather an image&#x27;s edges into the page so it reads as a floating
+     subject on black, not a boxed photo. */
+  .image-bleed {
+    -webkit-mask-image: radial-gradient(
+      ellipse 82% 82% at 50% 50%,
+      #000 58%,
+      transparent 100%
+    );
+    mask-image: radial-gradient(
+      ellipse 82% 82% at 50% 50%,
+      #000 58%,
+      transparent 100%
+    );
+  }
+
+  /* Bike rolls out of the masked rectangle, steers left/right, rolls back
+     in (never fully). Rotation pivots near the rear wheel so the front end
+     swings. */
+  @keyframes bike-roll {
+    0% {
+      transform: translateX(9%) rotate(0deg);
+    }
+    28% {
+      transform: translateX(-6%) rotate(0deg);
+    }
+    40% {
+      transform: translateX(-6%) rotate(-2.5deg);
+    }
+    54% {
+      transform: translateX(-6%) rotate(2.5deg);
+    }
+    66% {
+      transform: translateX(-6%) rotate(0deg);
+    }
+    100% {
+      transform: translateX(9%) rotate(0deg);
+    }
+  }
+
+  .animate-bike-roll {
+    animation: bike-roll 7s ease-in-out infinite;
+    transform-origin: 84% 78%;
+  }
+}
+```
+
+### `src/main.tsx`
+
+React entry.
+```tsx
+import React from &quot;react&quot;;
+import ReactDOM from &quot;react-dom/client&quot;;
+import App from &quot;./App&quot;;
+import &quot;./index.css&quot;;
+
+ReactDOM.createRoot(document.getElementById(&quot;root&quot;)!).render(
+  &lt;React.StrictMode&gt;
+    &lt;App /&gt;
+  &lt;/React.StrictMode&gt;
+);
+```
+
+### `src/App.tsx`
+
+Page composition / section order.
+```tsx
+import Hero from &quot;./components/Hero&quot;;
+import Compartments from &quot;./components/Compartments&quot;;
+import Facilities from &quot;./components/Facilities&quot;;
+import CustomBike from &quot;./components/CustomBike&quot;;
+import Bento from &quot;./components/Bento&quot;;
+import RollOut from &quot;./components/RollOut&quot;;
+import SocialProof from &quot;./components/SocialProof&quot;;
+import FAQ from &quot;./components/FAQ&quot;;
+import ClosingCTA from &quot;./components/ClosingCTA&quot;;
+import Footer from &quot;./components/Footer&quot;;
+
+export default function App() {
+  return (
+    &lt;div className=&quot;min-h-screen w-full bg-black&quot;&gt;
+      &lt;Hero /&gt;
+      &lt;Compartments /&gt;
+      &lt;Facilities /&gt;
+      &lt;CustomBike /&gt;
+      &lt;Bento /&gt;
+      &lt;RollOut /&gt;
+      &lt;SocialProof /&gt;
+      &lt;FAQ /&gt;
+      &lt;ClosingCTA /&gt;
+      &lt;Footer /&gt;
+    &lt;/div&gt;
+  );
+}
+```
+
+### `src/hooks/useReveal.ts`
+
+IntersectionObserver reveal hook.
+```ts
+import { useEffect, useRef, useState } from &quot;react&quot;;
+
+/**
+ * Reveal-on-scroll hook backed by IntersectionObserver.
+ * Returns a ref to attach to the target element and a `visible` flag that
+ * flips to true (once) when the element scrolls into view.
+ */
+export function useReveal&lt;T extends HTMLElement = HTMLDivElement&gt;(
+  options?: IntersectionObserverInit
+) {
+  const ref = useRef&lt;T&gt;(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() =&gt; {
+    const el = ref.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) =&gt; {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.unobserve(el);
+        }
+      },
+      { threshold: 0.2, rootMargin: &quot;0px 0px -10% 0px&quot;, ...options }
+    );
+
+    observer.observe(el);
+    return () =&gt; observer.disconnect();
+  }, []);
+
+  return { ref, visible };
+}
+```
+
+### `src/components/Reveal.tsx`
+
+Scroll-reveal wrapper component.
+```tsx
+import type { ReactNode } from &quot;react&quot;;
+import { useReveal } from &quot;../hooks/useReveal&quot;;
+
+type Variant = &quot;up&quot; | &quot;left&quot; | &quot;right&quot; | &quot;zoom&quot;;
+
+const VARIANT_CLASS: Record&lt;Variant, string&gt; = {
+  up: &quot;&quot;,
+  left: &quot;reveal-left&quot;,
+  right: &quot;reveal-right&quot;,
+  zoom: &quot;reveal-zoom&quot;,
+};
+
+interface RevealProps {
+  children: ReactNode;
+  className?: string;
+  variant?: Variant;
+  delay?: number;
+}
+
+/** Wraps children in a scroll-reveal container driven by IntersectionObserver. */
+export function Reveal({
+  children,
+  className = &quot;&quot;,
+  variant = &quot;up&quot;,
+  delay = 0,
+}: RevealProps) {
+  const { ref, visible } = useReveal&lt;HTMLDivElement&gt;();
+
+  return (
+    &lt;div
+      ref={ref}
+      className={`reveal ${VARIANT_CLASS[variant]} ${
+        visible ? &quot;is-visible&quot; : &quot;&quot;
+      } ${className}`}
+      style={{ transitionDelay: `${delay}ms` }}
+    &gt;
+      {children}
+    &lt;/div&gt;
+  );
+}
+```
+
+### `src/data/bikeParts.ts`
+
+Shared data (parts, images, copy).
+```ts
+export interface PartSpec {
+  value: string;
+  label: string;
+}
+
+export interface BikePart {
+  id: string;
+  index: string;
+  label: string;
+  name: string;
+  description: string;
+  specs: PartSpec[];
+  /** Focal point as [x%, y%] of the image to zoom toward. */
+  origin: [number, number];
+  /** Zoom scale applied to the image at this step. */
+  scale: number;
+}
+
+/**
+ * The full bike image the showcase zooms into. Generated on Higgsfield —
+ * a right-facing side profile (front wheel on the right), sharp across the
+ * whole frame. The `origin` focal points below assume that composition.
+ */
+export const BIKE_IMAGE =
+  &quot;https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/hf_20260614_143446_550c41b1-7bf3-4945-8230-28fd6a41d627.png&quot;;
+
+export const BIKE_PARTS: BikePart[] = [
+  {
+    id: &quot;overview&quot;,
+    index: &quot;&quot;,
+    label: &quot;The Machine&quot;,
+    name: &quot;One Machine&quot;,
+    description:
+      &quot;Engineered end to end — every contact point, every system, built to conquer the trail. Keep scrolling to travel its anatomy.&quot;,
+    specs: [],
+    origin: [50, 50],
+    scale: 1,
+  },
+  {
+    id: &quot;cockpit&quot;,
+    index: &quot;01&quot;,
+    label: &quot;Cockpit&quot;,
+    name: &quot;The Handlebar&quot;,
+    description:
+      &quot;A 780mm bar and lock-on grips put precise, confident steering at your fingertips — the dropper remote always a thumb away.&quot;,
+    specs: [
+      { value: &quot;780mm&quot;, label: &quot;Bar Width&quot; },
+      { value: &quot;35mm&quot;, label: &quot;Stem&quot; },
+      { value: &quot;Lock-On&quot;, label: &quot;Grips&quot; },
+    ],
+    origin: [72, 33],
+    scale: 3.1,
+  },
+  {
+    id: &quot;wheels&quot;,
+    index: &quot;02&quot;,
+    label: &quot;Rolling Stock&quot;,
+    name: &quot;Wheels &amp; Tires&quot;,
+    description:
+      &quot;29-inch hoops wrapped in aggressive knobby rubber claw into loose dirt, roots and rock for relentless, unshakeable grip.&quot;,
+    specs: [
+      { value: &quot;29″&quot;, label: &quot;Wheels&quot; },
+      { value: &quot;2.4″&quot;, label: &quot;Tire&quot; },
+      { value: &quot;Tubeless&quot;, label: &quot;Setup&quot; },
+    ],
+    origin: [84, 73],
+    scale: 3.0,
+  },
+  {
+    id: &quot;saddle&quot;,
+    index: &quot;03&quot;,
+    label: &quot;Contact&quot;,
+    name: &quot;The Saddle&quot;,
+    description:
+      &quot;A performance saddle on a 170mm dropper post — slam it for descents, lift it for climbs, and never once break your stride.&quot;,
+    specs: [
+      { value: &quot;170mm&quot;, label: &quot;Dropper&quot; },
+      { value: &quot;Carbon&quot;, label: &quot;Rails&quot; },
+    ],
+    origin: [33, 28],
+    scale: 3.1,
+  },
+  {
+    id: &quot;drivetrain&quot;,
+    index: &quot;04&quot;,
+    label: &quot;Power&quot;,
+    name: &quot;The Drivetrain&quot;,
+    description:
+      &quot;A 12-speed chain and clutched derailleur convert every pedal stroke into forward fury, holding tension over the roughest ground.&quot;,
+    specs: [
+      { value: &quot;12-Spd&quot;, label: &quot;Range&quot; },
+      { value: &quot;10-52T&quot;, label: &quot;Cassette&quot; },
+      { value: &quot;Carbon&quot;, label: &quot;Cranks&quot; },
+    ],
+    origin: [47, 73],
+    scale: 3.2,
+  },
+  {
+    id: &quot;brakes&quot;,
+    index: &quot;05&quot;,
+    label: &quot;Control&quot;,
+    name: &quot;The Brakes&quot;,
+    description:
+      &quot;Four-piston hydraulic calipers bite 203mm rotors for instant, modulated stopping power — absolute authority on tap.&quot;,
+    specs: [
+      { value: &quot;4-Piston&quot;, label: &quot;Calipers&quot; },
+      { value: &quot;203mm&quot;, label: &quot;Rotors&quot; },
+    ],
+    origin: [81, 67],
+    scale: 3.1,
+  },
+];
+```
+
+---
+
+## SECTION COMPONENTS
+
+### `src/components/Hero.tsx`
+
+Fullscreen video hero + navbar + mobile menu.
+```tsx
+import { useState } from &quot;react&quot;;
+import { ArrowUpRight, Award, Crown, X } from &quot;lucide-react&quot;;
+
+const VIDEO_SRC =
+  &quot;https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/hf_20260614_064935_718e8f10-d996-4ce3-915c-48940bd4de11.mp4&quot;;
+
+const NAV_LINKS = [&quot;Products&quot;, &quot;Studio&quot;, &quot;Offerings&quot;, &quot;Inquire&quot;];
+
+const STATS = [
+  { value: &quot;250+&quot;, label: &quot;Brands Transformed&quot; },
+  { value: &quot;95%&quot;, label: &quot;Client Retention&quot; },
+  { value: &quot;10+&quot;, label: &quot;Years in the Game&quot; },
+];
+
+export default function Hero() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  return (
+    &lt;section
+      id=&quot;home&quot;
+      className=&quot;relative flex h-screen w-full flex-col overflow-hidden bg-black&quot;
+    &gt;
+      {/* Background video */}
+      &lt;video
+        className=&quot;absolute inset-0 h-full w-full object-cover&quot;
+        src={VIDEO_SRC}
+        autoPlay
+        muted
+        loop
+        playsInline
+      /&gt;
+      {/* Darkening overlay for legibility */}
+      &lt;div className=&quot;absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-black/20&quot; /&gt;
+
+      {/* ---------------------------------------------------------------- */}
+      {/* Navbar                                                           */}
+      {/* ---------------------------------------------------------------- */}
+      &lt;nav className=&quot;relative z-30 flex items-center justify-between px-6 py-5 sm:px-10 lg:px-16 lg:py-7&quot;&gt;
+        &lt;a
+          href=&quot;#&quot;
+          className=&quot;font-podium text-2xl font-bold uppercase tracking-wider text-white sm:text-3xl&quot;
+        &gt;
+          VANGUARD
+        &lt;/a&gt;
+
+        {/* Center nav links */}
+        &lt;div className=&quot;hidden items-center gap-10 md:flex&quot;&gt;
+          {NAV_LINKS.map((link) =&gt; (
+            &lt;a
+              key={link}
+              href=&quot;#&quot;
+              className=&quot;font-inter text-sm uppercase tracking-widest text-white/80 transition-colors hover:text-white&quot;
+            &gt;
+              {link}
+            &lt;/a&gt;
+          ))}
+        &lt;/div&gt;
+
+        {/* Get in touch */}
+        &lt;a
+          href=&quot;#&quot;
+          className=&quot;hidden items-center gap-2 border border-white/30 px-6 py-3 font-inter text-xs uppercase tracking-widest text-white transition-all hover:border-white/60 hover:bg-white/10 md:flex&quot;
+        &gt;
+          Get in Touch
+          &lt;ArrowUpRight className=&quot;h-4 w-4&quot; /&gt;
+        &lt;/a&gt;
+
+        {/* Hamburger */}
+        &lt;button
+          type=&quot;button&quot;
+          onClick={() =&gt; setMenuOpen(true)}
+          aria-label=&quot;Open menu&quot;
+          className=&quot;flex flex-col space-y-1.5 md:hidden&quot;
+        &gt;
+          &lt;div className=&quot;h-0.5 w-6 bg-white&quot; /&gt;
+          &lt;div className=&quot;h-0.5 w-6 bg-white&quot; /&gt;
+          &lt;div className=&quot;h-0.5 w-4 bg-white&quot; /&gt;
+        &lt;/button&gt;
+      &lt;/nav&gt;
+
+      {/* ---------------------------------------------------------------- */}
+      {/* Mobile menu overlay                                              */}
+      {/* ---------------------------------------------------------------- */}
+      &lt;div
+        className={`fixed inset-0 z-50 bg-black/95 backdrop-blur-sm transition-all duration-500 md:hidden ${
+          menuOpen ? &quot;visible opacity-100&quot; : &quot;invisible opacity-0&quot;
+        }`}
+      &gt;
+        {/* Header row */}
+        &lt;div className=&quot;flex items-center justify-between px-6 py-5 sm:px-10&quot;&gt;
+          &lt;span className=&quot;font-podium text-2xl font-bold uppercase tracking-wider text-white sm:text-3xl&quot;&gt;
+            VANGUARD
+          &lt;/span&gt;
+          &lt;button
+            type=&quot;button&quot;
+            onClick={() =&gt; setMenuOpen(false)}
+            aria-label=&quot;Close menu&quot;
+          &gt;
+            &lt;X className=&quot;h-7 w-7 text-white&quot; /&gt;
+          &lt;/button&gt;
+        &lt;/div&gt;
+
+        {/* Centered links */}
+        &lt;div className=&quot;flex h-[calc(100%-76px)] flex-col items-center justify-center gap-6&quot;&gt;
+          {NAV_LINKS.map((link, i) =&gt; (
+            &lt;a
+              key={link}
+              href=&quot;#&quot;
+              onClick={() =&gt; setMenuOpen(false)}
+              className=&quot;font-podium text-4xl uppercase text-white sm:text-5xl&quot;
+              style={{
+                transition: &quot;opacity 0.5s ease, transform 0.5s ease&quot;,
+                transitionDelay: `${i * 80 + 100}ms`,
+                opacity: menuOpen ? 1 : 0,
+                transform: menuOpen ? &quot;translateY(0)&quot; : &quot;translateY(20px)&quot;,
+              }}
+            &gt;
+              {link}
+            &lt;/a&gt;
+          ))}
+
+          &lt;a
+            href=&quot;#&quot;
+            onClick={() =&gt; setMenuOpen(false)}
+            className=&quot;mt-4 flex items-center gap-2 border border-white/30 px-6 py-3 font-inter text-xs uppercase tracking-widest text-white transition-all hover:border-white/60 hover:bg-white/10&quot;
+            style={{
+              transition: &quot;opacity 0.5s ease, transform 0.5s ease&quot;,
+              transitionDelay: `${NAV_LINKS.length * 80 + 100}ms`,
+              opacity: menuOpen ? 1 : 0,
+              transform: menuOpen ? &quot;translateY(0)&quot; : &quot;translateY(20px)&quot;,
+            }}
+          &gt;
+            Get in Touch
+            &lt;ArrowUpRight className=&quot;h-4 w-4&quot; /&gt;
+          &lt;/a&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      {/* ---------------------------------------------------------------- */}
+      {/* Hero content                                                     */}
+      {/* ---------------------------------------------------------------- */}
+      &lt;main className=&quot;relative z-20 flex flex-1 flex-col justify-center px-6 pb-10 sm:px-10 lg:px-16&quot;&gt;
+        {/* Tagline */}
+        &lt;div className=&quot;animate-fade-up mb-6 flex items-center gap-2 lg:mb-8&quot;&gt;
+          &lt;Crown className=&quot;h-4 w-4 text-white/70&quot; /&gt;
+          &lt;span className=&quot;font-inter text-xs uppercase tracking-[0.3em] text-white/70 sm:text-sm&quot;&gt;
+            World-Class Digital Collective
+          &lt;/span&gt;
+        &lt;/div&gt;
+
+        {/* Heading */}
+        &lt;h1 className=&quot;animate-fade-up-delay-1 font-podium uppercase leading-[0.92] tracking-tight text-white&quot;&gt;
+          &lt;span className=&quot;block text-[clamp(2.8rem,8vw,7rem)]&quot;&gt;Design.&lt;/span&gt;
+          &lt;span className=&quot;block text-[clamp(2.8rem,8vw,7rem)]&quot;&gt;Disrupt.&lt;/span&gt;
+          &lt;span className=&quot;block text-[clamp(2.8rem,8vw,7rem)]&quot;&gt;Conquer.&lt;/span&gt;
+        &lt;/h1&gt;
+
+        {/* Subtext */}
+        &lt;p className=&quot;animate-fade-up-delay-2 mt-6 max-w-md font-inter text-sm leading-relaxed text-white/70 sm:text-base lg:mt-8&quot;&gt;
+          We build fierce brand identities
+          &lt;br /&gt;
+          that don&#x27;t just turn heads —{&quot; &quot;}
+          &lt;span className=&quot;font-bold text-white&quot;&gt;they lead.&lt;/span&gt;
+        &lt;/p&gt;
+
+        {/* CTA row */}
+        &lt;div className=&quot;animate-fade-up-delay-3 mt-8 flex flex-wrap items-center gap-4 sm:gap-6 lg:mt-10&quot;&gt;
+          &lt;a
+            href=&quot;#&quot;
+            className=&quot;group flex items-center gap-2 bg-red-600 px-5 py-3 font-inter text-[11px] uppercase tracking-widest text-white transition-colors hover:bg-red-700 sm:px-7 sm:py-4 sm:text-xs&quot;
+          &gt;
+            See Our Products
+            &lt;ArrowUpRight className=&quot;h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5&quot; /&gt;
+          &lt;/a&gt;
+
+          &lt;div className=&quot;hidden items-center gap-3 sm:flex&quot;&gt;
+            &lt;Award className=&quot;h-8 w-8 text-white/50&quot; /&gt;
+            &lt;div className=&quot;text-xs uppercase leading-tight tracking-wider text-white/60&quot;&gt;
+              &lt;div&gt;Top-Rated&lt;/div&gt;
+              &lt;div&gt;Brand Studio&lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+
+        {/* Stats */}
+        &lt;div className=&quot;animate-fade-up-delay-4 mt-8 flex flex-wrap gap-6 sm:mt-10 sm:gap-12 lg:mt-14 lg:gap-16&quot;&gt;
+          {STATS.map((stat) =&gt; (
+            &lt;div key={stat.label}&gt;
+              &lt;div className=&quot;font-inter text-2xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl&quot;&gt;
+                {stat.value}
+              &lt;/div&gt;
+              &lt;div className=&quot;mt-1 text-[9px] uppercase tracking-widest text-white/50 sm:text-xs&quot;&gt;
+                {stat.label}
+              &lt;/div&gt;
+            &lt;/div&gt;
+          ))}
+        &lt;/div&gt;
+      &lt;/main&gt;
+
+      {/* Scroll cue */}
+      &lt;div className=&quot;absolute bottom-6 left-1/2 z-20 -translate-x-1/2&quot;&gt;
+        &lt;div className=&quot;flex h-10 w-6 items-start justify-center rounded-full border border-white/30 p-1.5&quot;&gt;
+          &lt;div className=&quot;h-2 w-1 animate-bounce rounded-full bg-white/60&quot; /&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/section&gt;
+  );
+}
+```
+
+### `src/components/Compartments.tsx`
+
+Section.
+```tsx
+import BikeShowcase from &quot;./BikeShowcase&quot;;
+import { Reveal } from &quot;./Reveal&quot;;
+
+export default function Compartments() {
+  return (
+    &lt;div className=&quot;relative w-full bg-black&quot;&gt;
+      {/* ---- Intro ---- */}
+      &lt;div className=&quot;px-6 pt-24 pb-10 text-center sm:px-10 lg:px-16 lg:pt-32&quot;&gt;
+        &lt;Reveal&gt;
+          &lt;span className=&quot;font-inter text-xs uppercase tracking-[0.3em] text-red-500&quot;&gt;
+            Engineered To Conquer
+          &lt;/span&gt;
+        &lt;/Reveal&gt;
+        &lt;Reveal delay={100}&gt;
+          &lt;h2 className=&quot;mx-auto mt-5 max-w-4xl font-podium text-[clamp(2.6rem,7vw,6rem)] uppercase leading-[0.95] tracking-tight text-white&quot;&gt;
+            Anatomy of a&lt;br /&gt;
+            Vanguard
+          &lt;/h2&gt;
+        &lt;/Reveal&gt;
+        &lt;Reveal delay={200}&gt;
+          &lt;p className=&quot;mx-auto mt-6 max-w-xl font-inter text-sm leading-relaxed text-white/60 sm:text-base&quot;&gt;
+            Every component engineered to a single obsession — domination of the
+            trail. Scroll to explore the machine, part by part.
+          &lt;/p&gt;
+        &lt;/Reveal&gt;
+      &lt;/div&gt;
+
+      {/* ---- Pinned scroll showcase ---- */}
+      &lt;BikeShowcase /&gt;
+    &lt;/div&gt;
+  );
+}
+```
+
+### `src/components/Facilities.tsx`
+
+Section.
+```tsx
+import type { LucideIcon } from &quot;lucide-react&quot;;
+import { Bike, Cog, ShoppingBag } from &quot;lucide-react&quot;;
+import { Reveal } from &quot;./Reveal&quot;;
+
+const CDN =
+  &quot;https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc&quot;;
+
+const KIDS_IMAGE = `${CDN}/hf_20260614_170442_4a1e0271-0506-4127-b922-d2c4807ed96f.png`;
+const ACCESSORIES_IMAGE = `${CDN}/hf_20260614_143449_e78988c9-e9e9-48dd-9632-05533ab47c3b.png`;
+
+interface Feature {
+  icon: LucideIcon;
+  title: string;
+  description: string;
+}
+
+const FEATURES: Feature[] = [
+  {
+    icon: Cog,
+    title: &quot;Complete Overhaul&quot;,
+    description:
+      &quot;A full strip-down, service and rebuild so your bike runs factory-fresh — every bearing cleaned, every bolt torqued to spec.&quot;,
+  },
+  {
+    icon: ShoppingBag,
+    title: &quot;Custom Parts &amp; Accessories&quot;,
+    description:
+      &quot;Hand-picked upgrades and accessories, fitted and dialed in to match exactly how and where you ride.&quot;,
+  },
+  {
+    icon: Bike,
+    title: &quot;Bike Fitting &amp; Delivery&quot;,
+    description:
+      &quot;Pro fitting for all-day comfort and power, then delivered to your door built, tuned and ready to ride.&quot;,
+  },
+];
+
+/** Square icon frame with corner brackets, like the reference. */
+function BracketIcon({ icon: Icon }: { icon: LucideIcon }) {
+  return (
+    &lt;div className=&quot;relative mx-auto flex h-28 w-28 items-center justify-center&quot;&gt;
+      &lt;span className=&quot;absolute left-0 top-0 h-4 w-4 border-l-2 border-t-2 border-neutral-300&quot; /&gt;
+      &lt;span className=&quot;absolute right-0 top-0 h-4 w-4 border-r-2 border-t-2 border-neutral-300&quot; /&gt;
+      &lt;span className=&quot;absolute bottom-0 left-0 h-4 w-4 border-b-2 border-l-2 border-neutral-300&quot; /&gt;
+      &lt;span className=&quot;absolute bottom-0 right-0 h-4 w-4 border-b-2 border-r-2 border-neutral-300&quot; /&gt;
+      &lt;Icon className=&quot;h-11 w-11 text-red-600&quot; strokeWidth={1.25} /&gt;
+    &lt;/div&gt;
+  );
+}
+
+interface PromoProps {
+  title: string;
+  subtitle: string;
+  image: string;
+  alt: string;
+}
+
+function PromoPanel({ title, subtitle, image, alt }: PromoProps) {
+  return (
+    &lt;div className=&quot;relative flex min-h-[320px] items-center overflow-hidden bg-[#f1f1f1] lg:min-h-[380px]&quot;&gt;
+      {/* Image bleeds in from the right (no gradient) */}
+      &lt;img
+        src={image}
+        alt={alt}
+        loading=&quot;lazy&quot;
+        className=&quot;absolute right-0 top-0 h-full w-1/2 object-cover&quot;
+      /&gt;
+
+      {/* Copy */}
+      &lt;div className=&quot;relative z-10 max-w-[55%] px-8 py-12 sm:px-12 lg:px-16&quot;&gt;
+        &lt;h3 className=&quot;font-podium text-3xl uppercase tracking-tight text-neutral-900 sm:text-4xl lg:text-5xl&quot;&gt;
+          {title}
+        &lt;/h3&gt;
+        &lt;p className=&quot;mt-3 font-inter text-sm text-neutral-500&quot;&gt;{subtitle}&lt;/p&gt;
+        &lt;a
+          href=&quot;#&quot;
+          className=&quot;mt-6 inline-flex items-center border-2 border-red-600 px-7 py-3 font-inter text-[11px] font-semibold uppercase tracking-widest text-neutral-900 transition-colors hover:bg-red-600 hover:text-white&quot;
+        &gt;
+          Shop Now
+        &lt;/a&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default function Facilities() {
+  return (
+    &lt;section id=&quot;facilities&quot; className=&quot;w-full bg-white text-neutral-900&quot;&gt;
+      {/* ---- Features ---- */}
+      &lt;div className=&quot;mx-auto max-w-7xl px-6 py-24 sm:px-10 lg:px-16 lg:py-28&quot;&gt;
+        &lt;div className=&quot;text-center&quot;&gt;
+          &lt;Reveal&gt;
+            &lt;span className=&quot;font-inter text-xs font-semibold uppercase tracking-[0.3em] text-red-600&quot;&gt;
+              Your Ride Starts Here.
+            &lt;/span&gt;
+          &lt;/Reveal&gt;
+          &lt;Reveal delay={100}&gt;
+            &lt;h2 className=&quot;mt-5 font-podium text-[clamp(2.6rem,7vw,6rem)] uppercase leading-[0.95] tracking-tight text-neutral-900&quot;&gt;
+              Our Facilities &amp;amp; Features
+            &lt;/h2&gt;
+          &lt;/Reveal&gt;
+        &lt;/div&gt;
+
+        &lt;div className=&quot;mt-16 grid grid-cols-1 gap-12 md:grid-cols-3 md:gap-0&quot;&gt;
+          {FEATURES.map((feature, i) =&gt; (
+            &lt;Reveal
+              key={feature.title}
+              delay={i * 120}
+              className={`px-0 text-center md:px-8 ${
+                i &gt; 0 ? &quot;md:border-l md:border-neutral-200&quot; : &quot;&quot;
+              }`}
+            &gt;
+              &lt;BracketIcon icon={feature.icon} /&gt;
+              &lt;h3 className=&quot;mt-7 font-podium text-2xl uppercase tracking-tight text-neutral-900&quot;&gt;
+                {feature.title}
+              &lt;/h3&gt;
+              &lt;p className=&quot;mx-auto mt-4 max-w-xs font-inter text-sm leading-relaxed text-neutral-500&quot;&gt;
+                {feature.description}
+              &lt;/p&gt;
+            &lt;/Reveal&gt;
+          ))}
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      {/* ---- Promo band ---- */}
+      &lt;div className=&quot;grid grid-cols-1 md:grid-cols-2&quot;&gt;
+        &lt;PromoPanel
+          title=&quot;Kids Bikes&quot;
+          subtitle=&quot;Close-out pricing on dozens of products&quot;
+          image={KIDS_IMAGE}
+          alt=&quot;Kids mountain bike&quot;
+        /&gt;
+        &lt;PromoPanel
+          title=&quot;Accessories&quot;
+          subtitle=&quot;Close-out pricing on dozens of products&quot;
+          image={ACCESSORIES_IMAGE}
+          alt=&quot;Cyclist wearing helmet and accessories&quot;
+        /&gt;
+      &lt;/div&gt;
+    &lt;/section&gt;
+  );
+}
+```
+
+### `src/components/CustomBike.tsx`
+
+Section.
+```tsx
+import { ArrowRight, Plus } from &quot;lucide-react&quot;;
+import { Reveal } from &quot;./Reveal&quot;;
+
+const CDN =
+  &quot;https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc&quot;;
+
+const IMG_COCKPIT = `${CDN}/hf_20260614_171802_a80a25f1-0675-4aa4-9e20-16901e212223.png`;
+const IMG_SEAT = `${CDN}/hf_20260614_171804_d3a59a15-48e4-456c-bd15-192d4f863316.png`;
+const IMG_HEADTUBE = `${CDN}/hf_20260614_171805_5747d63e-4990-45e5-8ed5-3efcf19667ec.png`;
+const IMG_HERO = `${CDN}/hf_20260614_171806_5d440653-58ae-4b21-8ddd-aec663af3a0f.png`;
+
+const FEATURES = [
+  { label: &quot;Brake Style&quot;, value: &quot;4-piston hydraulic disc&quot; },
+  { label: &quot;Ideal terrain&quot;, value: &quot;Singletrack, technical descents &amp; bike park&quot; },
+  { label: &quot;Tire Clearance&quot;, value: &quot;Up to 29 × 2.5″&quot; },
+  { label: &quot;Materials&quot;, value: &quot;Monocoque Carbon or Carbon-Alloy&quot; },
+];
+
+function DetailImage({ src, alt, className = &quot;&quot; }: { src: string; alt: string; className?: string }) {
+  return (
+    &lt;div className={`overflow-hidden bg-[#e9e9e9] ${className}`}&gt;
+      &lt;img
+        src={src}
+        alt={alt}
+        loading=&quot;lazy&quot;
+        className=&quot;h-full w-full object-cover transition-transform duration-[1200ms] ease-out hover:scale-105&quot;
+      /&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default function CustomBike() {
+  return (
+    &lt;section
+      id=&quot;custom-bike&quot;
+      className=&quot;relative w-full bg-white px-6 py-24 text-neutral-900 sm:px-10 lg:px-16 lg:py-28&quot;
+    &gt;
+      &lt;div className=&quot;relative mx-auto max-w-7xl&quot;&gt;
+        {/* Pagination marker */}
+        &lt;span className=&quot;absolute right-0 top-0 font-inter text-xs tracking-widest text-neutral-400&quot;&gt;
+          01 / 07
+        &lt;/span&gt;
+
+        &lt;div className=&quot;grid grid-cols-1 gap-6 lg:grid-cols-3 lg:grid-rows-[auto_auto_auto]&quot;&gt;
+          {/* Tall cockpit detail — left, spans two rows */}
+          &lt;Reveal className=&quot;lg:col-start-1 lg:row-start-1 lg:row-span-2&quot;&gt;
+            &lt;DetailImage
+              src={IMG_COCKPIT}
+              alt=&quot;VANGUARD cockpit detail&quot;
+              className=&quot;h-full min-h-[20rem]&quot;
+            /&gt;
+          &lt;/Reveal&gt;
+
+          {/* Two top detail images */}
+          &lt;Reveal delay={80} className=&quot;lg:col-start-2 lg:row-start-1&quot;&gt;
+            &lt;DetailImage src={IMG_SEAT} alt=&quot;Seat cluster detail&quot; className=&quot;aspect-[4/3]&quot; /&gt;
+          &lt;/Reveal&gt;
+          &lt;Reveal delay={160} className=&quot;lg:col-start-3 lg:row-start-1&quot;&gt;
+            &lt;DetailImage src={IMG_HEADTUBE} alt=&quot;Head tube and fork detail&quot; className=&quot;aspect-[4/3]&quot; /&gt;
+          &lt;/Reveal&gt;
+
+          {/* Title + meta block */}
+          &lt;div className=&quot;lg:col-start-2 lg:col-span-2 lg:row-start-2&quot;&gt;
+            &lt;Reveal&gt;
+              &lt;h2 className=&quot;font-podium text-[clamp(2.6rem,6vw,5rem)] uppercase leading-[0.9] tracking-tight text-neutral-900&quot;&gt;
+                The New
+                &lt;br /&gt;
+                Custom Bike
+              &lt;/h2&gt;
+              &lt;p className=&quot;mt-3 font-podium text-[clamp(1.8rem,4vw,3rem)] uppercase tracking-tight text-red-600&quot;&gt;
+                &amp;ldquo;VGD&amp;nbsp;0087&amp;rdquo;
+              &lt;/p&gt;
+            &lt;/Reveal&gt;
+
+            &lt;Reveal delay={120}&gt;
+              &lt;div className=&quot;mt-8 flex flex-wrap gap-x-16 gap-y-6&quot;&gt;
+                &lt;div&gt;
+                  &lt;div className=&quot;font-inter text-xs text-neutral-500&quot;&gt;
+                    Frameset price, Carbon:
+                  &lt;/div&gt;
+                  &lt;div className=&quot;font-inter text-2xl font-bold text-neutral-900&quot;&gt;
+                    $4,900
+                  &lt;/div&gt;
+                &lt;/div&gt;
+                &lt;div&gt;
+                  &lt;div className=&quot;font-inter text-xs text-neutral-500&quot;&gt;
+                    Frameset price, Carbon&amp;nbsp;LTD:
+                  &lt;/div&gt;
+                  &lt;div className=&quot;font-inter text-2xl font-bold text-neutral-900&quot;&gt;
+                    $6,900
+                  &lt;/div&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/Reveal&gt;
+
+            &lt;Reveal delay={200}&gt;
+              &lt;div className=&quot;mt-8 flex items-center justify-between&quot;&gt;
+                &lt;a
+                  href=&quot;#&quot;
+                  className=&quot;group inline-flex items-center gap-2 bg-red-600 px-6 py-3 font-inter text-xs font-semibold uppercase tracking-widest text-white transition-colors hover:bg-red-700&quot;
+                &gt;
+                  Add to Cart
+                  &lt;Plus className=&quot;h-4 w-4 transition-transform group-hover:rotate-90&quot; /&gt;
+                &lt;/a&gt;
+                &lt;a
+                  href=&quot;#&quot;
+                  className=&quot;group inline-flex items-center gap-2 font-inter text-xs font-semibold uppercase tracking-widest text-neutral-900&quot;
+                &gt;
+                  Next
+                  &lt;ArrowRight className=&quot;h-4 w-4 transition-transform group-hover:translate-x-1&quot; /&gt;
+                &lt;/a&gt;
+              &lt;/div&gt;
+            &lt;/Reveal&gt;
+          &lt;/div&gt;
+
+          {/* Features — bottom left */}
+          &lt;Reveal className=&quot;lg:col-start-1 lg:row-start-3 lg:self-center&quot;&gt;
+            &lt;h3 className=&quot;font-inter text-sm font-bold text-neutral-900&quot;&gt;
+              Features:
+            &lt;/h3&gt;
+            &lt;dl className=&quot;mt-5 space-y-4&quot;&gt;
+              {FEATURES.map((f) =&gt; (
+                &lt;div key={f.label}&gt;
+                  &lt;dt className=&quot;font-inter text-xs font-semibold text-neutral-900&quot;&gt;
+                    {f.label}:
+                  &lt;/dt&gt;
+                  &lt;dd className=&quot;font-inter text-sm leading-relaxed text-neutral-500&quot;&gt;
+                    {f.value}
+                  &lt;/dd&gt;
+                &lt;/div&gt;
+              ))}
+            &lt;/dl&gt;
+          &lt;/Reveal&gt;
+
+          {/* Big hero bike — bottom, spans two columns */}
+          &lt;Reveal delay={120} className=&quot;lg:col-start-2 lg:col-span-2 lg:row-start-3&quot;&gt;
+            &lt;DetailImage
+              src={IMG_HERO}
+              alt=&quot;The VANGUARD VGD 0087 custom bike&quot;
+              className=&quot;aspect-[3/2]&quot;
+            /&gt;
+          &lt;/Reveal&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/section&gt;
+  );
+}
+```
+
+### `src/components/Bento.tsx`
+
+Section.
+```tsx
+import type { ReactNode } from &quot;react&quot;;
+import { Reveal } from &quot;./Reveal&quot;;
+
+const CDN =
+  &quot;https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc&quot;;
+
+const BENTO_VIDEO =
+  &quot;https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/hf_20260614_064935_718e8f10-d996-4ce3-915c-48940bd4de11.mp4&quot;;
+
+interface CardProps {
+  eyebrow: string;
+  title: string;
+  description: string;
+  className?: string;
+  media: ReactNode;
+}
+
+/** A bento tile: full-bleed media with a frosted-glass caption panel. */
+function BentoCard({ eyebrow, title, description, className = &quot;&quot;, media }: CardProps) {
+  return (
+    &lt;div
+      className={`group relative min-h-[16rem] overflow-hidden rounded-2xl border border-white/10 ${className}`}
+    &gt;
+      {/* Media */}
+      &lt;div className=&quot;absolute inset-0&quot;&gt;{media}&lt;/div&gt;
+
+      {/* Darkening for legibility */}
+      &lt;div className=&quot;pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent&quot; /&gt;
+
+      {/* Glassmorphism caption */}
+      &lt;div className=&quot;absolute inset-x-3 bottom-3 rounded-xl border border-white/15 bg-white/[0.07] p-5 backdrop-blur-md sm:inset-x-4 sm:bottom-4&quot;&gt;
+        &lt;span className=&quot;font-inter text-[10px] uppercase tracking-[0.3em] text-red-400&quot;&gt;
+          {eyebrow}
+        &lt;/span&gt;
+        &lt;h3 className=&quot;mt-2 font-podium text-2xl uppercase leading-[0.95] tracking-tight text-white sm:text-3xl&quot;&gt;
+          {title}
+        &lt;/h3&gt;
+        {/* Subtext stays hidden until the card is hovered (or focused) */}
+        &lt;div className=&quot;grid grid-rows-[0fr] opacity-0 transition-[grid-template-rows,opacity] duration-500 ease-out group-hover:grid-rows-[1fr] group-hover:opacity-100 group-focus-within:grid-rows-[1fr] group-focus-within:opacity-100&quot;&gt;
+          &lt;p className=&quot;min-h-0 overflow-hidden font-inter text-sm leading-relaxed text-white/70 transition-[margin] duration-500 ease-out group-hover:mt-2 group-focus-within:mt-2&quot;&gt;
+            {description}
+          &lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+
+const cardImg = (src: string, alt: string) =&gt; (
+  &lt;img
+    src={src}
+    alt={alt}
+    loading=&quot;lazy&quot;
+    className=&quot;h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105&quot;
+  /&gt;
+);
+
+export default function Bento() {
+  return (
+    &lt;section id=&quot;why&quot; className=&quot;relative w-full bg-black px-6 py-24 sm:px-10 lg:px-16 lg:py-32&quot;&gt;
+      {/* Heading */}
+      &lt;div className=&quot;mx-auto max-w-4xl text-center&quot;&gt;
+        &lt;Reveal&gt;
+          &lt;span className=&quot;font-inter text-xs uppercase tracking-[0.3em] text-red-500&quot;&gt;
+            Why Vanguard
+          &lt;/span&gt;
+        &lt;/Reveal&gt;
+        &lt;Reveal delay={100}&gt;
+          &lt;h2 className=&quot;mx-auto mt-5 font-podium text-[clamp(2.6rem,7vw,6rem)] uppercase leading-[0.95] tracking-tight text-white&quot;&gt;
+            Born To Ride,
+            &lt;br /&gt;
+            Not To Wrench
+          &lt;/h2&gt;
+        &lt;/Reveal&gt;
+        &lt;Reveal delay={200}&gt;
+          &lt;p className=&quot;mx-auto mt-6 max-w-xl font-inter text-sm leading-relaxed text-white/60 sm:text-base&quot;&gt;
+            Every system is dialed at the factory, so nothing stands between you
+            and the trail. This is what you actually get.
+          &lt;/p&gt;
+        &lt;/Reveal&gt;
+      &lt;/div&gt;
+
+      {/* Bento grid */}
+      &lt;Reveal delay={120} className=&quot;mx-auto mt-14 max-w-7xl&quot;&gt;
+        &lt;div className=&quot;grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:auto-rows-fr lg:[grid-template-rows:repeat(2,minmax(0,1fr))] lg:h-[44rem]&quot;&gt;
+          {/* 1 — 360 video (large) */}
+          &lt;BentoCard
+            className=&quot;sm:col-span-2 lg:col-span-2 lg:row-span-2&quot;
+            eyebrow=&quot;In Its Element&quot;
+            title=&quot;Built To Conquer&quot;
+            description=&quot;Watch the machine do what it was born to do — devour the trail.&quot;
+            media={
+              &lt;video
+                src={BENTO_VIDEO}
+                autoPlay
+                muted
+                loop
+                playsInline
+                className=&quot;h-full w-full object-cover&quot;
+              /&gt;
+            }
+          /&gt;
+
+          {/* 2 — Carbon frame */}
+          &lt;BentoCard
+            eyebrow=&quot;Featherweight&quot;
+            title=&quot;Carbon Where It Counts&quot;
+            description=&quot;1,899g of monocoque carbon — light enough to fly, brutal enough to land.&quot;
+            media={cardImg(
+              `${CDN}/hf_20260614_093838_10096b5e-6227-40a7-bc7e-e3773766d0e5.png`,
+              &quot;Carbon frame&quot;
+            )}
+          /&gt;
+
+          {/* 3 — Suspension */}
+          &lt;BentoCard
+            eyebrow=&quot;Bottomless&quot;
+            title=&quot;160mm Of Travel&quot;
+            description=&quot;Devours roots and rock so the trail simply disappears beneath you.&quot;
+            media={cardImg(
+              `${CDN}/hf_20260614_093841_0033a166-70f3-4f40-9a0c-676887d2975a.png`,
+              &quot;Suspension fork&quot;
+            )}
+          /&gt;
+
+          {/* 4 — Drivetrain */}
+          &lt;BentoCard
+            eyebrow=&quot;Relentless&quot;
+            title=&quot;12-Speed Drive&quot;
+            description=&quot;Every pedal stroke becomes forward fury, even over the roughest ground.&quot;
+            media={cardImg(
+              `${CDN}/hf_20260614_093842_b8c62628-1dc1-4111-9bca-39a3c9983ae9.png`,
+              &quot;Drivetrain&quot;
+            )}
+          /&gt;
+
+          {/* 5 — Brakes */}
+          &lt;BentoCard
+            eyebrow=&quot;Authority&quot;
+            title=&quot;Stop On A Dime&quot;
+            description=&quot;Four-piston bite on 203mm rotors — instant, modulated, total control.&quot;
+            media={cardImg(
+              `${CDN}/hf_20260614_093844_357eb9ac-a4e2-490b-bb35-a3bc9bcc3fb1.png`,
+              &quot;Brakes&quot;
+            )}
+          /&gt;
+        &lt;/div&gt;
+      &lt;/Reveal&gt;
+    &lt;/section&gt;
+  );
+}
+```
+
+### `src/components/RollOut.tsx`
+
+Section.
+```tsx
+import { Reveal } from &quot;./Reveal&quot;;
+
+const CDN =
+  &quot;https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc&quot;;
+
+// White-background bike — mix-blend-multiply drops the white over both the
+// page and the gray rectangle, so no cutout is needed.
+const BIKE_WHITE = `${CDN}/hf_20260614_174609_32049cc5-105f-4443-8ad8-6f1515f198b7.png`;
+// Small detail shot for the bottom-right frame.
+const BIKE_DETAIL = `${CDN}/hf_20260614_171802_a80a25f1-0675-4aa4-9e20-16901e212223.png`;
+
+const LINKS = [&quot;Store&quot;, &quot;About us&quot;, &quot;Social&quot;];
+
+export default function RollOut() {
+  return (
+    &lt;section
+      id=&quot;ride&quot;
+      className=&quot;relative flex min-h-[92vh] w-full items-center overflow-hidden bg-white py-20 text-neutral-900 sm:py-24 lg:py-28&quot;
+    &gt;
+      &lt;div className=&quot;relative mx-auto h-[34rem] w-full max-w-7xl sm:h-[40rem] lg:h-[46rem]&quot;&gt;
+        {/* Brand mark */}
+        &lt;div className=&quot;absolute left-6 top-8 z-20 flex items-center gap-3 sm:left-10 lg:left-16&quot;&gt;
+          &lt;span className=&quot;h-3.5 w-3.5 rounded-full bg-neutral-900&quot; /&gt;
+          &lt;span className=&quot;font-podium text-lg font-bold uppercase tracking-wider text-neutral-900&quot;&gt;
+            Vanguard
+          &lt;/span&gt;
+        &lt;/div&gt;
+
+        {/* Footer-ish links */}
+        &lt;nav className=&quot;absolute bottom-10 left-6 z-20 hidden space-y-2 sm:left-10 sm:block lg:left-16&quot;&gt;
+          {LINKS.map((link) =&gt; (
+            &lt;a
+              key={link}
+              href=&quot;#&quot;
+              className=&quot;block font-inter text-sm text-neutral-600 transition-colors hover:text-red-600&quot;
+            &gt;
+              {link}
+            &lt;/a&gt;
+          ))}
+        &lt;/nav&gt;
+
+        {/* ---- The stage: gray rectangle + masked rolling bike ---- */}
+        &lt;div className=&quot;absolute inset-0&quot;&gt;
+          {/* Tall gray rectangle */}
+          &lt;div className=&quot;absolute left-[28%] top-[8%] bottom-[12%] w-[26%] bg-[#e7e7e7]&quot; /&gt;
+
+          {/*
+            Mask: this wrapper&#x27;s right edge sits on the rectangle&#x27;s right edge
+            (28% + 26% = 54%), so anything the rear wheel pushes past it is
+            clipped — the bike looks like it&#x27;s rolling back into the rectangle.
+          */}
+          &lt;div className=&quot;absolute inset-y-0 left-0 w-[54%] overflow-hidden&quot;&gt;
+            &lt;img
+              src={BIKE_WHITE}
+              alt=&quot;VANGUARD bike rolling out&quot;
+              className=&quot;animate-bike-roll absolute bottom-[12%] right-[-8%] h-[58%] w-auto max-w-none mix-blend-multiply sm:h-[62%]&quot;
+            /&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+
+        {/* Heading + copy */}
+        &lt;div className=&quot;absolute right-6 top-20 z-20 max-w-[20rem] text-right sm:right-10 sm:top-24 lg:right-16 lg:top-28 lg:max-w-md lg:text-left&quot;&gt;
+          &lt;Reveal&gt;
+            &lt;h2 className=&quot;font-podium text-[clamp(2rem,4.5vw,3.6rem)] uppercase leading-[1.02] tracking-tight text-neutral-900&quot;&gt;
+              It never &lt;span className=&quot;text-red-600&quot;&gt;gets easier&lt;/span&gt;
+              &lt;br /&gt;
+              you just go faster
+            &lt;/h2&gt;
+          &lt;/Reveal&gt;
+          &lt;Reveal delay={150}&gt;
+            &lt;p className=&quot;ml-auto mt-6 max-w-xs font-inter text-sm leading-relaxed text-neutral-400 lg:ml-0&quot;&gt;
+              Dawn till dusk, singletrack or street. Four-piston hydraulic
+              brakes haul you down the instant you ask for them — then the trail
+              opens up and you&amp;apos;re gone again.
+            &lt;/p&gt;
+          &lt;/Reveal&gt;
+        &lt;/div&gt;
+
+        {/* Small detail frame, bottom-right */}
+        &lt;div className=&quot;absolute bottom-12 right-6 z-20 hidden w-44 overflow-hidden bg-[#e7e7e7] lg:right-16 lg:block xl:w-52&quot;&gt;
+          &lt;img
+            src={BIKE_DETAIL}
+            alt=&quot;Cockpit detail&quot;
+            loading=&quot;lazy&quot;
+            className=&quot;aspect-[4/3] w-full object-cover&quot;
+          /&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/section&gt;
+  );
+}
+```
+
+### `src/components/SocialProof.tsx`
+
+Section.
+```tsx
+import { BadgeCheck, Star } from &quot;lucide-react&quot;;
+import { Reveal } from &quot;./Reveal&quot;;
+
+const CDN =
+  &quot;https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc&quot;;
+
+interface Testimonial {
+  type: &quot;video&quot; | &quot;image&quot;;
+  src: string;
+  poster?: string;
+  name: string;
+  location: string;
+  quote: string;
+}
+
+const TESTIMONIALS: Testimonial[] = [
+  {
+    type: &quot;video&quot;,
+    src: `${CDN}/hf_20260614_071259_43402115-9e68-4435-9866-8c570b89c789.mp4`,
+    poster: `${CDN}/hf_20260614_070953_c225070d-f0cb-44a5-965e-0f721708567d.jpeg`,
+    name: &quot;Marcus Thorne&quot;,
+    location: &quot;Miami, USA&quot;,
+    quote: &quot;The climbing is unreal — did my usual loop way faster, barely winded.&quot;,
+  },
+  {
+    type: &quot;image&quot;,
+    src: `${CDN}/hf_20260614_070959_07ff7833-b550-4219-9e3e-915f3295bed7.png`,
+    name: &quot;Camille Renaud&quot;,
+    location: &quot;Paris, FR&quot;,
+    quote: &quot;It turns every ride into the best part of my day. I&#x27;m obsessed.&quot;,
+  },
+  {
+    type: &quot;video&quot;,
+    src: `${CDN}/hf_20260614_071248_ec1e8023-d981-4dea-be1e-938f12978033.mp4`,
+    poster: `${CDN}/hf_20260614_070948_8065db6b-a632-4184-aac1-ebcee2d04ed5.jpeg`,
+    name: &quot;Lukas Nielsen&quot;,
+    location: &quot;Copenhagen, DK&quot;,
+    quote: &quot;Skeptical about full-suspension at this price. Then I rode it.&quot;,
+  },
+];
+
+function Stars() {
+  return (
+    &lt;div className=&quot;flex gap-1&quot;&gt;
+      {Array.from({ length: 5 }).map((_, i) =&gt; (
+        &lt;Star key={i} className=&quot;h-3.5 w-3.5 fill-red-500 text-red-500&quot; /&gt;
+      ))}
+    &lt;/div&gt;
+  );
+}
+
+export default function SocialProof() {
+  return (
+    &lt;section id=&quot;riders&quot; className=&quot;relative w-full bg-black px-6 py-24 sm:px-10 lg:px-16 lg:py-32&quot;&gt;
+      {/* Heading */}
+      &lt;div className=&quot;mx-auto max-w-4xl text-center&quot;&gt;
+        &lt;Reveal&gt;
+          &lt;span className=&quot;font-inter text-xs uppercase tracking-[0.3em] text-red-500&quot;&gt;
+            Real Riders. Real Trails.
+          &lt;/span&gt;
+        &lt;/Reveal&gt;
+        &lt;Reveal delay={100}&gt;
+          &lt;h2 className=&quot;mx-auto mt-5 font-podium text-[clamp(2.6rem,7vw,6rem)] uppercase leading-[0.95] tracking-tight text-white&quot;&gt;
+            Already Out There
+          &lt;/h2&gt;
+        &lt;/Reveal&gt;
+        &lt;Reveal delay={200}&gt;
+          &lt;p className=&quot;mx-auto mt-6 max-w-xl font-inter text-sm leading-relaxed text-white/60 sm:text-base&quot;&gt;
+            From Miami boulevards to Copenhagen bike lanes — riders are already
+            living on the VANGUARD. Here&#x27;s what it looks like.
+          &lt;/p&gt;
+        &lt;/Reveal&gt;
+      &lt;/div&gt;
+
+      {/* Cards — three vertical, side by side */}
+      &lt;div className=&quot;mx-auto mt-14 grid max-w-6xl grid-cols-1 gap-5 sm:grid-cols-3 sm:gap-6&quot;&gt;
+        {TESTIMONIALS.map((t, i) =&gt; (
+          &lt;Reveal key={t.name} delay={i * 120}&gt;
+            &lt;figure className=&quot;group relative aspect-[9/16] overflow-hidden rounded-2xl border border-white/10 bg-neutral-900&quot;&gt;
+              {t.type === &quot;video&quot; ? (
+                &lt;video
+                  src={t.src}
+                  poster={t.poster}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className=&quot;absolute inset-0 h-full w-full object-cover&quot;
+                /&gt;
+              ) : (
+                &lt;img
+                  src={t.src}
+                  alt={`${t.name}, ${t.location}`}
+                  loading=&quot;lazy&quot;
+                  className=&quot;absolute inset-0 h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105&quot;
+                /&gt;
+              )}
+
+              {/* Legibility gradient */}
+              &lt;div className=&quot;pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-black/30&quot; /&gt;
+
+              {/* Verified tag */}
+              &lt;div className=&quot;absolute left-4 top-4 flex items-center gap-1.5 rounded-full border border-white/15 bg-black/40 px-3 py-1 backdrop-blur-md&quot;&gt;
+                &lt;BadgeCheck className=&quot;h-3.5 w-3.5 text-red-500&quot; /&gt;
+                &lt;span className=&quot;font-inter text-[10px] uppercase tracking-widest text-white/80&quot;&gt;
+                  Verified Rider
+                &lt;/span&gt;
+              &lt;/div&gt;
+
+              {/* Caption */}
+              &lt;figcaption className=&quot;absolute inset-x-0 bottom-0 p-5&quot;&gt;
+                &lt;Stars /&gt;
+                &lt;p className=&quot;mt-3 font-inter text-sm leading-relaxed text-white&quot;&gt;
+                  &amp;ldquo;{t.quote}&amp;rdquo;
+                &lt;/p&gt;
+                &lt;div className=&quot;mt-4&quot;&gt;
+                  &lt;div className=&quot;font-podium text-lg uppercase tracking-wide text-white&quot;&gt;
+                    {t.name}
+                  &lt;/div&gt;
+                  &lt;div className=&quot;font-inter text-[11px] uppercase tracking-widest text-white/50&quot;&gt;
+                    {t.location}
+                  &lt;/div&gt;
+                &lt;/div&gt;
+              &lt;/figcaption&gt;
+            &lt;/figure&gt;
+          &lt;/Reveal&gt;
+        ))}
+      &lt;/div&gt;
+    &lt;/section&gt;
+  );
+}
+```
+
+### `src/components/FAQ.tsx`
+
+Section.
+```tsx
+import { useState } from &quot;react&quot;;
+import { Plus } from &quot;lucide-react&quot;;
+import { Reveal } from &quot;./Reveal&quot;;
+
+interface QA {
+  q: string;
+  a: string;
+}
+
+const FAQS: QA[] = [
+  {
+    q: &quot;What is the VANGUARD frame made of?&quot;,
+    a: &quot;Every VANGUARD is built around a monocoque carbon-fiber front triangle with a carbon or carbon-alloy rear, tuned for stiffness under power and compliance over the rough stuff.&quot;,
+  },
+  {
+    q: &quot;How much suspension travel does it have?&quot;,
+    a: &quot;160mm up front and 150mm out back, driven by a four-bar linkage that stays active under braking and pedaling alike.&quot;,
+  },
+  {
+    q: &quot;What&#x27;s covered under the warranty?&quot;,
+    a: &quot;Frames carry a lifetime warranty to the original owner. Suspension, drivetrain and finish components are covered for two years.&quot;,
+  },
+  {
+    q: &quot;How long does delivery take?&quot;,
+    a: &quot;Stock builds ship within 3–5 business days. Custom builds are hand-assembled and fitted, typically arriving in 2–3 weeks.&quot;,
+  },
+  {
+    q: &quot;Can I customize my build?&quot;,
+    a: &quot;Yes — choose your frame material, suspension tune, drivetrain, wheels and finish in the configurator, and we build it to spec.&quot;,
+  },
+  {
+    q: &quot;Which payment options are available?&quot;,
+    a: &quot;All major cards, Apple Pay, Google Pay and PayPal, plus interest-free financing over 6 or 12 months at checkout.&quot;,
+  },
+  {
+    q: &quot;Do you offer a test ride?&quot;,
+    a: &quot;Absolutely. Book a demo at any VANGUARD dealer, or schedule a doorstep test ride in select cities.&quot;,
+  },
+];
+
+export default function FAQ() {
+  const [open, setOpen] = useState&lt;number | null&gt;(0);
+
+  return (
+    &lt;section id=&quot;faq&quot; className=&quot;relative w-full bg-black px-6 py-24 sm:px-10 lg:px-16 lg:py-32&quot;&gt;
+      {/* Heading */}
+      &lt;div className=&quot;mx-auto max-w-3xl text-center&quot;&gt;
+        &lt;Reveal&gt;
+          &lt;h2 className=&quot;font-podium text-[clamp(2.6rem,7vw,5.5rem)] uppercase leading-[0.95] tracking-tight text-white&quot;&gt;
+            Frequently Asked Questions
+          &lt;/h2&gt;
+        &lt;/Reveal&gt;
+        &lt;Reveal delay={100}&gt;
+          &lt;p className=&quot;mx-auto mt-6 max-w-xl font-inter text-sm leading-relaxed text-white/50&quot;&gt;
+            If you can&#x27;t find an answer here, join the{&quot; &quot;}
+            &lt;a href=&quot;#&quot; className=&quot;font-semibold text-white hover:text-red-500&quot;&gt;
+              community forum
+            &lt;/a&gt;
+            , reach out on{&quot; &quot;}
+            &lt;a href=&quot;#&quot; className=&quot;font-semibold text-white hover:text-red-500&quot;&gt;
+              Twitter
+            &lt;/a&gt;
+            , or write to{&quot; &quot;}
+            &lt;a
+              href=&quot;mailto:support@vanguard.cc&quot;
+              className=&quot;font-semibold text-white hover:text-red-500&quot;
+            &gt;
+              support@vanguard.cc
+            &lt;/a&gt;
+            .
+          &lt;/p&gt;
+        &lt;/Reveal&gt;
+      &lt;/div&gt;
+
+      {/* Accordion */}
+      &lt;div className=&quot;mx-auto mt-14 max-w-3xl space-y-4&quot;&gt;
+        {FAQS.map((faq, i) =&gt; {
+          const isOpen = open === i;
+          return (
+            &lt;Reveal key={faq.q} delay={i * 60}&gt;
+              &lt;div className=&quot;overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] transition-colors hover:border-white/20&quot;&gt;
+                &lt;button
+                  type=&quot;button&quot;
+                  onClick={() =&gt; setOpen(isOpen ? null : i)}
+                  aria-expanded={isOpen}
+                  className=&quot;flex w-full items-center justify-between gap-4 px-6 py-5 text-left&quot;
+                &gt;
+                  &lt;span className=&quot;font-inter text-base text-white sm:text-lg&quot;&gt;
+                    {faq.q}
+                  &lt;/span&gt;
+                  &lt;Plus
+                    className={`h-5 w-5 shrink-0 text-white/70 transition-transform duration-300 ${
+                      isOpen ? &quot;rotate-45&quot; : &quot;&quot;
+                    }`}
+                  /&gt;
+                &lt;/button&gt;
+                &lt;div
+                  className={`grid transition-all duration-300 ease-out ${
+                    isOpen
+                      ? &quot;grid-rows-[1fr] opacity-100&quot;
+                      : &quot;grid-rows-[0fr] opacity-0&quot;
+                  }`}
+                &gt;
+                  &lt;div className=&quot;overflow-hidden&quot;&gt;
+                    &lt;p className=&quot;px-6 pb-6 font-inter text-sm leading-relaxed text-white/60&quot;&gt;
+                      {faq.a}
+                    &lt;/p&gt;
+                  &lt;/div&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/Reveal&gt;
+          );
+        })}
+      &lt;/div&gt;
+    &lt;/section&gt;
+  );
+}
+```
+
+### `src/components/ClosingCTA.tsx`
+
+Section.
+```tsx
+import { ArrowUpRight } from &quot;lucide-react&quot;;
+import { Reveal } from &quot;./Reveal&quot;;
+
+const CTA_VIDEO =
+  &quot;https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/hf_20260614_064935_718e8f10-d996-4ce3-915c-48940bd4de11.mp4&quot;;
+
+export default function ClosingCTA() {
+  return (
+    &lt;section
+      id=&quot;cta&quot;
+      className=&quot;relative flex min-h-[88vh] w-full items-center justify-center overflow-hidden bg-black px-6 py-28 text-center&quot;
+    &gt;
+      {/* Cinematic bike video backdrop */}
+      &lt;video
+        src={CTA_VIDEO}
+        autoPlay
+        muted
+        loop
+        playsInline
+        className=&quot;absolute inset-0 h-full w-full object-cover opacity-50&quot;
+      /&gt;
+
+      {/* Darkening + red glow */}
+      &lt;div className=&quot;pointer-events-none absolute inset-0 bg-gradient-to-b from-black via-black/55 to-black&quot; /&gt;
+      &lt;div className=&quot;pointer-events-none absolute left-1/2 top-1/2 h-[38rem] w-[38rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-red-600/20 blur-[130px]&quot; /&gt;
+
+      {/* Oversized ghost wordmark */}
+      &lt;span className=&quot;pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 select-none text-center font-podium text-[22vw] uppercase leading-none tracking-tighter text-white/[0.04]&quot;&gt;
+        Vanguard
+      &lt;/span&gt;
+
+      {/* Content */}
+      &lt;div className=&quot;relative z-10 mx-auto max-w-3xl&quot;&gt;
+        &lt;Reveal&gt;
+          &lt;span className=&quot;font-inter text-xs uppercase tracking-[0.3em] text-red-500&quot;&gt;
+            One Machine. Zero Compromise.
+          &lt;/span&gt;
+        &lt;/Reveal&gt;
+        &lt;Reveal delay={100}&gt;
+          &lt;h2 className=&quot;mx-auto mt-6 font-podium text-[clamp(3.2rem,11vw,9rem)] uppercase leading-[0.88] tracking-tight text-white&quot;&gt;
+            Built To Lead.
+          &lt;/h2&gt;
+        &lt;/Reveal&gt;
+        &lt;Reveal delay={170}&gt;
+          &lt;p className=&quot;mx-auto mt-6 max-w-xl font-inter text-sm leading-relaxed text-white/60 sm:text-base&quot;&gt;
+            Configure your geometry, choose your build, and ride away on the
+            machine that refuses to back down.
+          &lt;/p&gt;
+        &lt;/Reveal&gt;
+        &lt;Reveal delay={240}&gt;
+          &lt;div className=&quot;mt-10 flex flex-wrap items-center justify-center gap-4 sm:gap-6&quot;&gt;
+            &lt;a
+              href=&quot;#&quot;
+              className=&quot;group flex items-center gap-2 bg-red-600 px-7 py-4 font-inter text-xs uppercase tracking-widest text-white transition-colors hover:bg-red-700 sm:px-9&quot;
+            &gt;
+              Build Your Vanguard
+              &lt;ArrowUpRight className=&quot;h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5&quot; /&gt;
+            &lt;/a&gt;
+            &lt;a
+              href=&quot;#&quot;
+              className=&quot;flex items-center gap-2 border border-white/30 px-7 py-4 font-inter text-xs uppercase tracking-widest text-white backdrop-blur-sm transition-all hover:border-white/60 hover:bg-white/10 sm:px-9&quot;
+            &gt;
+              Book a Test Ride
+            &lt;/a&gt;
+          &lt;/div&gt;
+        &lt;/Reveal&gt;
+      &lt;/div&gt;
+    &lt;/section&gt;
+  );
+}
+```
+
+### `src/components/Footer.tsx`
+
+Footer.
+```tsx
+import { ArrowUpRight, Facebook, Instagram, Twitter, Youtube } from &quot;lucide-react&quot;;
+
+const FOOTER_BIKE =
+  &quot;https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/hf_20260614_095328_7807ba29-b137-43f0-9651-4ec6986c9129.png&quot;;
+
+const EXPLORE_LINKS = [
+  { label: &quot;Home&quot;, href: &quot;#home&quot; },
+  { label: &quot;The Anatomy&quot;, href: &quot;#anatomy&quot; },
+  { label: &quot;Why Vanguard&quot;, href: &quot;#why&quot; },
+  { label: &quot;Build Yours&quot;, href: &quot;#&quot; },
+];
+
+const COMPANY_LINKS = [
+  { label: &quot;The Studio&quot;, href: &quot;#&quot; },
+  { label: &quot;Find a Dealer&quot;, href: &quot;#&quot; },
+  { label: &quot;Warranty&quot;, href: &quot;#&quot; },
+  { label: &quot;Support&quot;, href: &quot;#&quot; },
+];
+
+const SOCIALS = [
+  { label: &quot;Instagram&quot;, icon: Instagram, href: &quot;#&quot; },
+  { label: &quot;YouTube&quot;, icon: Youtube, href: &quot;#&quot; },
+  { label: &quot;Twitter&quot;, icon: Twitter, href: &quot;#&quot; },
+  { label: &quot;Facebook&quot;, icon: Facebook, href: &quot;#&quot; },
+];
+
+export default function Footer() {
+  return (
+    &lt;footer
+      id=&quot;footer&quot;
+      className=&quot;relative w-full overflow-hidden bg-black&quot;
+    &gt;
+      {/* Bike in the background */}
+      &lt;img
+        src={FOOTER_BIKE}
+        alt=&quot;&quot;
+        aria-hidden=&quot;true&quot;
+        loading=&quot;lazy&quot;
+        className=&quot;pointer-events-none absolute left-1/2 top-1/2 w-[140%] max-w-none -translate-x-1/2 -translate-y-1/2 object-contain opacity-50 sm:w-[110%] lg:w-full&quot;
+      /&gt;
+      {/* Legibility overlays */}
+      &lt;div className=&quot;absolute inset-0 bg-gradient-to-b from-black via-black/55 to-black&quot; /&gt;
+      &lt;div className=&quot;absolute inset-0 bg-black/30&quot; /&gt;
+
+      {/* Content */}
+      &lt;div className=&quot;relative z-10 mx-auto flex min-h-[88vh] max-w-7xl flex-col justify-between px-6 py-20 sm:px-10 lg:px-16 lg:py-28&quot;&gt;
+        {/* Top — wordmark / call */}
+        &lt;div&gt;
+          &lt;span className=&quot;font-inter text-xs uppercase tracking-[0.3em] text-red-500&quot;&gt;
+            Conquer The Trail
+          &lt;/span&gt;
+          &lt;h2 className=&quot;mt-4 font-podium text-[clamp(3rem,11vw,9.5rem)] uppercase leading-[0.88] tracking-tight text-white&quot;&gt;
+            Vanguard
+          &lt;/h2&gt;
+          &lt;a
+            href=&quot;#&quot;
+            className=&quot;group mt-8 inline-flex items-center gap-2 bg-red-600 px-7 py-4 font-inter text-xs uppercase tracking-widest text-white transition-colors hover:bg-red-700 sm:px-9&quot;
+          &gt;
+            Build Your Vanguard
+            &lt;ArrowUpRight className=&quot;h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5&quot; /&gt;
+          &lt;/a&gt;
+        &lt;/div&gt;
+
+        {/* Middle — link columns */}
+        &lt;div className=&quot;mt-20 grid grid-cols-2 gap-10 sm:grid-cols-3 lg:grid-cols-4&quot;&gt;
+          {/* Explore */}
+          &lt;div&gt;
+            &lt;h4 className=&quot;font-inter text-[10px] uppercase tracking-[0.3em] text-white/40&quot;&gt;
+              Explore
+            &lt;/h4&gt;
+            &lt;ul className=&quot;mt-5 space-y-3&quot;&gt;
+              {EXPLORE_LINKS.map((link) =&gt; (
+                &lt;li key={link.label}&gt;
+                  &lt;a
+                    href={link.href}
+                    className=&quot;font-inter text-sm uppercase tracking-widest text-white/70 transition-colors hover:text-white&quot;
+                  &gt;
+                    {link.label}
+                  &lt;/a&gt;
+                &lt;/li&gt;
+              ))}
+            &lt;/ul&gt;
+          &lt;/div&gt;
+
+          {/* Company */}
+          &lt;div&gt;
+            &lt;h4 className=&quot;font-inter text-[10px] uppercase tracking-[0.3em] text-white/40&quot;&gt;
+              Company
+            &lt;/h4&gt;
+            &lt;ul className=&quot;mt-5 space-y-3&quot;&gt;
+              {COMPANY_LINKS.map((link) =&gt; (
+                &lt;li key={link.label}&gt;
+                  &lt;a
+                    href={link.href}
+                    className=&quot;font-inter text-sm uppercase tracking-widest text-white/70 transition-colors hover:text-white&quot;
+                  &gt;
+                    {link.label}
+                  &lt;/a&gt;
+                &lt;/li&gt;
+              ))}
+            &lt;/ul&gt;
+          &lt;/div&gt;
+
+          {/* Follow */}
+          &lt;div&gt;
+            &lt;h4 className=&quot;font-inter text-[10px] uppercase tracking-[0.3em] text-white/40&quot;&gt;
+              Follow
+            &lt;/h4&gt;
+            &lt;div className=&quot;mt-5 flex flex-wrap gap-3&quot;&gt;
+              {SOCIALS.map((social) =&gt; (
+                &lt;a
+                  key={social.label}
+                  href={social.href}
+                  aria-label={social.label}
+                  className=&quot;flex h-11 w-11 items-center justify-center border border-white/20 text-white/70 transition-all hover:border-white/60 hover:bg-white/10 hover:text-white&quot;
+                &gt;
+                  &lt;social.icon className=&quot;h-4 w-4&quot; /&gt;
+                &lt;/a&gt;
+              ))}
+            &lt;/div&gt;
+          &lt;/div&gt;
+
+          {/* Newsletter */}
+          &lt;div className=&quot;col-span-2 sm:col-span-3 lg:col-span-1&quot;&gt;
+            &lt;h4 className=&quot;font-inter text-[10px] uppercase tracking-[0.3em] text-white/40&quot;&gt;
+              Ride Reports
+            &lt;/h4&gt;
+            &lt;p className=&quot;mt-5 max-w-xs font-inter text-sm leading-relaxed text-white/60&quot;&gt;
+              New builds, trail drops and team news — straight to your inbox.
+            &lt;/p&gt;
+            &lt;form
+              className=&quot;mt-5 flex max-w-xs items-center border border-white/20 focus-within:border-white/60&quot;
+              onSubmit={(e) =&gt; e.preventDefault()}
+            &gt;
+              &lt;input
+                type=&quot;email&quot;
+                placeholder=&quot;Email address&quot;
+                className=&quot;w-full bg-transparent px-4 py-3 font-inter text-sm text-white placeholder:text-white/40 focus:outline-none&quot;
+              /&gt;
+              &lt;button
+                type=&quot;submit&quot;
+                aria-label=&quot;Subscribe&quot;
+                className=&quot;flex h-11 w-12 shrink-0 items-center justify-center text-white/70 transition-colors hover:text-white&quot;
+              &gt;
+                &lt;ArrowUpRight className=&quot;h-4 w-4&quot; /&gt;
+              &lt;/button&gt;
+            &lt;/form&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+
+        {/* Bottom bar */}
+        &lt;div className=&quot;mt-20 flex flex-col items-center justify-between gap-4 sm:flex-row&quot;&gt;
+          &lt;span className=&quot;font-podium text-xl font-bold uppercase tracking-wider text-white&quot;&gt;
+            VANGUARD
+          &lt;/span&gt;
+          &lt;span className=&quot;font-inter text-[10px] uppercase tracking-widest text-white/40&quot;&gt;
+            © {new Date().getFullYear()} Vanguard Cycles — Conquer The Trail
+          &lt;/span&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/footer&gt;
+  );
+}
+```
+</textarea>
+  <script>
+    var ta = document.getElementById('prompt');
+    var status = document.getElementById('status');
+    function selectAll(){ ta.focus(); ta.select(); }
+    function copyAll(){
+      ta.select();
+      var done = function(){ status.textContent='Copied ✓'; setTimeout(function(){status.textContent='';},2000); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(ta.value).then(done, function(){ document.execCommand('copy'); done(); });
+      } else { document.execCommand('copy'); done(); }
+    }
+  </script>
+</body>
+</html>
