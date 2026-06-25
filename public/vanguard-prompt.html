@@ -27,8 +27,8 @@
 <body>
   <header>
     <div>
-      <h1>VANGUARD — Full Build Prompt</h1>
-      <div class="sub">Every section's exact source. Click Copy, then paste anywhere.</div>
+      <h1>VANGUARD — Full Build Prompt (complete)</h1>
+      <div class="sub">All 19 files in render order. Click Copy, then paste anywhere.</div>
     </div>
     <div class="btns">
       <span id="status"></span>
@@ -36,16 +36,17 @@
       <button onclick="copyAll()">Copy</button>
     </div>
   </header>
-  <textarea id="prompt" readonly spellcheck="false"># BUILD PROMPT — &quot;VANGUARD&quot; full one-page site (motorcycle / brand-studio build)
+  <textarea id="prompt" readonly spellcheck="false"># BUILD PROMPT — &quot;VANGUARD&quot; full one-page site (complete)
 
 Build a complete, single-page, scroll-based marketing site for **VANGUARD**
 using **Vite + React 18 + TypeScript + Tailwind CSS + lucide-react**. It is a
-dark, premium one-pager: a fullscreen video hero followed by a sequence of
-scroll-revealed product sections, ending in a CTA and footer. Reproduce it
-exactly from the files below — fonts, Tailwind config, global CSS (animation
-utilities, scroll-reveal, image feather mask, bike-roll keyframes), the shared
-`useReveal` IntersectionObserver hook + `Reveal` wrapper, the `bikeParts` data,
-and every section component.
+dark, premium one-pager: a fullscreen video hero followed by scroll-revealed
+product sections, ending in a CTA and footer. Reproduce it EXACTLY from the
+files below — fonts, Tailwind config, global CSS (animation utilities,
+scroll-reveal, image feather mask, bike-roll keyframes), the shared `useReveal`
+IntersectionObserver hook + `Reveal` wrapper, the `bikeParts` data, the pinned
+`BikeShowcase`, and every section component. This is the FULL site — nothing
+omitted.
 
 ## Stack &amp; dependencies
 - Vite + React 18 + TypeScript
@@ -53,10 +54,17 @@ and every section component.
 - lucide-react (icons)
 - No other UI libraries.
 
-## Section order (src/App.tsx)
-Hero → Compartments → Facilities → CustomBike → Bento → RollOut → SocialProof →
-FAQ → ClosingCTA → Footer. (A `BikeShowcase` component also exists in the repo
-but is NOT rendered by App — omit it.)
+## Section order (rendered by src/App.tsx, top to bottom)
+1. Hero
+2. Compartments  (renders the pinned BikeShowcase inside it)
+3. Facilities
+4. CustomBike
+5. Bento
+6. RollOut
+7. SocialProof
+8. FAQ
+9. ClosingCTA
+10. Footer
 
 ## Notes
 - Imagery/video are Higgsfield CDN URLs embedded in the components / `bikeParts`
@@ -66,7 +74,7 @@ but is NOT rendered by App — omit it.)
 
 ---
 
-## CONFIG &amp; SHARED FILES
+## 1) CONFIG &amp; SHARED FILES
 
 ### `index.html`
 
@@ -437,7 +445,7 @@ export function Reveal({
 
 ### `src/data/bikeParts.ts`
 
-Shared data (parts, images, copy).
+Shared data (parts, images, copy) used by BikeShowcase.
 ```ts
 export interface PartSpec {
   value: string;
@@ -555,11 +563,11 @@ export const BIKE_PARTS: BikePart[] = [
 
 ---
 
-## SECTION COMPONENTS
+## 2) SECTION COMPONENTS (in render order)
 
 ### `src/components/Hero.tsx`
 
-Fullscreen video hero + navbar + mobile menu.
+1 — Fullscreen video hero + navbar + mobile menu.
 ```tsx
 import { useState } from &quot;react&quot;;
 import { ArrowUpRight, Award, Crown, X } from &quot;lucide-react&quot;;
@@ -773,7 +781,7 @@ export default function Hero() {
 
 ### `src/components/Compartments.tsx`
 
-Section.
+2 — Anatomy intro; renders BikeShowcase below.
 ```tsx
 import BikeShowcase from &quot;./BikeShowcase&quot;;
 import { Reveal } from &quot;./Reveal&quot;;
@@ -809,9 +817,191 @@ export default function Compartments() {
 }
 ```
 
+### `src/components/BikeShowcase.tsx`
+
+2b — Pinned scroll-zoom bike anatomy (used by Compartments).
+```tsx
+import { useEffect, useRef, useState } from &quot;react&quot;;
+import { BIKE_IMAGE, BIKE_PARTS } from &quot;../data/bikeParts&quot;;
+
+const clamp = (v: number, min: number, max: number) =&gt;
+  Math.min(max, Math.max(min, v));
+const lerp = (a: number, b: number, t: number) =&gt; a + (b - a) * t;
+const easeInOutCubic = (t: number) =&gt;
+  t &lt; 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+const STEPS = BIKE_PARTS.length;
+
+export default function BikeShowcase() {
+  const sectionRef = useRef&lt;HTMLDivElement&gt;(null);
+  const [view, setView] = useState({ scale: 1, ox: 50, oy: 52 });
+  // Continuous position along the steps (0 .. STEPS-1).
+  const [pos, setPos] = useState(0);
+
+  useEffect(() =&gt; {
+    let raf = 0;
+
+    const update = () =&gt; {
+      const el = sectionRef.current;
+      if (!el) return;
+
+      const rect = el.getBoundingClientRect();
+      const total = el.offsetHeight - window.innerHeight;
+      const progress = clamp(-rect.top / Math.max(total, 1), 0, 1);
+      const p = progress * (STEPS - 1);
+
+      const i = clamp(Math.floor(p), 0, STEPS - 2);
+      const frac = easeInOutCubic(clamp(p - i, 0, 1));
+      const a = BIKE_PARTS[i];
+      const b = BIKE_PARTS[i + 1];
+
+      setView({
+        scale: lerp(a.scale, b.scale, frac),
+        ox: lerp(a.origin[0], b.origin[0], frac),
+        oy: lerp(a.origin[1], b.origin[1], frac),
+      });
+      setPos(p);
+    };
+
+    const onScroll = () =&gt; {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener(&quot;scroll&quot;, onScroll, { passive: true });
+    window.addEventListener(&quot;resize&quot;, onScroll);
+    return () =&gt; {
+      window.removeEventListener(&quot;scroll&quot;, onScroll);
+      window.removeEventListener(&quot;resize&quot;, onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  return (
+    &lt;section
+      ref={sectionRef}
+      id=&quot;anatomy&quot;
+      className=&quot;relative bg-black&quot;
+      style={{ height: `${STEPS * 100}vh` }}
+    &gt;
+      {/* Pinned stage */}
+      &lt;div className=&quot;sticky top-0 h-screen w-full overflow-hidden bg-black&quot;&gt;
+        {/*
+          Aspect-locked 16:9 frame, centered and sized to fit the viewport.
+          Because the image exactly fills this box, transform-origin percentages
+          map 1:1 to positions on the image on every screen — so &quot;Saddle&quot;
+          really centers the saddle, &quot;Handlebar&quot; the handlebar, etc.
+        */}
+        &lt;div className=&quot;absolute left-1/2 top-1/2 aspect-video w-full max-w-[177.78vh] -translate-x-1/2 -translate-y-1/2&quot;&gt;
+          &lt;img
+            src={BIKE_IMAGE}
+            alt=&quot;The VANGUARD mountain bike&quot;
+            className=&quot;h-full w-full object-cover will-change-transform&quot;
+            style={{
+              transform: `scale(${view.scale})`,
+              transformOrigin: `${view.ox}% ${view.oy}%`,
+              transition: &quot;transform 250ms ease-out&quot;,
+            }}
+          /&gt;
+        &lt;/div&gt;
+
+        {/* Edge vignette to anchor the text */}
+        &lt;div className=&quot;pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/10 to-transparent&quot; /&gt;
+        &lt;div className=&quot;pointer-events-none absolute inset-y-0 left-0 w-2/3 bg-gradient-to-r from-black/80 to-transparent&quot; /&gt;
+
+        {/* Progress rail */}
+        &lt;div className=&quot;absolute right-6 top-1/2 z-20 hidden -translate-y-1/2 flex-col items-center gap-3 sm:flex lg:right-10&quot;&gt;
+          {BIKE_PARTS.map((part, idx) =&gt; {
+            const active = Math.round(pos) === idx;
+            return (
+              &lt;div key={part.id} className=&quot;flex items-center gap-3&quot;&gt;
+                &lt;span
+                  className={`font-inter text-[10px] tracking-widest transition-colors duration-300 ${
+                    active ? &quot;text-white&quot; : &quot;text-white/30&quot;
+                  }`}
+                &gt;
+                  {part.index || &quot;00&quot;}
+                &lt;/span&gt;
+                &lt;span
+                  className={`h-px transition-all duration-300 ${
+                    active ? &quot;w-8 bg-red-500&quot; : &quot;w-4 bg-white/20&quot;
+                  }`}
+                /&gt;
+              &lt;/div&gt;
+            );
+          })}
+        &lt;/div&gt;
+
+        {/* Text panels — each fades in as its step becomes active */}
+        {BIKE_PARTS.map((part, idx) =&gt; {
+          const dist = Math.abs(pos - idx);
+          const opacity = clamp(1 - dist / 0.55, 0, 1);
+          return (
+            &lt;div
+              key={part.id}
+              className=&quot;pointer-events-none absolute bottom-16 left-6 z-10 max-w-md sm:bottom-20 sm:left-10 lg:left-16&quot;
+              style={{
+                opacity,
+                transform: `translateY(${(1 - opacity) * 24}px)`,
+              }}
+            &gt;
+              &lt;div className=&quot;flex items-center gap-3&quot;&gt;
+                {part.index &amp;&amp; (
+                  &lt;span className=&quot;font-inter text-xs font-semibold tracking-[0.3em] text-red-500&quot;&gt;
+                    {part.index}
+                  &lt;/span&gt;
+                )}
+                &lt;span className=&quot;h-px w-10 bg-red-500/60&quot; /&gt;
+                &lt;span className=&quot;font-inter text-xs uppercase tracking-[0.3em] text-white/60&quot;&gt;
+                  {part.label}
+                &lt;/span&gt;
+              &lt;/div&gt;
+
+              &lt;h3 className=&quot;mt-4 font-podium text-[clamp(2.4rem,7vw,5rem)] uppercase leading-[0.95] tracking-tight text-white&quot;&gt;
+                {part.name}
+              &lt;/h3&gt;
+
+              &lt;p className=&quot;mt-4 max-w-sm font-inter text-sm leading-relaxed text-white/75 sm:text-base&quot;&gt;
+                {part.description}
+              &lt;/p&gt;
+
+              {part.specs.length &gt; 0 &amp;&amp; (
+                &lt;div className=&quot;mt-6 flex flex-wrap gap-6 sm:gap-10&quot;&gt;
+                  {part.specs.map((spec) =&gt; (
+                    &lt;div key={spec.label}&gt;
+                      &lt;div className=&quot;font-inter text-xl font-bold tracking-tight text-white sm:text-2xl&quot;&gt;
+                        {spec.value}
+                      &lt;/div&gt;
+                      &lt;div className=&quot;mt-1 text-[9px] uppercase tracking-widest text-white/50&quot;&gt;
+                        {spec.label}
+                      &lt;/div&gt;
+                    &lt;/div&gt;
+                  ))}
+                &lt;/div&gt;
+              )}
+            &lt;/div&gt;
+          );
+        })}
+
+        {/* Scroll hint (fades out after the first step) */}
+        &lt;div
+          className=&quot;pointer-events-none absolute bottom-8 left-1/2 z-10 -translate-x-1/2 sm:hidden&quot;
+          style={{ opacity: clamp(1 - pos, 0, 1) }}
+        &gt;
+          &lt;span className=&quot;font-inter text-[10px] uppercase tracking-[0.3em] text-white/50&quot;&gt;
+            Scroll
+          &lt;/span&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/section&gt;
+  );
+}
+```
+
 ### `src/components/Facilities.tsx`
 
-Section.
+3 — Facilities &amp; features + promo band.
 ```tsx
 import type { LucideIcon } from &quot;lucide-react&quot;;
 import { Bike, Cog, ShoppingBag } from &quot;lucide-react&quot;;
@@ -959,7 +1149,7 @@ export default function Facilities() {
 
 ### `src/components/CustomBike.tsx`
 
-Section.
+4 — Custom bike detail grid.
 ```tsx
 import { ArrowRight, Plus } from &quot;lucide-react&quot;;
 import { Reveal } from &quot;./Reveal&quot;;
@@ -1112,7 +1302,7 @@ export default function CustomBike() {
 
 ### `src/components/Bento.tsx`
 
-Section.
+5 — Why Vanguard bento grid.
 ```tsx
 import type { ReactNode } from &quot;react&quot;;
 import { Reveal } from &quot;./Reveal&quot;;
@@ -1269,7 +1459,7 @@ export default function Bento() {
 
 ### `src/components/RollOut.tsx`
 
-Section.
+6 — Rolling-bike marquee section.
 ```tsx
 import { Reveal } from &quot;./Reveal&quot;;
 
@@ -1366,7 +1556,7 @@ export default function RollOut() {
 
 ### `src/components/SocialProof.tsx`
 
-Section.
+7 — Rider testimonials.
 ```tsx
 import { BadgeCheck, Star } from &quot;lucide-react&quot;;
 import { Reveal } from &quot;./Reveal&quot;;
@@ -1503,7 +1693,7 @@ export default function SocialProof() {
 
 ### `src/components/FAQ.tsx`
 
-Section.
+8 — FAQ accordion.
 ```tsx
 import { useState } from &quot;react&quot;;
 import { Plus } from &quot;lucide-react&quot;;
@@ -1626,7 +1816,7 @@ export default function FAQ() {
 
 ### `src/components/ClosingCTA.tsx`
 
-Section.
+9 — Closing call to action.
 ```tsx
 import { ArrowUpRight } from &quot;lucide-react&quot;;
 import { Reveal } from &quot;./Reveal&quot;;
@@ -1702,7 +1892,7 @@ export default function ClosingCTA() {
 
 ### `src/components/Footer.tsx`
 
-Footer.
+10 — Footer.
 ```tsx
 import { ArrowUpRight, Facebook, Instagram, Twitter, Youtube } from &quot;lucide-react&quot;;
 
