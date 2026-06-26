@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ArrowUpRight, ChevronDown } from "lucide-react";
 import { Tag } from "./clinicShared";
 import { MEDIA } from "../data/programs";
+import { useReveal } from "../lib/anim";
 
 const STEPS = [
   {
@@ -28,17 +29,19 @@ const STEPS = [
 
 export default function ScheduleSection() {
   const [open, setOpen] = useState(0);
+  const ref = useRef<HTMLElement>(null);
+  useReveal(ref);
 
   return (
-    <section id="how" className="relative z-10 bg-white px-6 py-20 sm:px-10 lg:px-16">
+    <section ref={ref} id="how" className="relative z-10 bg-white px-6 py-20 sm:px-10 lg:px-16">
       <div className="mx-auto max-w-6xl">
-        <div className="border-t border-black/10 pt-10">
+        <div data-reveal className="border-t border-black/10 pt-10">
           <Tag n="02" label="How it works" />
         </div>
 
         <div className="mt-8 grid gap-10 lg:grid-cols-2">
           {/* Left */}
-          <div>
+          <div data-reveal>
             <h2 className="font-inter text-[clamp(28px,3.6vw,42px)] font-normal leading-[1.1] tracking-tight text-[#2c2c2c]">
               <span className="text-[#e8743b]">Get going:</span>
               <br />
@@ -61,7 +64,7 @@ export default function ScheduleSection() {
           </div>
 
           {/* Right accordion */}
-          <div className="flex flex-col">
+          <div data-reveal className="flex flex-col">
             {STEPS.map((s, idx) => {
               const isOpen = open === idx;
               return (

@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Lock, Menu, X } from "lucide-react";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const VIDEO_SRC =
   "https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/hf_20260626_144824_263da7e2-a322-4e93-a6d9-b8098092d02f.mp4";
@@ -55,6 +58,24 @@ export default function WanderfulHero() {
       window.removeEventListener("mousemove", onMove);
       cancelAnimationFrame(raf);
     };
+  }, []);
+
+  // Subtle scroll-zoom on the hero video
+  useEffect(() => {
+    const el = videoBgRef.current;
+    if (!el) return;
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        el,
+        { scale: 1.08 },
+        {
+          scale: 1.22,
+          ease: "none",
+          scrollTrigger: { trigger: "#top", start: "top top", end: "bottom top", scrub: true },
+        }
+      );
+    });
+    return () => ctx.revert();
   }, []);
 
   const link = scrolled

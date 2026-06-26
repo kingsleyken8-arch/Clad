@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ArrowUpRight, ChevronLeft, ChevronRight, Plus, Bot } from "lucide-react";
 import { Tag } from "./clinicShared";
 import { MEDIA } from "../data/programs";
+import { useReveal } from "../lib/anim";
 
 interface Plan {
   name: string;
@@ -24,20 +25,24 @@ export default function ProgramsSection() {
   const small1 = PLANS[(i + 1) % n];
   const small2 = PLANS[(i + 2) % n];
   const move = (d: number) => setI((p) => (p + d + n) % n);
+  const ref = useRef<HTMLElement>(null);
+  useReveal(ref);
 
   return (
-    <section id="plans" className="relative z-10 bg-white px-6 py-20 sm:px-10 lg:px-16">
+    <section ref={ref} id="plans" className="relative z-10 bg-white px-6 py-20 sm:px-10 lg:px-16">
       <div className="mx-auto max-w-6xl">
         <div className="flex flex-col gap-6 border-t border-black/10 pt-10 md:flex-row md:items-start md:justify-between">
-          <Tag n="01" label="Plans" />
-          <h2 className="max-w-md font-inter text-[clamp(26px,3.4vw,38px)] font-normal leading-tight tracking-tight text-[#2c2c2c] md:text-right">
+          <div data-reveal>
+            <Tag n="01" label="Plans" />
+          </div>
+          <h2 data-reveal className="max-w-md font-inter text-[clamp(26px,3.4vw,38px)] font-normal leading-tight tracking-tight text-[#2c2c2c] md:text-right">
             Built for every kind of work
           </h2>
         </div>
 
         <div className="mt-10 grid gap-5 lg:grid-cols-2">
           {/* Featured */}
-          <article className="group relative h-[24rem] overflow-hidden rounded-3xl">
+          <article data-reveal className="group relative h-[24rem] overflow-hidden rounded-3xl">
             <img
               key={featured.img + i}
               src={featured.img}
@@ -69,7 +74,7 @@ export default function ProgramsSection() {
           </article>
 
           {/* Right column */}
-          <div className="flex flex-col gap-5">
+          <div data-reveal className="flex flex-col gap-5">
             <div className="grid grid-cols-2 gap-5">
               <article className="group relative h-[12rem] overflow-hidden rounded-3xl">
                 <img

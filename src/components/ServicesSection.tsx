@@ -1,5 +1,7 @@
+import { useRef } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { MEDIA } from "../data/programs";
+import { useReveal } from "../lib/anim";
 
 interface Card {
   title: string;
@@ -38,10 +40,12 @@ function Wave() {
 }
 
 export default function ServicesSection() {
+  const ref = useRef<HTMLElement>(null);
+  useReveal(ref);
   return (
-    <section id="features" className="relative z-10 bg-white px-6 pb-24 pt-4 sm:px-10 lg:px-16">
+    <section ref={ref} id="features" className="relative z-10 bg-white px-6 pb-24 pt-4 sm:px-10 lg:px-16">
       <div className="mx-auto max-w-6xl">
-        <h2 className="font-inter text-[clamp(28px,4vw,44px)] font-normal tracking-tight text-[#8f8f8f]">
+        <h2 data-reveal className="font-inter text-[clamp(28px,4vw,44px)] font-normal tracking-tight text-[#8f8f8f]">
           What Milo can do
         </h2>
 
@@ -51,6 +55,7 @@ export default function ServicesSection() {
               <a
                 key={c.title}
                 href="#plans"
+                data-reveal
                 className="group relative block h-[15.5rem] overflow-hidden rounded-2xl"
               >
                 <img
@@ -74,6 +79,7 @@ export default function ServicesSection() {
               <a
                 key={c.title}
                 href="#plans"
+                data-reveal
                 className="group relative block h-[15.5rem] overflow-hidden rounded-2xl bg-[#f4f3f1]"
               >
                 <Wave />

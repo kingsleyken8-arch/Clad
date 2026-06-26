@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ArrowUpRight, ChevronRight, Quote, Hexagon, Building2, Sparkles, Rocket } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Tag, Avatar } from "./clinicShared";
 import { MEDIA } from "../data/programs";
+import { useReveal } from "../lib/anim";
 
 interface T {
   brand: string;
@@ -52,17 +53,19 @@ export default function CommunitySection() {
   const [page, setPage] = useState(0);
   const pages = Math.ceil(TESTIMONIALS.length / 2);
   const shown = TESTIMONIALS.slice(page * 2, page * 2 + 2);
+  const ref = useRef<HTMLElement>(null);
+  useReveal(ref);
 
   return (
     <>
-      <section id="community" className="relative z-10 bg-white px-6 py-20 sm:px-10 lg:px-16">
+      <section ref={ref} id="community" className="relative z-10 bg-white px-6 py-20 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-6xl">
-          <div className="border-t border-black/10 pt-10">
+          <div data-reveal className="border-t border-black/10 pt-10">
             <Tag n="04" label="Reviews" />
           </div>
 
           <div className="mt-8 grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
-            <div>
+            <div data-reveal>
               <div className="overflow-hidden rounded-3xl">
                 <img
                   src={MEDIA.meadow}
@@ -89,7 +92,7 @@ export default function CommunitySection() {
 
             <div className="grid gap-5 sm:grid-cols-2">
               {shown.map((t) => (
-                <article key={t.name} className="flex flex-col rounded-3xl bg-[#f4f3f1] p-6">
+                <article key={t.name} data-reveal className="flex flex-col rounded-3xl bg-[#f4f3f1] p-6">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-2">
                       <t.brandIcon size={18} className="text-[#2c2c2c]" />
