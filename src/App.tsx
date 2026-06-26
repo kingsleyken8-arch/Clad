@@ -1,5 +1,5 @@
-import BudsLanding from "./components/BudsLanding";
+import WanderfulHero from "./components/WanderfulHero";
 
 export default function App() {
-  return <BudsLanding />;
+  return <WanderfulHero />;
 }
