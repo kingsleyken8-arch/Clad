@@ -2,47 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-html,
-body,
-#root {
-  width: 100%;
-}
-
-body {
-  font-family: "Inter", system-ui, sans-serif;
-  background: #08070b;
-  color: #fff;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* Concentric orange ripple glow behind the hero */
-.hero-glow {
-  background:
-    radial-gradient(circle at 50% 42%, rgba(255, 106, 43, 0.45), transparent 42%),
-    repeating-radial-gradient(
-      circle at 50% 42%,
-      transparent 0 30px,
-      rgba(255, 106, 43, 0.12) 30px 32px
-    );
-  -webkit-mask: radial-gradient(circle at 50% 42%, #000 0%, transparent 68%);
-  mask: radial-gradient(circle at 50% 42%, #000 0%, transparent 68%);
-}
-
-@keyframes float-y {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-.animate-floaty { animation: float-y 5s ease-in-out infinite; }
-
-@media (prefers-reduced-motion: reduce) {
-  .animate-floaty { animation: none; }
+@layer base {
+  html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    font-family: 'Open Sauce One', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 }
