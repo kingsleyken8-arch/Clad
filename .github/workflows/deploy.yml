@@ -2,7 +2,10 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [claude/brave-carson-kl4wal, claude/great-ramanujan-6gq2v7]
+    branches:
+      - claude/brave-carson-kl4wal
+      - claude/great-ramanujan-6gq2v7
+      - claude/ace-breaker-game-analysis-5rs95l
   workflow_dispatch:
 
 permissions:
