@@ -69,18 +69,18 @@ function Nav() {
         </a>
 
         <nav
-          className={`flex items-center gap-1 rounded-full p-1.5 pl-2 ring-1 transition ${
+          className={`flex items-center gap-2 rounded-2xl p-2 pl-4 ring-1 transition ${
             scrolled
               ? "bg-black/[0.04] ring-black/10"
               : "bg-black/25 ring-white/10 backdrop-blur-md"
           }`}
         >
-          <ul className="hidden items-center gap-1 md:flex">
+          <ul className="hidden items-center gap-2 md:flex lg:gap-3">
             {NAV.map((n) => (
               <li key={n.label}>
                 <a
                   href={n.href}
-                  className={`rounded-full px-3.5 py-2 text-sm font-medium transition ${
+                  className={`rounded-xl px-4 py-2.5 text-sm font-medium transition ${
                     scrolled
                       ? "text-[#5b554c] hover:bg-black/5 hover:text-[#1c1a17]"
                       : "text-white/85 hover:bg-white/10 hover:text-white"
@@ -93,7 +93,7 @@ function Nav() {
           </ul>
           <a
             href="#cta"
-            className="rounded-full bg-white px-5 py-2 text-sm font-semibold text-neutral-900 shadow-sm transition hover:bg-white/90"
+            className="rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-neutral-900 shadow-sm transition hover:bg-white/90"
           >
             Login
           </a>
@@ -117,7 +117,7 @@ function Hero() {
 
         <div className="relative z-10 flex h-full flex-col">
           <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
-            <span className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.18em] text-white ring-1 ring-white/25 backdrop-blur-md">
+            <span className="mb-6 inline-flex items-center gap-2 rounded-2xl bg-white/15 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.18em] text-white ring-1 ring-white/25 backdrop-blur-md">
               <Sparkles className="h-3.5 w-3.5" /> Interior intelligence
             </span>
             <h1 className="font-body text-4xl font-medium leading-[1.04] tracking-tight text-white drop-shadow-sm sm:text-6xl lg:text-7xl">
@@ -130,13 +130,13 @@ function Hero() {
             <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
               <a
                 href="#cta"
-                className="inline-flex items-center rounded-full bg-white px-7 py-3.5 text-sm font-semibold text-neutral-900 shadow-lg shadow-black/20 transition hover:-translate-y-0.5 hover:bg-white/95 sm:text-base"
+                className="inline-flex items-center rounded-2xl bg-white px-7 py-3.5 text-sm font-semibold text-neutral-900 shadow-lg shadow-black/20 transition hover:-translate-y-0.5 hover:bg-white/95 sm:text-base"
               >
                 Start free decoration
               </a>
               <a
                 href="#platform"
-                className="inline-flex items-center gap-1.5 rounded-full px-6 py-3.5 text-sm font-semibold text-white ring-1 ring-white/35 backdrop-blur-md transition hover:bg-white/10 sm:text-base"
+                className="inline-flex items-center gap-1.5 rounded-2xl px-6 py-3.5 text-sm font-semibold text-white ring-1 ring-white/35 backdrop-blur-md transition hover:bg-white/10 sm:text-base"
               >
                 See how it works <ArrowUpRight className="h-4 w-4" />
               </a>
@@ -153,7 +153,7 @@ function Hero() {
               <a
                 href="#product"
                 aria-label="Explore"
-                className="flex h-12 w-12 items-center justify-center rounded-full text-white ring-1 ring-white/30 backdrop-blur-md transition hover:bg-white/10"
+                className="flex h-12 w-12 items-center justify-center rounded-2xl text-white ring-1 ring-white/30 backdrop-blur-md transition hover:bg-white/10"
               >
                 <ArrowUpRight className="h-5 w-5" />
               </a>
@@ -173,7 +173,7 @@ function HeroPill({ children, href }: { children: React.ReactNode; href: string 
   return (
     <a
       href={href}
-      className="rounded-full px-5 py-3 text-sm font-medium text-white ring-1 ring-white/30 backdrop-blur-md transition hover:bg-white/10"
+      className="rounded-2xl px-5 py-3 text-sm font-medium text-white ring-1 ring-white/30 backdrop-blur-md transition hover:bg-white/10"
     >
       {children}
     </a>
@@ -319,7 +319,7 @@ function Platform() {
                 "Exports: floor plan, palette, shopping list",
               ].map((t) => (
                 <li key={t} className="flex items-start gap-3">
-                  <span className="mt-0.5 inline-flex h-5 w-5 flex-none items-center justify-center rounded-full bg-[#cdbf9c] text-[#1c1a17]">
+                  <span className="mt-0.5 inline-flex h-5 w-5 flex-none items-center justify-center rounded-md bg-[#cdbf9c] text-[#1c1a17]">
                     <Check className="h-3.5 w-3.5" />
                   </span>
                   <span className="text-[15px] text-white/85">{t}</span>
@@ -430,13 +430,13 @@ function CTA() {
         <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
           <a
             href="#top"
-            className="inline-flex items-center rounded-full bg-white px-7 py-3.5 text-sm font-semibold text-neutral-900 transition hover:-translate-y-0.5 hover:bg-white/95 sm:text-base"
+            className="inline-flex items-center rounded-2xl bg-white px-7 py-3.5 text-sm font-semibold text-neutral-900 transition hover:-translate-y-0.5 hover:bg-white/95 sm:text-base"
           >
             Start free decoration
           </a>
           <a
             href="#customers"
-            className="inline-flex items-center gap-1.5 rounded-full px-6 py-3.5 text-sm font-semibold text-white ring-1 ring-white/25 transition hover:bg-white/10 sm:text-base"
+            className="inline-flex items-center gap-1.5 rounded-2xl px-6 py-3.5 text-sm font-semibold text-white ring-1 ring-white/25 transition hover:bg-white/10 sm:text-base"
           >
             Talk to sales <ArrowUpRight className="h-4 w-4" />
           </a>
