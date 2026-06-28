@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import AceBreaker from "./components/AceBreaker";
-import VertexHero from "./components/VertexHero";
+import VertexSite from "./components/VertexSite";
 
 /**
  * Tiny hash router so both experiences ship from one build:
- *   #/hero  -> the VertexAI hero section (Higgsfield painting background)
- *   (default) -> the Ace Breaker game
+ *   (default) -> the VertexAI website (Higgsfield painting hero)
+ *   #/game    -> the Ace Breaker game
  */
 function useHashRoute() {
   const [hash, setHash] = useState(() => window.location.hash);
@@ -19,6 +19,6 @@ function useHashRoute() {
 
 export default function App() {
   const hash = useHashRoute();
-  if (hash.startsWith("#/hero") || hash.startsWith("#hero")) return <VertexHero />;
-  return <AceBreaker />;
+  if (hash.startsWith("#/game") || hash.startsWith("#game")) return <AceBreaker />;
+  return <VertexSite />;
 }
