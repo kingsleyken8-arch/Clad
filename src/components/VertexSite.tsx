@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import {
   ArrowUpRight,
   Check,
@@ -8,6 +8,60 @@ import {
   Sparkles,
   Star,
 } from "lucide-react";
+import "./vertex-anim.css";
+
+/* ----------------------------- reveal helpers ----------------------------- */
+/** Observe an element and report when it first scrolls into view. */
+function useInView<T extends HTMLElement>() {
+  const ref = useRef<T>(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.15, rootMargin: "0px 0px -8% 0px" }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  return { ref, inView };
+}
+
+/**
+ * Wraps content and adds `.is-in` to trigger child `.ar` / `.ar-line`
+ * reveals. `appear` plays on mount (hero); otherwise it plays on scroll.
+ */
+function Reveal({
+  children,
+  className = "",
+  appear = false,
+}: {
+  children: ReactNode;
+  className?: string;
+  appear?: boolean;
+}) {
+  const { ref, inView } = useInView<HTMLDivElement>();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    const r = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(r);
+  }, []);
+  const shown = appear ? mounted : inView;
+  return (
+    <div ref={ref} className={`${shown ? "is-in" : ""} ${className}`}>
+      {children}
+    </div>
+  );
+}
+
+/** Inline `--i` stagger index helper. */
+const si = (i: number) => ({ "--i": i } as CSSProperties);
 
 /**
  * VertexAI — a full single-page marketing website built around the
@@ -115,19 +169,28 @@ function Hero() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/10 to-black/45" />
 
-        <div className="relative z-10 flex h-full flex-col">
+        <Reveal appear className="relative z-10 flex h-full flex-col">
           <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
-            <span className="mb-6 inline-flex items-center gap-2 rounded-2xl bg-white/15 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.18em] text-white ring-1 ring-white/25 backdrop-blur-md">
+            <span
+              className="ar mb-6 inline-flex items-center gap-2 rounded-2xl bg-white/15 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.18em] text-white ring-1 ring-white/25 backdrop-blur-md"
+              style={si(0)}
+            >
               <Sparkles className="h-3.5 w-3.5" /> Interior intelligence
             </span>
             <h1 className="font-body text-4xl font-medium leading-[1.04] tracking-tight text-white drop-shadow-sm sm:text-6xl lg:text-7xl">
-              Meet VertexAI.
-              <br />
-              <span className="font-display italic">Redefine space</span> with
-              <br />
-              intelligent design
+              <span className="ar-line" style={si(1)}>
+                <span>Meet VertexAI.</span>
+              </span>
+              <span className="ar-line" style={si(2)}>
+                <span>
+                  <span className="font-display italic">Redefine space</span> with
+                </span>
+              </span>
+              <span className="ar-line" style={si(3)}>
+                <span>intelligent design</span>
+              </span>
             </h1>
-            <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+            <div className="ar mt-9 flex flex-wrap items-center justify-center gap-3" style={si(4)}>
               <a
                 href="#cta"
                 className="inline-flex items-center rounded-2xl bg-white px-7 py-3.5 text-sm font-semibold text-neutral-900 shadow-lg shadow-black/20 transition hover:-translate-y-0.5 hover:bg-white/95 sm:text-base"
@@ -145,12 +208,12 @@ function Hero() {
 
           <footer className="pb-6 sm:pb-9">
             <div className="mx-auto flex max-w-[88rem] flex-col gap-5 px-6 sm:flex-row sm:items-end sm:justify-between lg:px-10">
-            <p className="max-w-md text-sm leading-relaxed text-white/85 drop-shadow-sm sm:text-[15px]">
+            <p className="ar max-w-md text-sm leading-relaxed text-white/85 drop-shadow-sm sm:text-[15px]" style={si(5)}>
               It helps you imagine, plan, and refine spaces through natural
               conversations. From choosing colors and layouts to suggesting
               furniture and décor, it adapts to your taste.
             </p>
-            <div className="flex items-end gap-2.5">
+            <div className="ar flex items-end gap-2.5" style={si(6)}>
               <a
                 href="#product"
                 aria-label="Explore"
@@ -165,7 +228,7 @@ function Hero() {
             </div>
             </div>
           </footer>
-        </div>
+        </Reveal>
       </div>
     </section>
   );
@@ -241,20 +304,19 @@ function Product() {
         }
         sub="One calm workspace that turns a vague idea into a finished, livable room."
       />
-      <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {FEATURES.map((f) => (
-          <div
-            key={f.title}
-            className="group rounded-3xl border border-black/[0.07] bg-[#faf7f1] p-7 transition hover:-translate-y-1 hover:shadow-[0_20px_50px_-24px_rgba(0,0,0,0.25)]"
-          >
-            <div className="mb-5 inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#1c1a17] text-[#f4f0e9]">
-              <f.icon className="h-5 w-5" />
+      <Reveal className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {FEATURES.map((f, i) => (
+          <div key={f.title} className="ar" style={si(i)}>
+            <div className="h-full rounded-3xl border border-black/[0.07] bg-[#faf7f1] p-7 transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_50px_-24px_rgba(0,0,0,0.25)]">
+              <div className="mb-5 inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#1c1a17] text-[#f4f0e9]">
+                <f.icon className="h-5 w-5" />
+              </div>
+              <h3 className="text-lg font-semibold tracking-tight">{f.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-[#5b554c]">{f.body}</p>
             </div>
-            <h3 className="text-lg font-semibold tracking-tight">{f.title}</h3>
-            <p className="mt-2 text-sm leading-relaxed text-[#5b554c]">{f.body}</p>
           </div>
         ))}
-      </div>
+      </Reveal>
     </section>
   );
 }
@@ -294,9 +356,9 @@ function Platform() {
             }
             sub="A guided flow that does the heavy lifting while you stay in control."
           />
-          <div className="mt-12 space-y-10">
-            {STEPS.map((s) => (
-              <div key={s.n} className="flex gap-5">
+          <Reveal className="mt-12 space-y-10">
+            {STEPS.map((s, i) => (
+              <div key={s.n} className="ar flex gap-5" style={si(i)}>
                 <span className="font-display text-3xl italic text-[#cdbf9c]">
                   {s.n}
                 </span>
@@ -308,7 +370,7 @@ function Platform() {
                 </div>
               </div>
             ))}
-          </div>
+          </Reveal>
         </div>
 
         <div className="flex flex-col justify-center">
@@ -342,15 +404,15 @@ function Showcase() {
       <div className="relative overflow-hidden rounded-[32px] border border-black/[0.06]">
         <img src={HERO_IMAGE} alt="" className="h-[420px] w-full object-cover sm:h-[520px]" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/15 to-transparent" />
-        <div className="absolute inset-0 flex flex-col justify-center px-8 sm:px-14">
-          <p className="max-w-xl font-display text-3xl italic leading-snug text-white sm:text-4xl">
+        <Reveal className="absolute inset-0 flex flex-col justify-center px-8 sm:px-14">
+          <p className="ar max-w-xl font-display text-3xl italic leading-snug text-white sm:text-4xl" style={si(0)}>
             “It felt less like software and more like a designer who actually
             listened.”
           </p>
-          <p className="mt-5 text-sm font-medium uppercase tracking-[0.16em] text-white/75">
+          <p className="ar mt-5 text-sm font-medium uppercase tracking-[0.16em] text-white/75" style={si(1)}>
             Elise Moreau · Interior Architect
           </p>
-        </div>
+        </Reveal>
       </div>
     </section>
   );
@@ -391,11 +453,12 @@ function Customers() {
             </>
           }
         />
-        <div className="mt-14 grid gap-5 lg:grid-cols-3">
-          {QUOTES.map((q) => (
+        <Reveal className="mt-14 grid gap-5 lg:grid-cols-3">
+          {QUOTES.map((q, i) => (
             <figure
               key={q.name}
-              className="flex flex-col rounded-3xl border border-black/[0.07] bg-[#faf7f1] p-7"
+              style={si(i)}
+              className="ar flex flex-col rounded-3xl border border-black/[0.07] bg-[#faf7f1] p-7"
             >
               <div className="mb-4 flex gap-0.5 text-[#c9803f]">
                 {Array.from({ length: 5 }).map((_, i) => (
@@ -411,7 +474,7 @@ function Customers() {
               </figcaption>
             </figure>
           ))}
-        </div>
+        </Reveal>
       </div>
     </section>
   );
@@ -421,15 +484,15 @@ function Customers() {
 function CTA() {
   return (
     <section id="cta" className="mx-auto max-w-[88rem] scroll-mt-24 px-6 py-24 lg:px-10">
-      <div className="rounded-[32px] bg-[#1c1a17] px-8 py-16 text-center text-[#f4f0e9] sm:px-16 sm:py-20">
-        <h2 className="mx-auto max-w-2xl font-body text-4xl font-medium leading-tight tracking-tight sm:text-5xl">
+      <Reveal className="rounded-[32px] bg-[#1c1a17] px-8 py-16 text-center text-[#f4f0e9] sm:px-16 sm:py-20">
+        <h2 className="ar mx-auto max-w-2xl font-body text-4xl font-medium leading-tight tracking-tight sm:text-5xl" style={si(0)}>
           Redefine your space, <span className="font-display italic">today</span>.
         </h2>
-        <p className="mx-auto mt-5 max-w-xl text-[15px] leading-relaxed text-white/70">
+        <p className="ar mx-auto mt-5 max-w-xl text-[15px] leading-relaxed text-white/70" style={si(1)}>
           Start a free decoration and watch a blank room become somewhere you
           actually want to be.
         </p>
-        <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+        <div className="ar mt-9 flex flex-wrap items-center justify-center gap-3" style={si(2)}>
           <a
             href="#top"
             className="inline-flex items-center rounded-2xl bg-white px-7 py-3.5 text-sm font-semibold text-neutral-900 transition hover:-translate-y-0.5 hover:bg-white/95 sm:text-base"
@@ -443,7 +506,7 @@ function CTA() {
             Talk to sales <ArrowUpRight className="h-4 w-4" />
           </a>
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }
@@ -511,31 +574,34 @@ function SectionHead({
   dark?: boolean;
 }) {
   return (
-    <div className="max-w-2xl">
+    <Reveal className="max-w-2xl">
       <span
-        className={`text-xs font-semibold uppercase tracking-[0.18em] ${
+        className={`ar block text-xs font-semibold uppercase tracking-[0.18em] ${
           dark ? "text-[#cdbf9c]" : "text-[#c9803f]"
         }`}
+        style={si(0)}
       >
         {kicker}
       </span>
       <h2
-        className={`mt-4 font-body text-3xl font-medium leading-[1.1] tracking-tight sm:text-4xl lg:text-[2.75rem] ${
+        className={`ar mt-4 font-body text-3xl font-medium leading-[1.1] tracking-tight sm:text-4xl lg:text-[2.75rem] ${
           dark ? "text-[#f4f0e9]" : "text-[#1c1a17]"
         }`}
+        style={si(1)}
       >
         {title}
       </h2>
       {sub && (
         <p
-          className={`mt-4 text-[15px] leading-relaxed ${
+          className={`ar mt-4 text-[15px] leading-relaxed ${
             dark ? "text-white/65" : "text-[#5b554c]"
           }`}
+          style={si(2)}
         >
           {sub}
         </p>
       )}
-    </div>
+    </Reveal>
   );
 }
 
