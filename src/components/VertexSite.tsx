@@ -143,7 +143,8 @@ function Hero() {
             </div>
           </div>
 
-          <footer className="flex flex-col gap-5 px-5 pb-6 sm:flex-row sm:items-end sm:justify-between sm:px-9 sm:pb-9">
+          <footer className="pb-6 sm:pb-9">
+            <div className="mx-auto flex max-w-7xl flex-col gap-5 px-6 sm:flex-row sm:items-end sm:justify-between lg:px-10">
             <p className="max-w-md text-sm leading-relaxed text-white/85 drop-shadow-sm sm:text-[15px]">
               It helps you imagine, plan, and refine spaces through natural
               conversations. From choosing colors and layouts to suggesting
@@ -161,6 +162,7 @@ function Hero() {
                 <HeroPill href="#platform">Solutions for complex spaces</HeroPill>
                 <HeroPill href="#product">Conversational &amp; Action</HeroPill>
               </div>
+            </div>
             </div>
           </footer>
         </div>
