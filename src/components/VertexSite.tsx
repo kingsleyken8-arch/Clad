@@ -56,7 +56,7 @@ function Nav() {
           : "py-5"
       }`}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 lg:px-10">
+      <div className="mx-auto flex max-w-[88rem] items-center justify-between px-6 lg:px-10">
         <a href="#top" className="flex items-center gap-2.5">
           <Logo dark={scrolled} />
           <span
@@ -144,7 +144,7 @@ function Hero() {
           </div>
 
           <footer className="pb-6 sm:pb-9">
-            <div className="mx-auto flex max-w-7xl flex-col gap-5 px-6 sm:flex-row sm:items-end sm:justify-between lg:px-10">
+            <div className="mx-auto flex max-w-[88rem] flex-col gap-5 px-6 sm:flex-row sm:items-end sm:justify-between lg:px-10">
             <p className="max-w-md text-sm leading-relaxed text-white/85 drop-shadow-sm sm:text-[15px]">
               It helps you imagine, plan, and refine spaces through natural
               conversations. From choosing colors and layouts to suggesting
@@ -187,7 +187,7 @@ function Marquee() {
   const names = ["AALTO", "Studio Møller", "HEARTH", "Casa Verde", "NORDLY", "Atelier 9"];
   return (
     <section className="border-y border-black/5 bg-[#efe9df]">
-      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-12 gap-y-4 px-6 py-7 lg:px-10">
+      <div className="mx-auto flex max-w-[88rem] flex-wrap items-center justify-center gap-x-12 gap-y-4 px-6 py-7 lg:px-10">
         <span className="text-xs font-medium uppercase tracking-[0.18em] text-[#8a8275]">
           Trusted by design studios
         </span>
@@ -230,7 +230,7 @@ const FEATURES = [
 
 function Product() {
   return (
-    <section id="product" className="mx-auto max-w-7xl scroll-mt-24 px-6 py-24 lg:px-10">
+    <section id="product" className="mx-auto max-w-[88rem] scroll-mt-24 px-6 py-24 lg:px-10">
       <SectionHead
         kicker="Product"
         title={
@@ -281,7 +281,7 @@ const STEPS = [
 function Platform() {
   return (
     <section id="platform" className="scroll-mt-24 bg-[#1c1a17] text-[#f4f0e9]">
-      <div className="mx-auto grid max-w-7xl gap-14 px-6 py-24 lg:grid-cols-2 lg:px-10">
+      <div className="mx-auto grid max-w-[88rem] gap-14 px-6 py-24 lg:grid-cols-2 lg:px-10">
         <div>
           <SectionHead
             dark
@@ -338,7 +338,7 @@ function Platform() {
 /* ------------------------------------------------------------- SHOWCASE */
 function Showcase() {
   return (
-    <section className="mx-auto max-w-7xl px-6 py-24 lg:px-10">
+    <section className="mx-auto max-w-[88rem] px-6 py-24 lg:px-10">
       <div className="relative overflow-hidden rounded-[32px] border border-black/[0.06]">
         <img src={HERO_IMAGE} alt="" className="h-[420px] w-full object-cover sm:h-[520px]" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/15 to-transparent" />
@@ -381,7 +381,7 @@ const QUOTES = [
 function Customers() {
   return (
     <section id="customers" className="scroll-mt-24 bg-[#efe9df]">
-      <div className="mx-auto max-w-7xl px-6 py-24 lg:px-10">
+      <div className="mx-auto max-w-[88rem] px-6 py-24 lg:px-10">
         <SectionHead
           kicker="Customers"
           title={
@@ -420,7 +420,7 @@ function Customers() {
 /* ------------------------------------------------------------------ CTA */
 function CTA() {
   return (
-    <section id="cta" className="mx-auto max-w-7xl scroll-mt-24 px-6 py-24 lg:px-10">
+    <section id="cta" className="mx-auto max-w-[88rem] scroll-mt-24 px-6 py-24 lg:px-10">
       <div className="rounded-[32px] bg-[#1c1a17] px-8 py-16 text-center text-[#f4f0e9] sm:px-16 sm:py-20">
         <h2 className="mx-auto max-w-2xl font-body text-4xl font-medium leading-tight tracking-tight sm:text-5xl">
           Redefine your space, <span className="font-display italic">today</span>.
@@ -457,7 +457,7 @@ function Footer() {
   ];
   return (
     <footer id="company" className="scroll-mt-24 border-t border-black/[0.07] bg-[#f4f0e9]">
-      <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 lg:grid-cols-[1.4fr_repeat(3,1fr)] lg:px-10">
+      <div className="mx-auto grid max-w-[88rem] gap-10 px-6 py-16 lg:grid-cols-[1.4fr_repeat(3,1fr)] lg:px-10">
         <div>
           <div className="flex items-center gap-2.5">
             <Logo dark />
@@ -486,7 +486,7 @@ function Footer() {
         ))}
       </div>
       <div className="border-t border-black/[0.06]">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-6 py-6 text-sm text-[#8a8275] sm:flex-row lg:px-10">
+        <div className="mx-auto flex max-w-[88rem] flex-col items-center justify-between gap-3 px-6 py-6 text-sm text-[#8a8275] sm:flex-row lg:px-10">
           <span>© {new Date().getFullYear()} VertexAI. All rights reserved.</span>
           <span className="flex gap-6">
             <a href="#top" className="hover:text-[#1c1a17]">Privacy</a>
