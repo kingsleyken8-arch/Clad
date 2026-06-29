@@ -368,8 +368,8 @@ function Slideshow() {
 /* ---------------------------------------------------------------- INTRO */
 // Two flanking images. Swapped to the user-uploaded crops once available.
 const INTRO_IMAGES = {
-  left: CDN + "hf_20260629_062050_208c6861-3c49-4d13-8b95-9f2955878aeb.png",
-  right: CDN + "hf_20260629_061900_f47c53b3-3bcd-4aca-8bca-7ebf4aedde05.png",
+  left: CDN + "hf_20260629_171347_ea258f82-2c56-4210-87a4-ab831fbe1c1d.png", // owl among leaves
+  right: CDN + "hf_20260629_061900_f47c53b3-3bcd-4aca-8bca-7ebf4aedde05.png", // conservatory (green knit + owl)
 };
 
 function Intro() {
