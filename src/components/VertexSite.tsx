@@ -277,7 +277,7 @@ function Slideshow() {
     const el = trackRef.current;
     if (!el) return;
     const card = el.querySelector<HTMLElement>("[data-card]");
-    const gap = 20;
+    const gap = 10;
     const step = card ? card.offsetWidth + gap : el.clientWidth * 0.8;
     const max = el.scrollWidth - el.clientWidth;
     // wrap around at the edges so it behaves like a continuous slideshow
@@ -308,7 +308,7 @@ function Slideshow() {
         {/* carousel */}
         <div
           ref={trackRef}
-          className="no-scrollbar mt-12 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth pb-2"
+          className="no-scrollbar mt-12 flex snap-x snap-mandatory gap-2.5 overflow-x-auto scroll-smooth pb-2"
         >
           {SLIDES.map((s) => (
             <figure
