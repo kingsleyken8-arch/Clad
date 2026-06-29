@@ -277,7 +277,7 @@ function Slideshow() {
     const el = trackRef.current;
     if (!el) return;
     const card = el.querySelector<HTMLElement>("[data-card]");
-    const gap = 24;
+    const gap = 20;
     const step = card ? card.offsetWidth + gap : el.clientWidth * 0.8;
     const max = el.scrollWidth - el.clientWidth;
     // wrap around at the edges so it behaves like a continuous slideshow
@@ -308,7 +308,7 @@ function Slideshow() {
         {/* carousel */}
         <div
           ref={trackRef}
-          className="no-scrollbar mt-12 flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth pb-2"
+          className="no-scrollbar mt-12 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth pb-2"
         >
           {SLIDES.map((s) => (
             <figure
@@ -316,7 +316,7 @@ function Slideshow() {
               data-card
               className="w-[82%] shrink-0 snap-start sm:w-[47%] lg:w-[31%] xl:w-[23.5%]"
             >
-              <div className="overflow-hidden rounded-3xl border border-black/[0.06] bg-[#e7e0d4]">
+              <div className="overflow-hidden border border-black/[0.06] bg-[#e7e0d4]">
                 <img
                   src={CDN + s.img}
                   alt={s.title}
@@ -375,7 +375,7 @@ const STORY_IMAGES = {
   a: CDN + "hf_20260629_061857_7a50203f-c522-4cc6-8efa-4b9ca150bac8.png", // tea
   b: CDN + "hf_20260629_062057_ccaa0c50-8ba2-4ebf-a7ab-4457ffad98b4.png", // reader
   c: CDN + "hf_20260629_062054_e1093e72-2fcb-4486-9de5-a7ab318a2da6.png", // dancer
-  d: CDN + "hf_20260629_061854_5e775d59-57dc-48f6-9dfb-e2c90dd93474.png", // moon (expands)
+  d: HERO_IMAGE, // painted woman in coral fur — expands to fill the screen
 };
 
 function ScrollStory() {
@@ -428,7 +428,6 @@ function ScrollStory() {
         ex.style.top = lerp(58, 0, E) + "%";
         ex.style.width = lerp(13, 100, E) + "%";
         ex.style.height = lerp(26, 100, E) + "%";
-        ex.style.borderRadius = lerp(20, 0, E) + "px";
       }
       if (textRef.current) textRef.current.style.opacity = String(1 - E);
     };
@@ -475,18 +474,18 @@ function ScrollStory() {
         </div>
 
         {/* risers */}
-        <div ref={r1} className="absolute z-10 overflow-hidden rounded-2xl shadow-lg shadow-black/10" style={{ left: "20%", top: "12%", width: 156, height: 200, opacity: 0 }}>
+        <div ref={r1} className="absolute z-10 overflow-hidden shadow-lg shadow-black/10" style={{ left: "20%", top: "12%", width: 156, height: 200, opacity: 0 }}>
           <img src={STORY_IMAGES.a} alt="" className="h-full w-full object-cover" />
         </div>
-        <div ref={r2} className="absolute z-10 overflow-hidden rounded-2xl shadow-lg shadow-black/10" style={{ left: "75%", top: "34%", width: 156, height: 208, opacity: 0 }}>
+        <div ref={r2} className="absolute z-10 overflow-hidden shadow-lg shadow-black/10" style={{ left: "75%", top: "34%", width: 156, height: 208, opacity: 0 }}>
           <img src={STORY_IMAGES.b} alt="" className="h-full w-full object-cover" />
         </div>
-        <div ref={r3} className="absolute z-10 overflow-hidden rounded-2xl shadow-lg shadow-black/10" style={{ left: "11%", top: "58%", width: 168, height: 216, opacity: 0 }}>
+        <div ref={r3} className="absolute z-10 overflow-hidden shadow-lg shadow-black/10" style={{ left: "11%", top: "58%", width: 168, height: 216, opacity: 0 }}>
           <img src={STORY_IMAGES.c} alt="" className="h-full w-full object-cover" />
         </div>
 
         {/* expander — rises, then fills the screen */}
-        <div ref={exRef} className="absolute z-30 overflow-hidden shadow-2xl shadow-black/20" style={{ left: "70%", top: "58%", width: "13%", height: "26%", opacity: 0, borderRadius: 20 }}>
+        <div ref={exRef} className="absolute z-30 overflow-hidden shadow-2xl shadow-black/20" style={{ left: "70%", top: "58%", width: "13%", height: "26%", opacity: 0 }}>
           <img src={STORY_IMAGES.d} alt="" className="h-full w-full object-cover" />
         </div>
       </div>
