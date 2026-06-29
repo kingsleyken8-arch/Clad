@@ -78,6 +78,7 @@ export default function VertexSite() {
       <Intro />
       <Slideshow />
       <ScrollStory />
+      <Footer />
     </div>
   );
 }
@@ -392,7 +393,7 @@ function Intro() {
         <p className="ar text-xs font-semibold uppercase tracking-[0.26em] text-[#1c1a17]" style={si(0)}>
           Welcome to the
         </p>
-        <h2 className="mx-auto mt-5 max-w-5xl font-body text-4xl font-extrabold uppercase leading-[1.03] tracking-tight text-[#1c1a17] sm:text-6xl lg:text-7xl">
+        <h2 className="mx-auto mt-5 max-w-6xl font-body text-[4rem] font-extrabold uppercase leading-[0.98] tracking-tight text-[#1c1a17] sm:text-[6.75rem] lg:text-[8.1rem]">
           <span className="ar-line" style={si(1)}>
             <span>
               Collection <span className="font-display lowercase italic font-normal">of</span>
@@ -560,6 +561,129 @@ function ScrollStory() {
         </div>
       </div>
     </section>
+  );
+}
+
+/* --------------------------------------------------------------- FOOTER */
+// Full-bleed painterly landscape at the base of the footer (cream sky to
+// match the site background). Swapped to the generated image once ready.
+const FOOTER_IMAGE =
+  CDN + "hf_20260629_173227_2bee134e-66a0-4919-8a39-ade7a8669cb1.png";
+
+const FOOTER_COLS = [
+  {
+    h: "Explore",
+    links: [
+      { label: "The Work", href: "#work" },
+      { label: "Lookbook", href: "#lookbook" },
+      { label: "Process", href: "#work" },
+      { label: "Pricing", href: "#top" },
+    ],
+  },
+  {
+    h: "Studio",
+    links: [
+      { label: "About", href: "#top" },
+      { label: "Team", href: "#top" },
+      { label: "Careers", href: "#top" },
+      { label: "Contact", href: "#top" },
+    ],
+  },
+  {
+    h: "Resources",
+    links: [
+      { label: "Journal", href: "#top" },
+      { label: "Guides", href: "#top" },
+      { label: "Help centre", href: "#top" },
+      { label: "Status", href: "#top" },
+    ],
+  },
+  {
+    h: "Social",
+    links: [
+      { label: "Instagram", href: "#top" },
+      { label: "X / Twitter", href: "#top" },
+      { label: "LinkedIn", href: "#top" },
+      { label: "Behance", href: "#top" },
+    ],
+  },
+];
+
+function Footer() {
+  return (
+    <footer id="company" className="scroll-mt-24 border-t border-black/[0.08] bg-[#f4f0e9] text-[#1c1a17]">
+      <div className="mx-auto max-w-[88rem] px-6 pb-16 pt-20 lg:px-10 lg:pt-24">
+        <div className="grid gap-12 lg:grid-cols-[1.4fr_repeat(4,1fr)]">
+          {/* brand + newsletter */}
+          <div className="lg:pr-8">
+            <div className="flex items-center gap-2.5">
+              <Logo dark />
+              <span className="text-lg font-semibold tracking-tight">VertexAI</span>
+            </div>
+            <p className="mt-4 max-w-xs text-sm leading-relaxed text-[#5b554c]">
+              Redefine space with intelligent design. Imagine, plan and refine
+              through natural conversation.
+            </p>
+            <form
+              className="mt-6 flex max-w-xs items-center gap-2"
+              onSubmit={(e) => e.preventDefault()}
+            >
+              <input
+                type="email"
+                required
+                placeholder="Your email"
+                className="min-w-0 flex-1 border-b border-black/20 bg-transparent py-2 text-sm outline-none placeholder:text-[#8a8275] focus:border-[#1c1a17]"
+              />
+              <button
+                type="submit"
+                className="rounded-xl bg-[#1c1a17] px-4 py-2 text-sm font-semibold text-[#f4f0e9] transition hover:bg-[#000]"
+              >
+                Join
+              </button>
+            </form>
+          </div>
+
+          {/* link columns */}
+          {FOOTER_COLS.map((c) => (
+            <div key={c.h}>
+              <h4 className="text-xs font-semibold uppercase tracking-[0.16em] text-[#8a8275]">
+                {c.h}
+              </h4>
+              <ul className="mt-4 space-y-2.5">
+                {c.links.map((l) => (
+                  <li key={l.label}>
+                    <a
+                      href={l.href}
+                      className="text-sm text-[#3a352e] transition hover:text-[#1c1a17]"
+                    >
+                      {l.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-16 flex flex-col items-center justify-between gap-3 border-t border-black/[0.08] pt-6 text-sm text-[#8a8275] sm:flex-row">
+          <span>© {new Date().getFullYear()} VertexAI. All rights reserved.</span>
+          <span className="flex gap-6">
+            <a href="#top" className="transition hover:text-[#1c1a17]">Privacy</a>
+            <a href="#top" className="transition hover:text-[#1c1a17]">Terms</a>
+            <a href="#top" className="transition hover:text-[#1c1a17]">Cookies</a>
+          </span>
+        </div>
+      </div>
+
+      {/* full-bleed painterly landscape at the base */}
+      <div className="w-full overflow-hidden">
+        <img
+          src={FOOTER_IMAGE}
+          alt=""
+          className="block h-[28vw] max-h-[420px] min-h-[200px] w-full object-cover"
+        />
+      </div>
+    </footer>
   );
 }
 
