@@ -76,6 +76,7 @@ export default function VertexSite() {
       <Hero />
       <Marquee />
       <Intro />
+      <Shift />
       <Slideshow />
       <ScrollStory />
       <Footer />
@@ -85,9 +86,27 @@ export default function VertexSite() {
 
 /* ------------------------------------------------------------------ NAV */
 function Nav() {
+  // `scrolled` = past the hero (switch to the light variant)
+  // `hidden`   = hide on scroll-down, reveal on scroll-up (only past the hero)
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const lastY = useRef(0);
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    const onScroll = () => {
+      const y = window.scrollY;
+      const heroEnd = window.innerHeight * 0.85;
+      const past = y > heroEnd;
+      setScrolled(past);
+      if (!past) {
+        setHidden(false); // always visible over the hero
+      } else if (y > lastY.current + 6) {
+        setHidden(true); // scrolling down → hide
+      } else if (y < lastY.current - 6) {
+        setHidden(false); // scrolling up → reveal
+      }
+      lastY.current = y;
+    };
+    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -95,6 +114,8 @@ function Nav() {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
+        hidden ? "-translate-y-full" : "translate-y-0"
+      } ${
         scrolled
           ? "bg-[#f4f0e9]/85 py-3 shadow-[0_1px_0_rgba(0,0,0,0.06)] backdrop-blur-md"
           : "py-5"
@@ -393,7 +414,7 @@ function Intro() {
         <p className="ar text-xs font-semibold uppercase tracking-[0.26em] text-[#1c1a17]" style={si(0)}>
           Welcome to the
         </p>
-        <h2 className="mx-auto mt-5 max-w-6xl font-body text-[4rem] font-extrabold uppercase leading-[0.98] tracking-tight text-[#1c1a17] sm:text-[6.75rem] lg:text-[8.1rem]">
+        <h2 className="mx-auto mt-5 max-w-6xl font-body text-[3.15rem] font-extrabold uppercase leading-[1.0] tracking-tight text-[#1c1a17] sm:text-[5.25rem] lg:text-[6.3rem]">
           <span className="ar-line" style={si(1)}>
             <span>
               Collection <span className="font-display lowercase italic font-normal">of</span>
@@ -416,21 +437,95 @@ function Intro() {
       {/* images band + paragraph — images bleed to the screen edges */}
       <div className="relative mt-16 flex flex-col items-center gap-10 lg:mt-20 lg:block lg:min-h-[600px] lg:gap-0">
         {/* left image — flush to the left edge on desktop */}
-        <div className="aspect-[4/3] w-full max-w-md overflow-hidden bg-[#e7e0d4] lg:absolute lg:bottom-0 lg:left-0 lg:aspect-auto lg:h-[450px] lg:w-[32%] lg:max-w-none">
+        <div className="aspect-[4/3] w-full max-w-md overflow-hidden bg-[#e7e0d4] lg:absolute lg:bottom-0 lg:left-0 lg:aspect-auto lg:h-[420px] lg:w-[28%] lg:max-w-none">
           <img src={INTRO_IMAGES.left} alt="" className="h-full w-full object-cover" />
         </div>
 
-        {/* intro paragraph — centered */}
-        <p className="max-w-md px-6 font-display text-[1.5rem] italic leading-snug text-[#1c1a17] sm:text-[1.7rem] lg:absolute lg:left-1/2 lg:top-1/2 lg:w-[30%] lg:max-w-sm lg:-translate-x-1/2 lg:-translate-y-1/2 lg:px-0">
+        {/* intro paragraph — nudged left of centre */}
+        <p className="max-w-md px-6 font-display text-[1.5rem] italic leading-snug text-[#1c1a17] sm:text-[1.7rem] lg:absolute lg:left-[40%] lg:top-1/2 lg:w-[26%] lg:max-w-xs lg:-translate-x-1/2 lg:-translate-y-1/2 lg:px-0">
           We're VertexAI — award-winning design intelligence with many moons of
           experience. We craft spaces that captivate and resonate with purpose.
         </p>
 
-        {/* right image — flush to the right edge on desktop */}
-        <div className="aspect-[3/4] w-full max-w-sm overflow-hidden bg-[#e7e0d4] lg:absolute lg:bottom-0 lg:right-0 lg:aspect-auto lg:h-[560px] lg:w-[30%] lg:max-w-none">
+        {/* right image — flush to the right edge on desktop, larger */}
+        <div className="aspect-[3/4] w-full max-w-md overflow-hidden bg-[#e7e0d4] lg:absolute lg:bottom-0 lg:right-0 lg:aspect-auto lg:h-[620px] lg:w-[38%] lg:max-w-none">
           <img src={INTRO_IMAGES.right} alt="" className="h-full w-full object-cover" />
         </div>
       </div>
+    </section>
+  );
+}
+
+/* ---------------------------------------------------------------- SHIFT */
+// Image used to fill the giant "WHAT WE SHIFT" display text (background-clip).
+const SHIFT_TEXT_IMAGE = HERO_IMAGE;
+
+function Shift() {
+  const [time, setTime] = useState("");
+  useEffect(() => {
+    const tick = () =>
+      setTime(
+        new Intl.DateTimeFormat("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+          timeZone: "America/New_York",
+        }).format(new Date())
+      );
+    tick();
+    const id = setInterval(tick, 30000);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <section id="approach" className="relative overflow-hidden bg-[#f4f0e9] pt-20 lg:pt-28">
+      <div className="mx-auto max-w-[88rem] px-6 lg:px-10">
+        {/* top meta row */}
+        <div className="flex items-start justify-between text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1c1a17] sm:text-xs">
+          <span className="flex items-center gap-2">
+            <span className="inline-block h-2.5 w-2.5 bg-[#1f5130]" />
+            Studio Positioning
+          </span>
+          <span className="text-right tabular-nums">/ New York, USA — {time}</span>
+        </div>
+        <div className="mt-2 flex justify-end text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1c1a17] sm:text-xs">
+          <span>02</span>
+        </div>
+        {/* divider with centre tick */}
+        <div className="relative mt-3 border-t border-[#1c1a17]/40">
+          <span className="absolute left-1/2 top-0 h-2 w-px -translate-x-1/2 bg-[#1c1a17]/40" />
+        </div>
+
+        {/* big right-aligned headline */}
+        <Reveal>
+          <h2 className="ml-auto mt-12 max-w-4xl text-right font-body text-[clamp(2rem,5.6vw,4.6rem)] font-extrabold leading-[1.05] tracking-tight text-[#1c1a17] lg:mt-16">
+            A design intelligence studio. Where imagination, play, and
+            storytelling shape what comes next.
+          </h2>
+        </Reveal>
+
+        {/* services paragraph */}
+        <p className="ar mt-16 max-w-2xl text-lg font-bold leading-snug text-[#1c1a17] lg:text-xl">
+          We craft spaces shown at international showcases. We build immersive
+          rooms and installations. We guide brands through the intersection of
+          design and technology. We produce work across many mediums. We host
+          workshops and retreats for teams and communities. We gather people
+          around intimate dinners, salons, and curated gatherings.
+        </p>
+      </div>
+
+      {/* giant image-filled display text */}
+      <h3
+        className="mt-16 select-none whitespace-nowrap bg-clip-text text-center font-body text-[18vw] font-extrabold uppercase leading-[0.82] tracking-tight text-transparent lg:mt-24"
+        style={{
+          backgroundImage: `url(${SHIFT_TEXT_IMAGE})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center 35%",
+          WebkitBackgroundClip: "text",
+        }}
+      >
+        What We Shift
+      </h3>
     </section>
   );
 }
