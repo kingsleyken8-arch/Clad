@@ -1,13 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import {
-  ArrowUpRight,
-  Check,
-  LayoutGrid,
-  MessageSquare,
-  Palette,
-  Sparkles,
-  Star,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, Sparkles } from "lucide-react";
 import "./vertex-anim.css";
 
 /* ----------------------------- reveal helpers ----------------------------- */
@@ -83,12 +75,7 @@ export default function VertexSite() {
       <Nav />
       <Hero />
       <Marquee />
-      <Product />
-      <Platform />
-      <Showcase />
-      <Customers />
-      <CTA />
-      <Footer />
+      <Slideshow />
     </div>
   );
 }
@@ -267,344 +254,116 @@ function Marquee() {
   );
 }
 
-/* -------------------------------------------------------------- PRODUCT */
-const FEATURES = [
-  {
-    icon: MessageSquare,
-    title: "Conversational design",
-    body: "Describe the feeling you want and VertexAI proposes layouts, palettes and pieces — refining with every reply.",
-  },
-  {
-    icon: Palette,
-    title: "Colour & material sense",
-    body: "Tasteful, coherent palettes pulled from your inspiration, lighting and the bones of the room itself.",
-  },
-  {
-    icon: LayoutGrid,
-    title: "Plans that fit",
-    body: "Furniture and circulation laid out to scale, so what looks good on screen actually works in the space.",
-  },
-  {
-    icon: Sparkles,
-    title: "Adapts to your taste",
-    body: "It learns what you reach for and what you reject, getting closer to ‘you’ with every iteration.",
-  },
+/* ------------------------------------------------------------- SLIDESHOW */
+const CDN =
+  "https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/";
+
+const SLIDES = [
+  { id: "01", title: "Lunar Repose", img: "hf_20260629_061854_5e775d59-57dc-48f6-9dfb-e2c90dd93474.png" },
+  { id: "02", title: "Afternoon Confidences", img: "hf_20260629_061857_7a50203f-c522-4cc6-8efa-4b9ca150bac8.png" },
+  { id: "03", title: "The Conservatory", img: "hf_20260629_061900_f47c53b3-3bcd-4aca-8bca-7ebf4aedde05.png" },
+  { id: "04", title: "Promenade", img: "hf_20260629_061903_24be92aa-7003-4b42-9778-988aa5dc0585.png" },
+  { id: "05", title: "Nocturne", img: "hf_20260629_062050_208c6861-3c49-4d13-8b95-9f2955878aeb.png" },
+  { id: "06", title: "In Motion", img: "hf_20260629_062054_e1093e72-2fcb-4486-9de5-a7ab318a2da6.png" },
+  { id: "07", title: "The Reading Room", img: "hf_20260629_062057_ccaa0c50-8ba2-4ebf-a7ab-4457ffad98b4.png" },
+  { id: "08", title: "Heirlooms", img: "hf_20260629_062100_28ebc3bc-84df-496a-9cba-aa4852420c3a.png" },
 ];
 
-function Product() {
+function Slideshow() {
+  const trackRef = useRef<HTMLDivElement>(null);
+
+  const move = (dir: 1 | -1) => {
+    const el = trackRef.current;
+    if (!el) return;
+    const card = el.querySelector<HTMLElement>("[data-card]");
+    const gap = 24;
+    const step = card ? card.offsetWidth + gap : el.clientWidth * 0.8;
+    const max = el.scrollWidth - el.clientWidth;
+    // wrap around at the edges so it behaves like a continuous slideshow
+    let target = el.scrollLeft + dir * step;
+    if (dir > 0 && el.scrollLeft >= max - 4) target = 0;
+    else if (dir < 0 && el.scrollLeft <= 4) target = max;
+    el.scrollTo({ left: Math.max(0, Math.min(max, target)), behavior: "smooth" });
+  };
+
   return (
-    <section id="product" className="mx-auto max-w-[88rem] scroll-mt-24 px-6 py-24 lg:px-10">
-      <SectionHead
-        kicker="Product"
-        title={
-          <>
-            Everything you need to <span className="font-display italic">imagine</span>,
-            plan and refine.
-          </>
-        }
-        sub="One calm workspace that turns a vague idea into a finished, livable room."
-      />
-      <Reveal className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {FEATURES.map((f, i) => (
-          <div key={f.title} className="ar" style={si(i)}>
-            <div className="h-full rounded-3xl border border-black/[0.07] bg-[#faf7f1] p-7 transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_50px_-24px_rgba(0,0,0,0.25)]">
-              <div className="mb-5 inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#1c1a17] text-[#f4f0e9]">
-                <f.icon className="h-5 w-5" />
-              </div>
-              <h3 className="text-lg font-semibold tracking-tight">{f.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-[#5b554c]">{f.body}</p>
-            </div>
+    <section id="lookbook" className="scroll-mt-24 bg-[#f4f0e9] py-20 lg:py-28">
+      <div className="mx-auto max-w-[88rem] px-6 lg:px-10">
+        <Reveal className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+          <div className="max-w-xl">
+            <span className="ar block text-xs font-semibold uppercase tracking-[0.18em] text-[#c9803f]" style={si(0)}>
+              The Lookbook
+            </span>
+            <h2 className="ar mt-4 font-body text-3xl font-medium leading-[1.1] tracking-tight sm:text-4xl lg:text-[2.75rem]" style={si(1)}>
+              The collection, in <span className="font-display italic">oils</span>.
+            </h2>
           </div>
-        ))}
-      </Reveal>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------------- PLATFORM */
-const STEPS = [
-  {
-    n: "01",
-    title: "Describe the room",
-    body: "Snap a photo or just talk. Tell VertexAI the vibe, the budget and what has to stay.",
-  },
-  {
-    n: "02",
-    title: "Explore directions",
-    body: "Get distinct, fully-considered concepts — palettes, plans and curated pieces — in seconds.",
-  },
-  {
-    n: "03",
-    title: "Refine & shop",
-    body: "Nudge anything in plain language, then export the shopping list and floor plan.",
-  },
-];
-
-function Platform() {
-  return (
-    <section id="platform" className="scroll-mt-24 bg-[#1c1a17] text-[#f4f0e9]">
-      <div className="mx-auto grid max-w-[88rem] gap-14 px-6 py-24 lg:grid-cols-2 lg:px-10">
-        <div>
-          <SectionHead
-            dark
-            kicker="Platform"
-            title={
-              <>
-                From conversation to a finished{" "}
-                <span className="font-display italic">space</span>.
-              </>
-            }
-            sub="A guided flow that does the heavy lifting while you stay in control."
-          />
-          <Reveal className="mt-12 space-y-10">
-            {STEPS.map((s, i) => (
-              <div key={s.n} className="ar flex gap-5" style={si(i)}>
-                <span className="font-display text-3xl italic text-[#cdbf9c]">
-                  {s.n}
-                </span>
-                <div>
-                  <h3 className="text-xl font-semibold tracking-tight">{s.title}</h3>
-                  <p className="mt-1.5 max-w-md text-sm leading-relaxed text-white/65">
-                    {s.body}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </Reveal>
-        </div>
-
-        <div className="flex flex-col justify-center">
-          <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-7 backdrop-blur-sm">
-            <ul className="space-y-4">
-              {[
-                "Solutions for complex, irregular spaces",
-                "Conversational & action — it edits, not just suggests",
-                "Real product matches within your budget",
-                "Exports: floor plan, palette, shopping list",
-              ].map((t) => (
-                <li key={t} className="flex items-start gap-3">
-                  <span className="mt-0.5 inline-flex h-5 w-5 flex-none items-center justify-center rounded-md bg-[#cdbf9c] text-[#1c1a17]">
-                    <Check className="h-3.5 w-3.5" />
-                  </span>
-                  <span className="text-[15px] text-white/85">{t}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------------- SHOWCASE */
-function Showcase() {
-  return (
-    <section className="mx-auto max-w-[88rem] px-6 py-24 lg:px-10">
-      <div className="relative overflow-hidden rounded-[32px] border border-black/[0.06]">
-        <img src={HERO_IMAGE} alt="" className="h-[420px] w-full object-cover sm:h-[520px]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/15 to-transparent" />
-        <Reveal className="absolute inset-0 flex flex-col justify-center px-8 sm:px-14">
-          <p className="ar max-w-xl font-display text-3xl italic leading-snug text-white sm:text-4xl" style={si(0)}>
-            “It felt less like software and more like a designer who actually
-            listened.”
-          </p>
-          <p className="ar mt-5 text-sm font-medium uppercase tracking-[0.16em] text-white/75" style={si(1)}>
-            Elise Moreau · Interior Architect
+          <p className="ar max-w-sm text-[15px] leading-relaxed text-[#5b554c]" style={si(2)}>
+            Eight characters, one painterly world. Hand-painted editorial
+            portraits — drift through the campaign.
           </p>
         </Reveal>
-      </div>
-    </section>
-  );
-}
 
-/* ------------------------------------------------------------ CUSTOMERS */
-const QUOTES = [
-  {
-    quote:
-      "We cut early-concept time from days to an afternoon. Clients see options instantly and we still own the taste.",
-    name: "Jonas Pike",
-    role: "Founder, Studio Møller",
-  },
-  {
-    quote:
-      "The palette and material suggestions are genuinely tasteful. It’s the first tool that didn’t feel generic.",
-    name: "Amara Hale",
-    role: "Principal, HEARTH",
-  },
-  {
-    quote:
-      "Plans that respect real dimensions. The shopping list export alone pays for itself.",
-    name: "Theo Vance",
-    role: "Lead Designer, NORDLY",
-  },
-];
-
-function Customers() {
-  return (
-    <section id="customers" className="scroll-mt-24 bg-[#efe9df]">
-      <div className="mx-auto max-w-[88rem] px-6 py-24 lg:px-10">
-        <SectionHead
-          kicker="Customers"
-          title={
-            <>
-              Loved by the studios who set the{" "}
-              <span className="font-display italic">standard</span>.
-            </>
-          }
-        />
-        <Reveal className="mt-14 grid gap-5 lg:grid-cols-3">
-          {QUOTES.map((q, i) => (
+        {/* carousel */}
+        <div
+          ref={trackRef}
+          className="no-scrollbar mt-12 flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth pb-2"
+        >
+          {SLIDES.map((s) => (
             <figure
-              key={q.name}
-              style={si(i)}
-              className="ar flex flex-col rounded-3xl border border-black/[0.07] bg-[#faf7f1] p-7"
+              key={s.id}
+              data-card
+              className="w-[82%] shrink-0 snap-start sm:w-[47%] lg:w-[31%] xl:w-[23.5%]"
             >
-              <div className="mb-4 flex gap-0.5 text-[#c9803f]">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className="h-4 w-4 fill-current" />
-                ))}
+              <div className="overflow-hidden rounded-3xl border border-black/[0.06] bg-[#e7e0d4]">
+                <img
+                  src={CDN + s.img}
+                  alt={s.title}
+                  loading="lazy"
+                  className="aspect-[3/4] h-full w-full object-cover transition duration-500 hover:scale-[1.03]"
+                />
               </div>
-              <blockquote className="flex-1 text-[15px] leading-relaxed text-[#3a352e]">
-                “{q.quote}”
-              </blockquote>
-              <figcaption className="mt-6">
-                <div className="font-semibold tracking-tight">{q.name}</div>
-                <div className="text-sm text-[#8a8275]">{q.role}</div>
+              <figcaption className="mt-4 flex items-baseline gap-3">
+                <span className="font-display text-lg italic text-[#c9803f]">{s.id}</span>
+                <span className="text-lg font-medium tracking-tight text-[#1c1a17]">{s.title}</span>
               </figcaption>
             </figure>
           ))}
-        </Reveal>
-      </div>
-    </section>
-  );
-}
+        </div>
 
-/* ------------------------------------------------------------------ CTA */
-function CTA() {
-  return (
-    <section id="cta" className="mx-auto max-w-[88rem] scroll-mt-24 px-6 py-24 lg:px-10">
-      <Reveal className="rounded-[32px] bg-[#1c1a17] px-8 py-16 text-center text-[#f4f0e9] sm:px-16 sm:py-20">
-        <h2 className="ar mx-auto max-w-2xl font-body text-4xl font-medium leading-tight tracking-tight sm:text-5xl" style={si(0)}>
-          Redefine your space, <span className="font-display italic">today</span>.
-        </h2>
-        <p className="ar mx-auto mt-5 max-w-xl text-[15px] leading-relaxed text-white/70" style={si(1)}>
-          Start a free decoration and watch a blank room become somewhere you
-          actually want to be.
-        </p>
-        <div className="ar mt-9 flex flex-wrap items-center justify-center gap-3" style={si(2)}>
+        {/* controls */}
+        <div className="mt-12 flex flex-col items-center gap-7">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              aria-label="Previous"
+              onClick={() => move(-1)}
+              className="flex h-12 w-12 items-center justify-center rounded-2xl text-[#1c1a17] ring-1 ring-black/15 transition hover:-translate-y-0.5 hover:bg-black/[0.05]"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </button>
+            <button
+              type="button"
+              aria-label="Next"
+              onClick={() => move(1)}
+              className="flex h-12 w-12 items-center justify-center rounded-2xl text-[#1c1a17] ring-1 ring-black/15 transition hover:-translate-y-0.5 hover:bg-black/[0.05]"
+            >
+              <ArrowRight className="h-5 w-5" />
+            </button>
+          </div>
           <a
-            href="#top"
-            className="inline-flex items-center rounded-2xl bg-white px-7 py-3.5 text-sm font-semibold text-neutral-900 transition hover:-translate-y-0.5 hover:bg-white/95 sm:text-base"
+            href="#lookbook"
+            className="inline-flex items-center gap-2 rounded-2xl px-7 py-3.5 text-sm font-semibold uppercase tracking-[0.12em] text-[#1c1a17] ring-1 ring-black/15 transition hover:bg-black/[0.05]"
           >
-            Start free decoration
-          </a>
-          <a
-            href="#customers"
-            className="inline-flex items-center gap-1.5 rounded-2xl px-6 py-3.5 text-sm font-semibold text-white ring-1 ring-white/25 transition hover:bg-white/10 sm:text-base"
-          >
-            Talk to sales <ArrowUpRight className="h-4 w-4" />
+            See the full lookbook <ArrowUpRight className="h-4 w-4" />
           </a>
         </div>
-      </Reveal>
+      </div>
     </section>
-  );
-}
-
-/* --------------------------------------------------------------- FOOTER */
-function Footer() {
-  const cols = [
-    { h: "Product", links: ["Overview", "Platform", "Pricing", "Changelog"] },
-    { h: "Company", links: ["About", "Customers", "Careers", "Contact"] },
-    { h: "Resources", links: ["Blog", "Guides", "Help center", "Status"] },
-  ];
-  return (
-    <footer id="company" className="scroll-mt-24 border-t border-black/[0.07] bg-[#f4f0e9]">
-      <div className="mx-auto grid max-w-[88rem] gap-10 px-6 py-16 lg:grid-cols-[1.4fr_repeat(3,1fr)] lg:px-10">
-        <div>
-          <div className="flex items-center gap-2.5">
-            <Logo dark />
-            <span className="text-lg font-semibold tracking-tight">VertexAI</span>
-          </div>
-          <p className="mt-4 max-w-xs text-sm leading-relaxed text-[#5b554c]">
-            Redefine space with intelligent design. Imagine, plan and refine
-            through natural conversation.
-          </p>
-        </div>
-        {cols.map((c) => (
-          <div key={c.h}>
-            <h4 className="text-xs font-semibold uppercase tracking-[0.16em] text-[#8a8275]">
-              {c.h}
-            </h4>
-            <ul className="mt-4 space-y-2.5">
-              {c.links.map((l) => (
-                <li key={l}>
-                  <a href="#top" className="text-sm text-[#3a352e] transition hover:text-[#1c1a17]">
-                    {l}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-      <div className="border-t border-black/[0.06]">
-        <div className="mx-auto flex max-w-[88rem] flex-col items-center justify-between gap-3 px-6 py-6 text-sm text-[#8a8275] sm:flex-row lg:px-10">
-          <span>© {new Date().getFullYear()} VertexAI. All rights reserved.</span>
-          <span className="flex gap-6">
-            <a href="#top" className="hover:text-[#1c1a17]">Privacy</a>
-            <a href="#top" className="hover:text-[#1c1a17]">Terms</a>
-          </span>
-        </div>
-      </div>
-    </footer>
   );
 }
 
 /* --------------------------------------------------------------- SHARED */
-function SectionHead({
-  kicker,
-  title,
-  sub,
-  dark,
-}: {
-  kicker: string;
-  title: React.ReactNode;
-  sub?: string;
-  dark?: boolean;
-}) {
-  return (
-    <Reveal className="max-w-2xl">
-      <span
-        className={`ar block text-xs font-semibold uppercase tracking-[0.18em] ${
-          dark ? "text-[#cdbf9c]" : "text-[#c9803f]"
-        }`}
-        style={si(0)}
-      >
-        {kicker}
-      </span>
-      <h2
-        className={`ar mt-4 font-body text-3xl font-medium leading-[1.1] tracking-tight sm:text-4xl lg:text-[2.75rem] ${
-          dark ? "text-[#f4f0e9]" : "text-[#1c1a17]"
-        }`}
-        style={si(1)}
-      >
-        {title}
-      </h2>
-      {sub && (
-        <p
-          className={`ar mt-4 text-[15px] leading-relaxed ${
-            dark ? "text-white/65" : "text-[#5b554c]"
-          }`}
-          style={si(2)}
-        >
-          {sub}
-        </p>
-      )}
-    </Reveal>
-  );
-}
-
 function Logo({ dark }: { dark?: boolean }) {
   return (
     <span className="grid grid-cols-2 gap-0.5">
