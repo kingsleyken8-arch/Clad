@@ -76,6 +76,7 @@ export default function VertexSite() {
       <Hero />
       <Marquee />
       <Slideshow />
+      <ScrollStory />
     </div>
   );
 }
@@ -357,6 +358,136 @@ function Slideshow() {
           >
             See the full lookbook <ArrowUpRight className="h-4 w-4" />
           </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------ SCROLLSTORY */
+/**
+ * Pinned scroll-storytelling section. The centered text stays put while four
+ * images rise into place one after another as the user scrolls; then the final
+ * image expands to fill the whole viewport before the page moves on.
+ * Driven by a sticky stage + scroll-progress scrub (no extra libraries).
+ */
+const STORY_IMAGES = {
+  a: CDN + "hf_20260629_061857_7a50203f-c522-4cc6-8efa-4b9ca150bac8.png", // tea
+  b: CDN + "hf_20260629_062057_ccaa0c50-8ba2-4ebf-a7ab-4457ffad98b4.png", // reader
+  c: CDN + "hf_20260629_062054_e1093e72-2fcb-4486-9de5-a7ab318a2da6.png", // dancer
+  d: CDN + "hf_20260629_061854_5e775d59-57dc-48f6-9dfb-e2c90dd93474.png", // moon (expands)
+};
+
+function ScrollStory() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
+  const r1 = useRef<HTMLDivElement>(null);
+  const r2 = useRef<HTMLDivElement>(null);
+  const r3 = useRef<HTMLDivElement>(null);
+  const exRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const clamp = (v: number, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+    const seg = (p: number, a: number, b: number) => clamp((p - a) / (b - a));
+    const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+    let raf = 0;
+
+    const rise = (el: HTMLElement | null, reveal: number) => {
+      if (!el) return;
+      el.style.opacity = String(reveal);
+      el.style.transform = `translateY(${(1 - reveal) * 72}px)`;
+    };
+
+    const render = () => {
+      raf = 0;
+      const total = section.offsetHeight - window.innerHeight;
+      const p = total > 0 ? clamp(-section.getBoundingClientRect().top / total) : 0;
+
+      let R1 = seg(p, 0.04, 0.18);
+      let R2 = seg(p, 0.18, 0.32);
+      let R3 = seg(p, 0.32, 0.46);
+      let R4 = seg(p, 0.46, 0.6); // expander rises like the others
+      let E = seg(p, 0.64, 0.98); // …then expands to fullscreen
+      if (reduce) {
+        R1 = R2 = R3 = R4 = 1;
+        E = 0; // static composition, no pinned expansion
+      }
+
+      rise(r1.current, R1);
+      rise(r2.current, R2);
+      rise(r3.current, R3);
+
+      const ex = exRef.current;
+      if (ex) {
+        ex.style.opacity = String(R4);
+        ex.style.transform = `translateY(${(1 - R4) * 72}px)`;
+        ex.style.left = lerp(70, 0, E) + "%";
+        ex.style.top = lerp(58, 0, E) + "%";
+        ex.style.width = lerp(13, 100, E) + "%";
+        ex.style.height = lerp(26, 100, E) + "%";
+        ex.style.borderRadius = lerp(20, 0, E) + "px";
+      }
+      if (textRef.current) textRef.current.style.opacity = String(1 - E);
+    };
+
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(render);
+    };
+    render();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    section.querySelectorAll("img").forEach((im) => {
+      if (!(im as HTMLImageElement).complete)
+        im.addEventListener("load", onScroll, { once: true });
+    });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  return (
+    <section ref={sectionRef} className="relative bg-[#f4f0e9]" style={{ height: "480vh" }}>
+      <div className="sticky top-0 h-screen overflow-hidden">
+        {/* text — stays in place */}
+        <div
+          ref={textRef}
+          className="absolute inset-0 z-20 mx-auto flex max-w-3xl flex-col items-center justify-center px-6 text-center"
+        >
+          <span className="text-xs font-semibold uppercase tracking-[0.22em] text-[#c9803f]">
+            Designed around you
+          </span>
+          <h2 className="mt-6 font-body text-3xl font-medium leading-[1.18] tracking-tight text-[#1c1a17] sm:text-4xl lg:text-[2.6rem]">
+            Mastery of the most advanced design tools, combined with tailor-made
+            care — to guide you through a space shaped entirely around{" "}
+            <span className="font-display italic">your</span> needs.
+          </h2>
+          <a
+            href="#lookbook"
+            className="mt-10 inline-flex items-center rounded-2xl px-7 py-3.5 text-sm font-semibold uppercase tracking-[0.12em] text-[#1c1a17] ring-1 ring-black/20 transition hover:bg-black/[0.05]"
+          >
+            Our process
+          </a>
+        </div>
+
+        {/* risers */}
+        <div ref={r1} className="absolute z-10 overflow-hidden rounded-2xl shadow-lg shadow-black/10" style={{ left: "20%", top: "12%", width: 156, height: 200, opacity: 0 }}>
+          <img src={STORY_IMAGES.a} alt="" className="h-full w-full object-cover" />
+        </div>
+        <div ref={r2} className="absolute z-10 overflow-hidden rounded-2xl shadow-lg shadow-black/10" style={{ left: "75%", top: "34%", width: 156, height: 208, opacity: 0 }}>
+          <img src={STORY_IMAGES.b} alt="" className="h-full w-full object-cover" />
+        </div>
+        <div ref={r3} className="absolute z-10 overflow-hidden rounded-2xl shadow-lg shadow-black/10" style={{ left: "11%", top: "58%", width: 168, height: 216, opacity: 0 }}>
+          <img src={STORY_IMAGES.c} alt="" className="h-full w-full object-cover" />
+        </div>
+
+        {/* expander — rises, then fills the screen */}
+        <div ref={exRef} className="absolute z-30 overflow-hidden shadow-2xl shadow-black/20" style={{ left: "70%", top: "58%", width: "13%", height: "26%", opacity: 0, borderRadius: 20 }}>
+          <img src={STORY_IMAGES.d} alt="" className="h-full w-full object-cover" />
         </div>
       </div>
     </section>
