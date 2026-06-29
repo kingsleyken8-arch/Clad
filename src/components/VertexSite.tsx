@@ -374,65 +374,60 @@ const INTRO_IMAGES = {
 
 function Intro() {
   return (
-    <section id="work" className="relative overflow-hidden bg-[#f4f0e9]">
-      {/* Nominee badge */}
-      <div className="absolute right-0 top-0 z-20 hidden flex-col items-center gap-3 bg-[#1c1a17] px-3 py-4 text-[#f4f0e9] sm:flex">
-        <span className="text-lg font-bold leading-none">W.</span>
-        <span className="text-[10px] font-semibold uppercase tracking-[0.22em] [writing-mode:vertical-rl]">
-          Nominee
-        </span>
-      </div>
+    <section id="work" className="relative overflow-hidden bg-[#f4f0e9] pb-20 pt-24 lg:pb-28 lg:pt-28">
+      {/* corner labels */}
+      <span className="absolute left-6 top-[30%] hidden text-xs font-semibold uppercase leading-relaxed tracking-[0.16em] text-[#1c1a17] lg:block lg:left-10">
+        Vertex
+        <br />
+        Studio
+      </span>
+      <span className="absolute right-6 top-[46%] hidden text-right text-xs font-semibold uppercase leading-relaxed tracking-[0.16em] text-[#1c1a17] lg:block lg:right-10">
+        Selected work
+        <br />
+        from 2021–2025
+      </span>
 
-      <div className="relative mx-auto max-w-[88rem] px-6 pb-24 pt-24 lg:px-10 lg:pb-28 lg:pt-28">
-        {/* corner labels */}
-        <span className="absolute left-6 top-28 hidden text-xs font-semibold uppercase leading-relaxed tracking-[0.16em] text-[#1c1a17] lg:block lg:left-10">
-          Vertex
-          <br />
-          Studio
-        </span>
-        <span className="absolute right-10 top-1/2 hidden text-right text-xs font-semibold uppercase leading-relaxed tracking-[0.16em] text-[#1c1a17] lg:block">
-          Selected work
-          <br />
-          from 2021–2025
-        </span>
+      {/* headline cluster — sized to match the hero H1 */}
+      <Reveal className="relative z-10 mx-auto max-w-[88rem] px-6 text-center lg:px-10">
+        <p className="ar text-xs font-semibold uppercase tracking-[0.26em] text-[#1c1a17]" style={si(0)}>
+          Welcome to the
+        </p>
+        <h2 className="mx-auto mt-5 max-w-5xl font-body text-4xl font-extrabold uppercase leading-[1.03] tracking-tight text-[#1c1a17] sm:text-6xl lg:text-7xl">
+          <span className="ar-line" style={si(1)}>
+            <span>
+              Collection <span className="font-display lowercase italic font-normal">of</span>
+            </span>
+          </span>
+          <span className="ar-line" style={si(2)}>
+            <span>
+              <span className="font-display lowercase italic font-normal">my</span> Recent
+            </span>
+          </span>
+          <span className="ar-line" style={si(3)}>
+            <span>Work</span>
+          </span>
+        </h2>
+        <p className="ar mt-4 text-sm font-semibold uppercase tracking-[0.2em] text-[#1c1a17]/70" style={si(4)}>
+          aka the lookbook
+        </p>
+      </Reveal>
 
-        {/* headline cluster */}
-        <Reveal className="relative z-10 text-center">
-          <p className="ar text-xs font-semibold uppercase tracking-[0.26em] text-[#1c1a17]" style={si(0)}>
-            Welcome to the
-          </p>
-          <h2 className="mx-auto mt-5 max-w-5xl font-body text-[clamp(2.6rem,9vw,7rem)] font-extrabold uppercase leading-[0.92] tracking-[-0.01em] text-[#1c1a17]">
-            <span className="ar-line" style={si(1)}>
-              <span>
-                Collection <span className="font-display lowercase italic font-normal">of</span>
-              </span>
-            </span>
-            <span className="ar-line" style={si(2)}>
-              <span>
-                <span className="font-display lowercase italic font-normal">my</span> Recent
-              </span>
-            </span>
-            <span className="ar-line" style={si(3)}>
-              <span>Work</span>
-            </span>
-          </h2>
-          <p className="ar mt-4 text-sm font-semibold uppercase tracking-[0.2em] text-[#1c1a17]/70" style={si(4)}>
-            aka the lookbook
-          </p>
-        </Reveal>
+      {/* images band + paragraph — images bleed to the screen edges */}
+      <div className="relative mt-16 flex flex-col items-center gap-10 lg:mt-20 lg:block lg:min-h-[600px] lg:gap-0">
+        {/* left image — flush to the left edge on desktop */}
+        <div className="aspect-[4/3] w-full max-w-md overflow-hidden bg-[#e7e0d4] lg:absolute lg:bottom-0 lg:left-0 lg:aspect-auto lg:h-[450px] lg:w-[32%] lg:max-w-none">
+          <img src={INTRO_IMAGES.left} alt="" className="h-full w-full object-cover" />
+        </div>
 
-        {/* images + intro paragraph */}
-        <div className="relative z-10 mt-16 grid grid-cols-1 items-end gap-12 lg:mt-24 lg:grid-cols-3">
-          <div className="order-2 aspect-[4/3] w-full max-w-md overflow-hidden bg-[#e7e0d4] lg:order-1 lg:max-w-none">
-            <img src={INTRO_IMAGES.left} alt="" className="h-full w-full object-cover" />
-          </div>
-          <p className="order-1 max-w-md justify-self-center font-display text-[1.6rem] italic leading-snug text-[#1c1a17] sm:text-[1.8rem] lg:order-2 lg:px-2">
-            We're VertexAI — award-winning design intelligence with many moons of
-            experience. We craft spaces that captivate and resonate with purpose.
-          </p>
-          <div className="order-3 aspect-[3/4] w-full max-w-sm overflow-hidden bg-[#e7e0d4] lg:order-3 lg:max-w-none lg:justify-self-end">
-            <img src={INTRO_IMAGES.right} alt="" className="h-full w-full object-cover" />
-          </div>
+        {/* intro paragraph — centered */}
+        <p className="max-w-md px-6 font-display text-[1.5rem] italic leading-snug text-[#1c1a17] sm:text-[1.7rem] lg:absolute lg:left-1/2 lg:top-1/2 lg:w-[30%] lg:max-w-sm lg:-translate-x-1/2 lg:-translate-y-1/2 lg:px-0">
+          We're VertexAI — award-winning design intelligence with many moons of
+          experience. We craft spaces that captivate and resonate with purpose.
+        </p>
+
+        {/* right image — flush to the right edge on desktop */}
+        <div className="aspect-[3/4] w-full max-w-sm overflow-hidden bg-[#e7e0d4] lg:absolute lg:bottom-0 lg:right-0 lg:aspect-auto lg:h-[560px] lg:w-[30%] lg:max-w-none">
+          <img src={INTRO_IMAGES.right} alt="" className="h-full w-full object-cover" />
         </div>
       </div>
     </section>
