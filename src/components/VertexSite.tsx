@@ -496,36 +496,40 @@ function Shift() {
           <span className="absolute left-1/2 top-0 h-2 w-px -translate-x-1/2 bg-[#1c1a17]/40" />
         </div>
 
-        {/* big right-aligned headline */}
+        {/* headline + services subtext */}
         <Reveal>
-          <h2 className="ml-auto mt-12 max-w-4xl text-right font-body text-[clamp(2rem,5.6vw,4.6rem)] font-extrabold leading-[1.05] tracking-tight text-[#1c1a17] lg:mt-16">
+          <h2
+            className="ar ml-auto mt-12 max-w-3xl text-right font-body text-[clamp(1.6rem,4vw,3.25rem)] font-extrabold leading-[1.1] tracking-tight text-[#1c1a17] lg:mt-16"
+            style={si(0)}
+          >
             A design intelligence studio. Where imagination, play, and
             storytelling shape what comes next.
           </h2>
+          <p
+            className="ar mt-12 max-w-xl text-base font-semibold leading-snug text-[#1c1a17] lg:text-lg"
+            style={si(1)}
+          >
+            We craft spaces shown at international showcases. We build immersive
+            rooms and installations. We guide brands through the intersection of
+            design and technology. We produce work across many mediums. We host
+            workshops and retreats for teams and communities. We gather people
+            around intimate dinners, salons, and curated gatherings.
+          </p>
         </Reveal>
 
-        {/* services paragraph */}
-        <p className="ar mt-16 max-w-2xl text-lg font-bold leading-snug text-[#1c1a17] lg:text-xl">
-          We craft spaces shown at international showcases. We build immersive
-          rooms and installations. We guide brands through the intersection of
-          design and technology. We produce work across many mediums. We host
-          workshops and retreats for teams and communities. We gather people
-          around intimate dinners, salons, and curated gatherings.
-        </p>
+        {/* giant image-filled display text — centred, always fits the width */}
+        <h3
+          className="mx-auto mt-20 max-w-full select-none break-words bg-clip-text text-center font-body text-[clamp(2.5rem,9vw,8rem)] font-extrabold uppercase leading-[0.92] tracking-tight text-transparent lg:mt-28"
+          style={{
+            backgroundImage: `url(${SHIFT_TEXT_IMAGE})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center 35%",
+            WebkitBackgroundClip: "text",
+          }}
+        >
+          Future is Black
+        </h3>
       </div>
-
-      {/* giant image-filled display text */}
-      <h3
-        className="mt-16 select-none whitespace-nowrap bg-clip-text text-center font-body text-[18vw] font-extrabold uppercase leading-[0.82] tracking-tight text-transparent lg:mt-24"
-        style={{
-          backgroundImage: `url(${SHIFT_TEXT_IMAGE})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center 35%",
-          WebkitBackgroundClip: "text",
-        }}
-      >
-        What We Shift
-      </h3>
     </section>
   );
 }
