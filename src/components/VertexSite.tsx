@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import { ArrowLeft, ArrowRight, ArrowUpRight, ChevronDown, Sparkles } from "lucide-react";
+import { ArrowUpRight, ChevronDown, Sparkles } from "lucide-react";
 import "./vertex-anim.css";
 
 /* ----------------------------- reveal helpers ----------------------------- */
@@ -284,33 +284,50 @@ const CDN =
   "https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/";
 
 const SLIDES = [
-  { id: "01", title: "Lunar Repose", img: "hf_20260629_061854_5e775d59-57dc-48f6-9dfb-e2c90dd93474.png" },
-  { id: "02", title: "Afternoon Confidences", img: "hf_20260629_061857_7a50203f-c522-4cc6-8efa-4b9ca150bac8.png" },
-  { id: "03", title: "The Conservatory", img: "hf_20260629_061900_f47c53b3-3bcd-4aca-8bca-7ebf4aedde05.png" },
-  { id: "04", title: "Promenade", img: "hf_20260629_061903_24be92aa-7003-4b42-9778-988aa5dc0585.png" },
-  { id: "05", title: "Nocturne", img: "hf_20260629_062050_208c6861-3c49-4d13-8b95-9f2955878aeb.png" },
-  { id: "06", title: "In Motion", img: "hf_20260629_062054_e1093e72-2fcb-4486-9de5-a7ab318a2da6.png" },
-  { id: "07", title: "The Reading Room", img: "hf_20260629_062057_ccaa0c50-8ba2-4ebf-a7ab-4457ffad98b4.png" },
-  { id: "08", title: "Heirlooms", img: "hf_20260629_062100_28ebc3bc-84df-496a-9cba-aa4852420c3a.png" },
+  { cat: "Reverie", title: "Lunar Repose", img: "hf_20260629_061854_5e775d59-57dc-48f6-9dfb-e2c90dd93474.png" },
+  { cat: "Salon", title: "Afternoon Confidences", img: "hf_20260629_061857_7a50203f-c522-4cc6-8efa-4b9ca150bac8.png" },
+  { cat: "Botanical", title: "The Conservatory", img: "hf_20260629_061900_f47c53b3-3bcd-4aca-8bca-7ebf4aedde05.png" },
+  { cat: "Procession", title: "Promenade", img: "hf_20260629_061903_24be92aa-7003-4b42-9778-988aa5dc0585.png" },
+  { cat: "Nocturne", title: "Nocturne", img: "hf_20260629_062050_208c6861-3c49-4d13-8b95-9f2955878aeb.png" },
+  { cat: "Movement", title: "In Motion", img: "hf_20260629_062054_e1093e72-2fcb-4486-9de5-a7ab318a2da6.png" },
+  { cat: "Study", title: "The Reading Room", img: "hf_20260629_062057_ccaa0c50-8ba2-4ebf-a7ab-4457ffad98b4.png" },
+  { cat: "Lineage", title: "Heirlooms", img: "hf_20260629_062100_28ebc3bc-84df-496a-9cba-aa4852420c3a.png" },
 ];
 
+function LookCard({
+  s,
+  ratio,
+  className = "",
+  i = 0,
+}: {
+  s: (typeof SLIDES)[number];
+  ratio: string;
+  className?: string;
+  i?: number;
+}) {
+  return (
+    <figure className={`ar-rise ${className}`} style={si(i)}>
+      <div className={`overflow-hidden bg-[#e7e0d4] ${ratio}`}>
+        <img
+          src={CDN + s.img}
+          alt={s.title}
+          loading="lazy"
+          className="h-full w-full object-cover transition duration-700 ease-out hover:scale-[1.04]"
+        />
+      </div>
+      <figcaption className="mt-4">
+        <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a8275]">
+          {s.cat}
+        </div>
+        <div className="mt-1.5 text-lg font-medium tracking-tight text-[#1c1a17]">
+          {s.title}
+        </div>
+      </figcaption>
+    </figure>
+  );
+}
+
 function Slideshow() {
-  const trackRef = useRef<HTMLDivElement>(null);
-
-  const move = (dir: 1 | -1) => {
-    const el = trackRef.current;
-    if (!el) return;
-    const card = el.querySelector<HTMLElement>("[data-card]");
-    const gap = 10;
-    const step = card ? card.offsetWidth + gap : el.clientWidth * 0.8;
-    const max = el.scrollWidth - el.clientWidth;
-    // wrap around at the edges so it behaves like a continuous slideshow
-    let target = el.scrollLeft + dir * step;
-    if (dir > 0 && el.scrollLeft >= max - 4) target = 0;
-    else if (dir < 0 && el.scrollLeft <= 4) target = max;
-    el.scrollTo({ left: Math.max(0, Math.min(max, target)), behavior: "smooth" });
-  };
-
   return (
     <section id="lookbook" className="scroll-mt-24 bg-[#f4f0e9] py-20 lg:py-28">
       <div className="mx-auto max-w-[88rem] px-6 lg:px-10">
@@ -325,66 +342,33 @@ function Slideshow() {
           </div>
           <p className="ar max-w-sm text-[15px] leading-relaxed text-[#5b554c]" style={si(2)}>
             Eight characters, one painterly world. Hand-painted editorial
-            portraits — drift through the campaign.
+            portraits.
           </p>
         </Reveal>
-      </div>
 
-      {/* carousel — full-bleed, edge to edge (no max width) */}
-      <div
-        ref={trackRef}
-        className="no-scrollbar mt-12 flex snap-x snap-mandatory gap-2.5 overflow-x-auto scroll-smooth pb-2"
-      >
-        {SLIDES.map((s) => (
-          <figure
-            key={s.id}
-            data-card
-            className="w-[86%] shrink-0 snap-start sm:w-[58%] lg:w-[39%] xl:w-[30%]"
-          >
-              <div className="overflow-hidden border border-black/[0.06] bg-[#e7e0d4]">
-                <img
-                  src={CDN + s.img}
-                  alt={s.title}
-                  loading="lazy"
-                  className="aspect-[3/4] h-full w-full object-cover transition duration-500 hover:scale-[1.03]"
-                />
-              </div>
-              <figcaption className="mt-4 flex items-baseline gap-3">
-                <span className="font-display text-lg italic text-[#c9803f]">{s.id}</span>
-                <span className="text-lg font-medium tracking-tight text-[#1c1a17]">{s.title}</span>
-              </figcaption>
-            </figure>
-          ))}
-        </div>
-
-      <div className="mx-auto max-w-[88rem] px-6 lg:px-10">
-        {/* controls */}
-        <div className="mt-12 flex flex-col items-center gap-7">
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              aria-label="Previous"
-              onClick={() => move(-1)}
-              className="flex h-12 w-12 items-center justify-center rounded-2xl text-[#1c1a17] ring-1 ring-black/15 transition hover:-translate-y-0.5 hover:bg-black/[0.05]"
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </button>
-            <button
-              type="button"
-              aria-label="Next"
-              onClick={() => move(1)}
-              className="flex h-12 w-12 items-center justify-center rounded-2xl text-[#1c1a17] ring-1 ring-black/15 transition hover:-translate-y-0.5 hover:bg-black/[0.05]"
-            >
-              <ArrowRight className="h-5 w-5" />
-            </button>
+        {/* Block 1 — big left, two stacked right */}
+        <Reveal className="mt-16 grid grid-cols-1 gap-10 md:mt-24 md:grid-cols-12 md:gap-x-2.5">
+          <LookCard s={SLIDES[0]} ratio="aspect-[4/5]" className="md:col-span-7" i={0} />
+          <div className="flex flex-col gap-10 md:col-span-5 md:gap-6 md:pt-20">
+            <LookCard s={SLIDES[1]} ratio="aspect-[5/4]" i={1} />
+            <LookCard s={SLIDES[2]} ratio="aspect-[5/4]" i={2} />
           </div>
-          <a
-            href="#lookbook"
-            className="inline-flex items-center gap-2 rounded-2xl px-7 py-3.5 text-sm font-semibold uppercase tracking-[0.12em] text-[#1c1a17] ring-1 ring-black/15 transition hover:bg-black/[0.05]"
-          >
-            See the full lookbook <ArrowUpRight className="h-4 w-4" />
-          </a>
-        </div>
+        </Reveal>
+
+        {/* Block 2 — inverted: two stacked left, big right */}
+        <Reveal className="mt-10 grid grid-cols-1 gap-10 md:mt-16 md:grid-cols-12 md:gap-x-2.5">
+          <div className="order-2 flex flex-col gap-10 md:order-1 md:col-span-5 md:gap-6 md:pt-20">
+            <LookCard s={SLIDES[3]} ratio="aspect-[5/4]" i={1} />
+            <LookCard s={SLIDES[4]} ratio="aspect-[5/4]" i={2} />
+          </div>
+          <LookCard s={SLIDES[5]} ratio="aspect-[4/5]" className="order-1 md:order-2 md:col-span-7" i={0} />
+        </Reveal>
+
+        {/* Block 3 — long left, compact right with space */}
+        <Reveal className="mt-10 grid grid-cols-1 gap-10 md:mt-16 md:grid-cols-12 md:items-start md:gap-x-2.5">
+          <LookCard s={SLIDES[6]} ratio="aspect-[16/10]" className="md:col-span-7" i={0} />
+          <LookCard s={SLIDES[7]} ratio="aspect-[4/5]" className="md:col-span-5 md:pt-28" i={1} />
+        </Reveal>
       </div>
     </section>
   );

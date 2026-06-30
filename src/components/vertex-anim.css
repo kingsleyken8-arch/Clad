@@ -34,9 +34,23 @@
   transform: none;
 }
 
+/* stronger upward "rise" reveal (lookbook grid) */
+.ar-rise {
+  opacity: 0;
+  transform: translateY(64px);
+  transition: opacity 0.8s ease, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(var(--i, 0) * 110ms);
+  will-change: opacity, transform;
+}
+.is-in .ar-rise {
+  opacity: 1;
+  transform: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ar,
-  .ar-line > * {
+  .ar-line > *,
+  .ar-rise {
     transition: none !important;
     opacity: 1 !important;
     transform: none !important;
