@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import { ArrowLeft, ArrowRight, ArrowUpRight, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, ChevronDown, Sparkles } from "lucide-react";
 import "./vertex-anim.css";
 
 /* ----------------------------- reveal helpers ----------------------------- */
@@ -79,6 +79,7 @@ export default function VertexSite() {
       <Shift />
       <Slideshow />
       <ScrollStory />
+      <Faq />
       <Footer />
     </div>
   );
@@ -435,9 +436,9 @@ function Intro() {
       </Reveal>
 
       {/* images band + paragraph — images bleed to the screen edges */}
-      <div className="relative mt-16 flex flex-col items-center gap-10 lg:mt-20 lg:block lg:min-h-[600px] lg:gap-0">
-        {/* left image — flush to the left edge on desktop */}
-        <div className="aspect-[4/3] w-full max-w-md overflow-hidden bg-[#e7e0d4] lg:absolute lg:bottom-0 lg:left-0 lg:aspect-auto lg:h-[420px] lg:w-[28%] lg:max-w-none">
+      <Reveal className="relative mt-16 flex flex-col items-center gap-10 lg:mt-20 lg:block lg:min-h-[600px] lg:gap-0">
+        {/* left image — flush to the left edge on desktop (animates second) */}
+        <div className="ar aspect-[4/3] w-full max-w-md overflow-hidden bg-[#e7e0d4] lg:absolute lg:bottom-0 lg:left-0 lg:aspect-auto lg:h-[420px] lg:w-[28%] lg:max-w-none" style={si(2)}>
           <img src={INTRO_IMAGES.left} alt="" className="h-full w-full object-cover" />
         </div>
 
@@ -447,11 +448,11 @@ function Intro() {
           experience. We craft spaces that captivate and resonate with purpose.
         </p>
 
-        {/* right image — flush to the right edge on desktop, larger */}
-        <div className="aspect-[3/4] w-full max-w-md overflow-hidden bg-[#e7e0d4] lg:absolute lg:bottom-0 lg:right-0 lg:aspect-auto lg:h-[620px] lg:w-[38%] lg:max-w-none">
+        {/* right image — flush to the right edge on desktop, larger (animates first) */}
+        <div className="ar aspect-[3/4] w-full max-w-md overflow-hidden bg-[#e7e0d4] lg:absolute lg:bottom-0 lg:right-0 lg:aspect-auto lg:h-[620px] lg:w-[38%] lg:max-w-none" style={si(0)}>
           <img src={INTRO_IMAGES.right} alt="" className="h-full w-full object-cover" />
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }
@@ -499,11 +500,14 @@ function Shift() {
         {/* headline + services subtext */}
         <Reveal>
           <h2
-            className="ar ml-auto mt-12 max-w-3xl text-right font-body text-[clamp(1.6rem,4vw,3.25rem)] font-extrabold leading-[1.1] tracking-tight text-[#1c1a17] lg:mt-16"
+            className="ar ml-auto mt-12 max-w-4xl text-balance text-right font-body text-[clamp(1.55rem,3.7vw,2.8rem)] font-extrabold leading-[1.12] tracking-[-1px] text-[#1c1a17] lg:mt-16"
             style={si(0)}
           >
-            A design intelligence studio. Where imagination, play, and
-            storytelling shape what comes next.
+            A design{" "}
+            <span className="font-display font-normal italic">intelligence</span>{" "}
+            studio. Where{" "}
+            <span className="font-display font-normal italic">imagination</span>,
+            play, and storytelling shape what comes next.
           </h2>
           <p
             className="ar mt-12 max-w-xl text-base font-semibold leading-snug text-[#1c1a17] lg:text-lg"
@@ -519,7 +523,7 @@ function Shift() {
 
         {/* giant image-filled display text — centred, always fits the width */}
         <h3
-          className="mx-auto mt-20 max-w-full select-none break-words bg-clip-text text-center font-body text-[clamp(2.5rem,9vw,8rem)] font-extrabold uppercase leading-[0.92] tracking-tight text-transparent lg:mt-28"
+          className="mx-auto mt-20 max-w-full select-none break-words bg-clip-text text-center font-body text-[clamp(2.4rem,8.4vw,7.5rem)] font-black uppercase leading-[0.92] tracking-[-2px] text-transparent lg:mt-28"
           style={{
             backgroundImage: `url(${SHIFT_TEXT_IMAGE})`,
             backgroundSize: "cover",
@@ -657,6 +661,86 @@ function ScrollStory() {
         {/* expander — rises, then fills the screen */}
         <div ref={exRef} className="absolute z-30 overflow-hidden shadow-2xl shadow-black/20" style={{ left: "70%", top: "58%", width: "13%", height: "26%", opacity: 0 }}>
           <img src={STORY_IMAGES.d} alt="" className="h-full w-full object-cover" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ FAQ */
+const FAQS = [
+  {
+    q: "What exactly is VertexAI?",
+    a: "A design-intelligence studio. We combine the most advanced tools with a designer's eye to imagine, plan and refine spaces — guiding you from a vague idea to a finished, livable room.",
+  },
+  {
+    q: "How does the design process work?",
+    a: "You describe the feeling you want — by photo or simply in conversation. We propose distinct directions: palettes, layouts and curated pieces. You nudge anything in plain language, then export the plan, palette and shopping list.",
+  },
+  {
+    q: "What kinds of spaces can you design?",
+    a: "Anything from a single room to complex, irregular and commercial spaces. The harder the brief, the more our tooling helps — circulation, scale and light are all handled to real dimensions.",
+  },
+  {
+    q: "Can I use my own inspiration and budget?",
+    a: "Always. VertexAI adapts to your taste, learns what you reach for and what you reject, and keeps every suggestion within the budget you set.",
+  },
+  {
+    q: "Do you work with brands and studios?",
+    a: "Yes — we partner with studios and brands on immersive installations, showcases and large-scale fit-outs, and we license the platform for teams.",
+  },
+  {
+    q: "How do I get started?",
+    a: "Start a free decoration from the top of the page. No commitment — watch a blank room become somewhere you actually want to be.",
+  },
+];
+
+function Faq() {
+  const [open, setOpen] = useState<number | null>(0);
+  return (
+    <section id="faq" className="scroll-mt-24 bg-[#f4f0e9] py-24 lg:py-28">
+      <div className="mx-auto max-w-3xl px-6 lg:px-10">
+        <Reveal className="text-center">
+          <span className="ar block text-xs font-semibold uppercase tracking-[0.22em] text-[#c9803f]" style={si(0)}>
+            Questions
+          </span>
+          <h2 className="ar mt-4 font-body text-3xl font-medium tracking-tight text-[#1c1a17] sm:text-4xl lg:text-[2.75rem]" style={si(1)}>
+            Frequently <span className="font-display italic">asked</span>.
+          </h2>
+        </Reveal>
+
+        <div className="mt-12 border-b border-black/10">
+          {FAQS.map((f, i) => {
+            const isOpen = open === i;
+            return (
+              <div key={f.q} className="border-t border-black/10">
+                <button
+                  type="button"
+                  onClick={() => setOpen(isOpen ? null : i)}
+                  aria-expanded={isOpen}
+                  className="flex w-full items-center justify-between gap-6 py-5 text-left"
+                >
+                  <span className="text-lg font-semibold tracking-tight text-[#1c1a17]">
+                    {f.q}
+                  </span>
+                  <ChevronDown
+                    className={`h-5 w-5 flex-none text-[#1c1a17] transition-transform duration-300 ${
+                      isOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+                <div
+                  className={`grid overflow-hidden transition-all duration-300 ease-out ${
+                    isOpen ? "grid-rows-[1fr] pb-6" : "grid-rows-[0fr]"
+                  }`}
+                >
+                  <p className="min-h-0 max-w-xl text-[15px] leading-relaxed text-[#5b554c]">
+                    {f.a}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
