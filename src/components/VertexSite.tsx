@@ -328,18 +328,19 @@ function Slideshow() {
             portraits — drift through the campaign.
           </p>
         </Reveal>
+      </div>
 
-        {/* carousel */}
-        <div
-          ref={trackRef}
-          className="no-scrollbar mt-12 flex snap-x snap-mandatory gap-2.5 overflow-x-auto scroll-smooth pb-2"
-        >
-          {SLIDES.map((s) => (
-            <figure
-              key={s.id}
-              data-card
-              className="w-[82%] shrink-0 snap-start sm:w-[47%] lg:w-[31%] xl:w-[23.5%]"
-            >
+      {/* carousel — full-bleed, edge to edge (no max width) */}
+      <div
+        ref={trackRef}
+        className="no-scrollbar mt-12 flex snap-x snap-mandatory gap-2.5 overflow-x-auto scroll-smooth pb-2"
+      >
+        {SLIDES.map((s) => (
+          <figure
+            key={s.id}
+            data-card
+            className="w-[86%] shrink-0 snap-start sm:w-[58%] lg:w-[39%] xl:w-[30%]"
+          >
               <div className="overflow-hidden border border-black/[0.06] bg-[#e7e0d4]">
                 <img
                   src={CDN + s.img}
@@ -356,6 +357,7 @@ function Slideshow() {
           ))}
         </div>
 
+      <div className="mx-auto max-w-[88rem] px-6 lg:px-10">
         {/* controls */}
         <div className="mt-12 flex flex-col items-center gap-7">
           <div className="flex items-center gap-3">
