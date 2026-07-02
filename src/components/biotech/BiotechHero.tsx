@@ -14,7 +14,7 @@ const ROWS = 30;
 const INK = "#161613";
 
 const HERO_IMG =
-  "https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/hf_20260702_114937_465f0607-1a5f-4c8f-8d69-06c02373cd29.png";
+  "https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/hf_20260702_132413_f2cc2bad-9892-4c67-bca4-169c49e7c5ee.png";
 
 /* ------------------------- deterministic map ------------------------- */
 
@@ -30,46 +30,45 @@ function mulberry32(seed: number) {
   };
 }
 
-// Per-column row where the dark (photo) mass begins — hand-tuned to the
-// reference: low on the left, rising through the centre, high on the right.
+// Per-column row where the photo mass begins — the photo owns a large,
+// readable central mass: lower on the left (clearing the headline), high
+// through the centre so the subjects are unmistakable at a glance.
 // prettier-ignore
 const BOUNDARY = [
-  22, 22, 21, 21, 22, 22, 21, 21, 22, 22,
-  23, 23, 22, 21, 20, 19, 18, 17, 16, 16,
-  15, 15, 14, 15, 16, 16, 17, 16, 16, 15,
-  15, 14, 14, 13, 12, 11, 10, 8, 7, 6,
-  6, 6, 7, 6, 6, 7, 6, 6,
+  16, 16, 15, 15, 16, 15, 15, 14, 15, 14,
+  14, 13, 13, 12, 12, 11, 10, 10, 9, 9,
+  9, 8, 9, 9, 8, 8, 9, 8, 9, 9,
+  8, 9, 9, 10, 10, 11, 12, 12, 13, 12,
+  12, 11, 12, 13, 12, 13, 12, 12,
 ];
 
 // Bottom-right corner returns to paper (the paragraph sits there).
 function lightAgainRow(c: number) {
-  if (c < 33) return ROWS + 1;
-  return 29 - Math.round((c - 33) * 0.9);
+  if (c < 36) return ROWS + 1;
+  if (c < 38) return 28;
+  return 25;
 }
 
 // Explicit clusters copied from the reference composition.
 const DARK_ISLANDS: Array<[number, number]> = [
   // small cluster breaking into the nav area, top centre
   [20, 0], [21, 0], [21, 1], [20, 1], [21, 2],
-  // mid-left floating cells
-  [19, 4], [20, 5], [19, 6],
-  // stray pair mid-canvas
-  [30, 10], [31, 11],
-  // singles in the white field near the boundary
-  [3, 17], [7, 19], [14, 16], [1, 20],
+  // photo pixels scattered up into the white field
+  [17, 6], [22, 5], [26, 4], [28, 6], [33, 7],
+  [37, 8], [40, 7], [43, 9], [13, 8], [45, 8],
 ];
 
+// Paper cells nibbling into the photo — edges only, so the centre of the
+// image (the subjects) stays completely clear and readable.
 const LIGHT_ISLANDS: Array<[number, number]> = [
-  // bottom-left pockets
-  [6, 24], [8, 23], [10, 25], [12, 21], [13, 22], [7, 26],
-  // bottom-centre staircase streak
-  [23, 24], [24, 25], [25, 25], [24, 26], [26, 27], [22, 27],
-  [25, 28], [27, 28], [23, 29], [28, 26], [30, 27], [29, 29],
-  // top-right constellation inside the photo mass
-  [42, 7], [43, 8], [44, 8], [41, 9], [45, 9], [43, 10],
-  [46, 10], [42, 11], [44, 12], [45, 13],
-  // right flank, lower
-  [37, 15], [39, 17], [41, 20], [43, 21], [44, 19],
+  // left flank
+  [1, 18], [3, 19], [6, 17], [9, 16], [4, 22],
+  // along the top edge of the mass
+  [15, 12], [19, 11], [24, 10], [29, 11], [34, 13],
+  // right flank near the paragraph pocket
+  [40, 14], [43, 15], [45, 17], [41, 22], [44, 21],
+  // staircase steps around the pocket itself
+  [36, 26], [35, 28], [34, 29], [39, 24], [42, 24], [45, 23],
 ];
 
 function buildMap(): boolean[][] {
@@ -90,16 +89,19 @@ function buildMap(): boolean[][] {
   // sprinkle: stray photo pixels floating just above the boundary…
   for (let c = 0; c < COLS; c++) {
     for (let r = Math.max(0, BOUNDARY[c] - 4); r < BOUNDARY[c] - 1; r++) {
-      if (rand() < 0.05) dark[r][c] = true;
+      // keep the headline zone (top left) clear of strays
+      if (c <= 11 && r <= 13) continue;
+      if (rand() < 0.07) dark[r][c] = true;
     }
-    // …and paper pixels sunk just below it
+    // …and paper pixels nibbling shallowly below it — never deep into the
+    // photo, so the subjects stay fully visible
     const lar = lightAgainRow(c);
-    for (let r = BOUNDARY[c] + 2; r < Math.min(ROWS, BOUNDARY[c] + 6); r++) {
-      if (r < lar && rand() < 0.04) dark[r][c] = false;
+    for (let r = BOUNDARY[c] + 1; r < Math.min(ROWS, BOUNDARY[c] + 3); r++) {
+      if (r < lar && rand() < 0.05) dark[r][c] = false;
     }
     // jitter on the bottom-right return edge — but keep the paragraph
-    // pocket (cols 36+) clean so the copy always sits on paper
-    if (c < 36 && lar <= ROWS && rand() < 0.4 && lar - 1 > BOUNDARY[c]) {
+    // pocket (cols 38+) clean so the copy always sits on paper
+    if (c < 38 && lar <= ROWS && rand() < 0.4 && lar - 1 > BOUNDARY[c]) {
       dark[Math.min(ROWS - 1, lar)][c] = true;
     }
   }
@@ -181,7 +183,7 @@ export default function BiotechHero() {
   return (
     <section
       className="relative h-screen min-h-[640px] w-full overflow-hidden font-[Helvetica_Neue,Helvetica,Arial,sans-serif]"
-      style={{ backgroundColor: INK }}
+      style={{ backgroundColor: "#aeb6ba" }}
     >
       {/* the generated lab photograph, revealed through the dark cells */}
       <img
