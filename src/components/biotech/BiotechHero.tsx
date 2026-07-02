@@ -188,7 +188,7 @@ export default function BiotechHero() {
       {/* the generated lab photograph, revealed through the dark cells */}
       <img
         src={HERO_IMG}
-        alt="Scientist in clear goggles working in a biotech lab"
+        alt="Stem Biotech scientists working in a bright laboratory"
         className="absolute inset-0 h-full w-full object-cover"
       />
 
@@ -204,9 +204,9 @@ export default function BiotechHero() {
               className="text-[13px] font-bold leading-[1.15] tracking-tight"
               style={{ color: INK }}
             >
-              Stemline
+              Stem
               <br />
-              Biotech Labs
+              Biotech
             </span>
           </a>
           <nav className="pointer-events-auto flex items-center gap-8 pt-2">
@@ -238,9 +238,9 @@ export default function BiotechHero() {
           className="absolute bottom-[7%] right-6 max-w-[280px] text-[13px] leading-[1.5] md:right-10"
           style={{ color: INK }}
         >
-          Helping scientists take stem-cell research from bench to bedside
-          (therapies, diagnostics… who knows) and move medicine a tiny bit
-          further.
+          Stem Biotech helps scientists take stem-cell research from bench to
+          bedside — therapies, diagnostics and beyond — moving medicine a tiny
+          bit further every day.
         </p>
       </div>
     </section>
