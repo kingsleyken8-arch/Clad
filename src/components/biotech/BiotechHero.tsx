@@ -55,7 +55,7 @@ const DARK_ISLANDS: Array<[number, number]> = [
   [20, 0], [21, 0], [21, 1], [20, 1], [21, 2],
   // photo pixels scattered up into the white field
   [17, 6], [22, 5], [26, 4], [28, 6], [33, 7],
-  [37, 8], [40, 7], [43, 9], [13, 8], [45, 8],
+  [37, 8], [40, 7], [43, 9], [16, 6], [45, 8],
 ];
 
 // Paper cells nibbling into the photo — edges only, so the centre of the
@@ -90,7 +90,7 @@ function buildMap(): boolean[][] {
   for (let c = 0; c < COLS; c++) {
     for (let r = Math.max(0, BOUNDARY[c] - 4); r < BOUNDARY[c] - 1; r++) {
       // keep the headline zone (top left) clear of strays
-      if (c <= 11 && r <= 13) continue;
+      if (c <= 15 && r <= 13) continue;
       if (rand() < 0.07) dark[r][c] = true;
     }
     // …and paper pixels nibbling shallowly below it — never deep into the
@@ -228,9 +228,9 @@ export default function BiotechHero() {
           className="absolute left-6 top-[26%] text-[13vw] leading-[1.04] tracking-[-0.02em] md:left-10 md:text-[64px]"
           style={{ color: INK }}
         >
-          Discovery
+          Turning cells
           <br />
-          is hard.
+          into cures.
         </h1>
 
         {/* supporting copy, bottom right on the paper pocket */}
