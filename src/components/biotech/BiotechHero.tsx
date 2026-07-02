@@ -14,7 +14,7 @@ const ROWS = 30;
 const INK = "#161613";
 
 const HERO_IMG =
-  "https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/hf_20260702_132413_f2cc2bad-9892-4c67-bca4-169c49e7c5ee.png";
+  "https://d2ol7oe51mr4n9.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/eace3e8f-8e86-4020-af8a-8ccf0834afc9.png";
 
 /* ------------------------- deterministic map ------------------------- */
 
