@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [claude/brave-carson-kl4wal, claude/great-ramanujan-6gq2v7]
+    branches: [claude/website-from-design-xk24op]
   workflow_dispatch:
 
 permissions:
