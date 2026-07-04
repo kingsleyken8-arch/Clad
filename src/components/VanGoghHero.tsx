@@ -1,23 +1,27 @@
 import { useEffect, useState } from "react";
 
 /*
- * Nexmora — smart-manufacturing hero.
+ * Van Gogh — creative-studio hero.
  *
- * Full-bleed monochrome machine footage (Higgsfield video with an image
- * poster/fallback), a floating white pill nav centered at the top, a
- * two-line Inter Display headline with tight tracking, sub-copy pinned
- * bottom-left and the CTA pinned bottom-right. Fluid/responsive with the
- * content constrained to a max width.
+ * Full-bleed textured artwork (Higgsfield-generated 16:9 image), a compact
+ * floating white pill nav centered at the top, a two-line Inter Display
+ * headline with tight tracking, sub-copy pinned bottom-left and the CTA
+ * pinned bottom-right. Fluid/responsive with the content constrained to a
+ * max width.
  */
 
+// 16:9 textured-artwork background, generated on Higgsfield from the
+// user's reference (text removed, canvas extended to widescreen).
 const BG_IMG =
-  "https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/hf_20260704_160703_f823d425-0139-4c83-8505-7882f0308669.png";
-const BG_VIDEO =
-  "https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/hf_20260704_161224_0267978a-9c04-408b-a556-ff5153a39689.mp4";
+  "https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/hf_20260704_164858_9b32ba0d-04e6-48d7-90cb-308dbf83ba34.png";
+const BG_IMG_FALLBACK =
+  "https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/hf_20260704_164858_97c893a7-7e2f-4b16-b015-c464cc639940.png";
+// Static image hero — no video.
+const BG_VIDEO = "";
 
 const NAV_LINKS = ["Home", "About", "Services", "Blog", "FAQ"];
 
-export default function NexmoraHero() {
+export default function VanGoghHero() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [videoOk, setVideoOk] = useState(true);
   const reducedMotion =
@@ -56,6 +60,10 @@ export default function NexmoraHero() {
           src={BG_IMG}
           alt=""
           draggable={false}
+          onError={(e) => {
+            const el = e.currentTarget;
+            if (el.src !== BG_IMG_FALLBACK) el.src = BG_IMG_FALLBACK;
+          }}
         />
       )}
       {/* fitted dark scrim over the video so the copy stays fully legible */}
@@ -77,17 +85,17 @@ export default function NexmoraHero() {
       <header className="absolute left-1/2 top-4 z-30 w-[calc(100%-24px)] -translate-x-1/2 md:top-8 md:w-auto md:max-w-[calc(100%-48px)]">
         <nav className="flex items-center justify-between gap-4 rounded-2xl bg-white py-2.5 pl-6 pr-2.5 shadow-[0_10px_40px_rgba(0,0,0,0.18)] md:justify-start md:gap-10 md:pl-8">
           <a
-            href="#/nexmora"
+            href="#/vangogh"
             className="text-[22px] font-medium tracking-[-0.02em] text-[#1d211c] md:text-[24px]"
           >
-            Nexmora.
+            Van Gogh.
           </a>
 
           <div className="hidden items-center gap-7 md:flex">
             {NAV_LINKS.map((l, i) => (
               <a
                 key={l}
-                href="#/nexmora"
+                href="#/vangogh"
                 className={
                   "text-[16px] tracking-[-0.01em] transition-colors " +
                   (i === 0
@@ -102,7 +110,7 @@ export default function NexmoraHero() {
 
           <div className="flex items-center gap-2">
             <a
-              href="#/nexmora"
+              href="#/vangogh"
               className="rounded-xl bg-[#2e3a2c] px-6 py-3 text-[16px] tracking-[-0.01em] text-white transition-colors hover:bg-[#232c22] md:px-7 md:py-3.5"
             >
               Contact Us
@@ -133,7 +141,7 @@ export default function NexmoraHero() {
             {NAV_LINKS.map((l, i) => (
               <a
                 key={l}
-                href="#/nexmora"
+                href="#/vangogh"
                 onClick={() => setMenuOpen(false)}
                 className={
                   "rounded-lg px-3 py-2.5 text-[16px] " +
@@ -159,23 +167,22 @@ export default function NexmoraHero() {
               letterSpacing: "-0.038em",
             }}
           >
-            Engineering the future of
+            Painting the future of
             <br />
-            <span className="text-white/70">smart manufacturing</span>
+            <span className="text-white/70">creative expression</span>
           </h1>
 
           <div className="mt-14 flex flex-col justify-between gap-8 md:mt-24 md:flex-row md:items-end">
             <p className="max-w-[460px] text-[15px] leading-[1.45] tracking-[-0.01em] text-white/95 md:text-[17px]">
-              Nexmora Industries integrates automation, robotics, and
-              real&#8209;time data intelligence to create scalable,
-              high&#8209;performance production ecosystems for global
-              enterprises.
+              Van Gogh is a creative studio where timeless artistry meets
+              modern craft &#8212; turning bold ideas into vivid, textured
+              experiences for brands that dare to be felt.
             </p>
             <a
-              href="#/nexmora"
+              href="#/vangogh"
               className="self-start whitespace-nowrap rounded-xl bg-white px-7 py-4 text-[16px] tracking-[-0.01em] text-[#161616] shadow-[0_10px_40px_rgba(0,0,0,0.2)] transition-transform hover:scale-[1.03] md:self-end md:text-[17px]"
             >
-              Explore Our Solutions
+              Explore The Gallery
             </a>
           </div>
         </div>
