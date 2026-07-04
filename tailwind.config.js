@@ -8,6 +8,7 @@ export default {
         head: ["var(--font-head)"],
         mono: ["var(--font-mono)"],
         body: ["var(--font-body)"],
+        interdisplay: ["'Inter Display'", "Inter", "sans-serif"],
       },
       colors: {
         ink: "var(--ink)",

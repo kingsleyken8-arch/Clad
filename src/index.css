@@ -38,6 +38,27 @@
   font-display: swap;
   src: url('/fonts/inter-var.woff2') format('woff2');
 }
+@font-face {
+  font-family: 'Inter Display';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('/fonts/interdisplay-300.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter Display';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/interdisplay-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter Display';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/interdisplay-500.woff2') format('woff2');
+}
 
 :root {
   --ink: #141414;
