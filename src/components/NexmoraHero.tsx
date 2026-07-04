@@ -58,18 +58,24 @@ export default function NexmoraHero() {
           draggable={false}
         />
       )}
-      {/* soft legibility gradient along the bottom */}
+      {/* fitted dark scrim over the video so the copy stays fully legible */}
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-[45%]"
+        className="pointer-events-none absolute inset-0"
+        style={{ background: "rgba(0,0,0,0.3)" }}
+      />
+      {/* soft extra gradient along the bottom, behind the copy */}
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[40%]"
         style={{
           background:
-            "linear-gradient(to top, rgba(0,0,0,0.38), rgba(0,0,0,0))",
+            "linear-gradient(to top, rgba(0,0,0,0.28), rgba(0,0,0,0))",
         }}
       />
 
       {/* ---------- floating pill nav, top middle ---------- */}
-      <header className="absolute left-1/2 top-4 z-30 w-[min(1460px,calc(100%-24px))] -translate-x-1/2 md:top-8 md:w-[min(1460px,calc(100%-96px))]">
-        <nav className="flex items-center justify-between rounded-2xl bg-white py-2.5 pl-6 pr-2.5 shadow-[0_10px_40px_rgba(0,0,0,0.18)] md:pl-9">
+      {/* compact pill nav, sized to its content and centered */}
+      <header className="absolute left-1/2 top-4 z-30 w-[calc(100%-24px)] -translate-x-1/2 md:top-8 md:w-auto md:max-w-[calc(100%-48px)]">
+        <nav className="flex items-center justify-between gap-4 rounded-2xl bg-white py-2.5 pl-6 pr-2.5 shadow-[0_10px_40px_rgba(0,0,0,0.18)] md:justify-start md:gap-10 md:pl-8">
           <a
             href="#/nexmora"
             className="text-[22px] font-medium tracking-[-0.02em] text-[#1d211c] md:text-[24px]"
@@ -77,7 +83,7 @@ export default function NexmoraHero() {
             Nexmora.
           </a>
 
-          <div className="hidden items-center gap-9 md:flex">
+          <div className="hidden items-center gap-7 md:flex">
             {NAV_LINKS.map((l, i) => (
               <a
                 key={l}
