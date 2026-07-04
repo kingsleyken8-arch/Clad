@@ -13,9 +13,11 @@ import { useEffect, useState } from "react";
 // 16:9 textured-artwork background, generated on Higgsfield from the
 // user's reference (text removed, canvas extended to widescreen).
 const BG_IMG =
-  "https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/hf_20260704_164858_9b32ba0d-04e6-48d7-90cb-308dbf83ba34.png";
+  "https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/hf_20260704_172803_01efc6b3-8f47-466f-8092-1d0e0951efdd.png";
+// Fallback: the imported source artwork (pre-extension), in case the
+// primary render URL is ever unreachable.
 const BG_IMG_FALLBACK =
-  "https://d8j0ntlcm91z4.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/hf_20260704_164858_97c893a7-7e2f-4b16-b015-c464cc639940.png";
+  "https://d2ol7oe51mr4n9.cloudfront.net/user_3A4FMCrm8jYjCnPYN9rbcZn81hc/c020be43-b724-4913-9559-9e70c8a94f30.png";
 // Static image hero — no video.
 const BG_VIDEO = "";
 
