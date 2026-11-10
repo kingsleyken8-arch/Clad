@@ -25,6 +25,9 @@ jobs:
       - run: npm run build
         env:
           GITHUB_PAGES: "true"
+          # Contact form target. Set it under Settings → Secrets and variables
+          # → Actions → Variables. Left empty, the form falls back to email.
+          VITE_N8N_WEBHOOK_URL: ${{ vars.N8N_WEBHOOK_URL }}
       # Pages is configured to serve from the gh-pages branch, so publish
       # the built site there instead of using the Pages Actions deployment.
       - uses: peaceiris/actions-gh-pages@v4

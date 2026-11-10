@@ -5,7 +5,7 @@ import { assignFile, FrameMessage, isEmbed, useContent, useResolvedSrc } from ".
 const EMBED = isEmbed();
 
 function selectInStudio(id: string, kind: "media" | "text") {
-  const msg: FrameMessage = { source: "athlete-frame", type: "select", id, kind };
+  const msg: FrameMessage = { source: "clad-frame", type: "select", id, kind };
   window.parent?.postMessage(msg, window.location.origin);
 }
 

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { MEDIA_SLOTS, MediaSlot, TEXT_SLOTS } from "../athlete/content";
+import { MEDIA_SLOTS, MediaSlot, TEXT_SLOTS } from "../clad/content";
 import {
   assignFile,
   exportOverrides,
@@ -13,7 +13,7 @@ import {
   StudioMessage,
   useContent,
   useResolvedSrc,
-} from "../athlete/store";
+} from "../clad/store";
 
 /* ------------------------------------------------------------------ */
 /* Breakpoints                                                         */
@@ -29,7 +29,7 @@ const PRESETS: Record<BpKind, Frame> = {
 };
 const ORDER: BpKind[] = ["desktop", "tablet", "mobile"];
 const GAP = 80;
-const LAYOUT_KEY = "athlete-studio-layout-v1";
+const LAYOUT_KEY = "clad-studio-layout-v1";
 
 type Selection = { kind: "media" | "text"; id: string } | null;
 
@@ -43,7 +43,7 @@ function loadLayout(): { frames: Frame[]; zoom: number } {
   return { frames: [PRESETS.desktop], zoom: 0.5 };
 }
 
-const frameSrc = () => `${window.location.pathname}${window.location.search}#/athlete?embed=1`;
+const frameSrc = () => `${window.location.pathname}${window.location.search}#/?embed=1`;
 
 /* ------------------------------------------------------------------ */
 /* Studio                                                              */
@@ -66,13 +66,13 @@ export default function Studio() {
   /* ---------- messaging with frames ---------- */
   const broadcast = useCallback((msg: Omit<StudioMessage, "source">) => {
     iframes.current.forEach((f) =>
-      f.contentWindow?.postMessage({ source: "athlete-studio", ...msg }, window.location.origin),
+      f.contentWindow?.postMessage({ source: "clad-studio", ...msg }, window.location.origin),
     );
   }, []);
 
   useEffect(() => {
     const onMsg = (e: MessageEvent<FrameMessage>) => {
-      if (e.origin !== window.location.origin || e.data?.source !== "athlete-frame") return;
+      if (e.origin !== window.location.origin || e.data?.source !== "clad-frame") return;
       if (e.data.type === "select") {
         setSel({ kind: e.data.kind, id: e.data.id });
         setTab("inspect");
@@ -173,7 +173,7 @@ export default function Studio() {
         <div className="flex items-center gap-2 pr-3">
           <span className="grid h-7 w-7 place-items-center rounded-md bg-[#4b8bff] text-[13px] font-bold text-white">S</span>
           <span className="font-semibold">Studio</span>
-          <span className="hidden text-white/40 sm:inline">/ Athlete site</span>
+          <span className="hidden text-white/40 sm:inline">/ Site</span>
         </div>
 
         <div className="mx-auto flex items-center gap-1 rounded-lg bg-white/5 p-1">
@@ -203,7 +203,7 @@ export default function Studio() {
           </button>
           <button className="studio-icon-btn" onClick={() => setZoom((z) => Math.min(2, +(z + 0.1).toFixed(2)))} aria-label="Zoom in">+</button>
           <a
-            href={`${window.location.pathname}#/athlete`}
+            href={`${window.location.pathname}#/`}
             target="_blank"
             rel="noreferrer"
             className="ml-2 rounded-md bg-white px-3 py-1.5 font-medium text-black hover:bg-white/90"

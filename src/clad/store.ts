@@ -11,8 +11,8 @@ import { Content, DEFAULT_CONTENT, MediaSlot } from "./content";
  * referenced from content as "idb:<key>".
  */
 
-const LS_KEY = "athlete-content-v1";
-const CHANNEL = "athlete-content";
+const LS_KEY = "clad-content-v1";
+const CHANNEL = "clad-content";
 
 type Overrides = {
   media: Record<string, Partial<MediaSlot>>;
@@ -135,7 +135,7 @@ export function importOverrides(json: string) {
 
 /* ----------------------------- IndexedDB blobs ----------------------------- */
 
-const DB_NAME = "athlete-media";
+const DB_NAME = "clad-media";
 const STORE = "files";
 
 function openDb(): Promise<IDBDatabase> {
@@ -204,11 +204,11 @@ export async function assignFile(id: string, file: File) {
 /* ------------------------------ embed messaging ----------------------------- */
 
 export type StudioMessage =
-  | { source: "athlete-studio"; type: "highlight"; id: string | null }
-  | { source: "athlete-studio"; type: "reveal"; id: string };
+  | { source: "clad-studio"; type: "highlight"; id: string | null }
+  | { source: "clad-studio"; type: "reveal"; id: string };
 
 export type FrameMessage = {
-  source: "athlete-frame";
+  source: "clad-frame";
   type: "select";
   id: string;
   kind: "media" | "text";
