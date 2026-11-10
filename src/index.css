@@ -120,6 +120,32 @@
     0 24px 60px rgba(0, 0, 0, 0.45);
 }
 
+/* ---------------- Studio (editor) ---------------- */
+.studio-canvas {
+  background-color: #0f0f0f;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.07) 1px, transparent 1.2px);
+  background-size: 22px 22px;
+}
+.studio-icon-btn {
+  width: 30px; height: 30px; border-radius: 6px;
+  display: grid; place-items: center; color: rgba(255, 255, 255, 0.7);
+  font-size: 16px; line-height: 1;
+}
+.studio-icon-btn:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+.studio-input {
+  width: 100%; border-radius: 6px; background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08); padding: 8px 10px; color: #fff; outline: none;
+}
+.studio-input:focus { border-color: #4b8bff; box-shadow: 0 0 0 2px rgba(75, 139, 255, 0.25); }
+.studio-input::placeholder { color: rgba(255, 255, 255, 0.3); }
+.studio-range { accent-color: #4b8bff; }
+.studio-empty-thumb {
+  background: repeating-linear-gradient(135deg, #222 0 6px, #262626 6px 12px);
+}
+.studio-scroll::-webkit-scrollbar { width: 8px; }
+.studio-scroll::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.12); border-radius: 8px; }
+.studio-resize:hover span { background: #4b8bff !important; }
+
 /* Vertical rail text */
 .rail-text {
   writing-mode: vertical-rl;

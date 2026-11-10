@@ -20,6 +20,24 @@ Highlights:
 - GSAP entrance animation, floating rose, mouse parallax and
   `prefers-reduced-motion` support. Fonts are self-hosted.
 
+## Athlete site + Studio editor
+
+- **Site:** `#/athlete` — a white-label athlete site with a preloader, pinned
+  hero that shrinks into a framed card, word-by-word statement reveal, stat
+  count-ups, stacked sticky record cards, a pinned horizontal highlights reel,
+  logo marquees, clip-path image reveals, custom cursor and magnetic buttons
+  (GSAP ScrollTrigger + Lenis smooth scroll). Fluid at every width, with
+  layout changes at 768px and 1024px.
+- **Studio:** `#/studio` — a Framer-style editor. Click **+ Generate
+  breakpoints** to see Desktop, Tablet and Mobile side by side, drag a frame's
+  right edge to resize it, and click any image, video or headline to edit it
+  in the right-hand panel (upload, paste a URL, drop a file onto the canvas,
+  set fill/fit and focal point, edit text). Edits sync to every breakpoint
+  instantly and are saved in your browser; use **Export / Import** to move
+  them between browsers.
+
+All editable slots are defined in `src/athlete/content.ts`.
+
 ## 🔗 Live site (permanent link)
 
 **https://kingsleyken8-arch.github.io/Clad/**
