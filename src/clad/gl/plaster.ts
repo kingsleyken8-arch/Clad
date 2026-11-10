@@ -220,6 +220,11 @@ function loadTexture(gl: WebGLRenderingContext, url: string, onLoad: () => void)
   gl.bindTexture(gl.TEXTURE_2D, tex);
   // 1px mid-grey until the image arrives
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, 1, 1, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, new Uint8Array([204]));
+  // usable as it stands, so a picture that never arrives leaves flat plaster rather than black
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
   const img = new Image();
   img.decoding = "async";
   img.onload = () => {
