@@ -89,7 +89,7 @@
   /* ---------- scroll driven scenes ---------- */
   const hero = $('.hero'), proof = $('.proof'), story = $('.story'), storyPin = $('.story-pin'), storyVid = $('.story-media video');
   const plat = $('.platform'), platLeft = $('.plat-left'), mock = $('.mock'), screens = $$('.screen'), tabs = $$('.tab'), msgs = $$('.msg');
-  const research = $('.research'), teamFig = $('.team figure'), big = $('footer .big'), heroVid = $('.hero video');
+  const railsEl = $('.rails'), railEl = $('.rails i'), footerEl = $('footer'), teamFig = $('.team figure'), big = $('footer .big'), heroVid = $('.hero video');
   const themed = $$('[data-theme]');
   const INTRO = .1, STEPS = 5, STEP = (1 - INTRO) / STEPS, MW = 1110;
   let step = -1;
@@ -120,10 +120,12 @@
     plat.style.setProperty('--e', e.toFixed(4));
     plat.dataset.theme = e > .5 ? 'dark' : 'light';
     const top = compact ? 262 : 128;
-    const s = compact ? (vw - 32) / MW : Math.min(1, (vw * .78) / MW);
+    const railI = railEl ? railEl.getBoundingClientRect().right : 0;
+    const s0 = (vw - 2 * railI) / MW;
+    const s = compact ? s0 : lerp(s0, Math.min(1, s0), e);
     const pad = parseFloat(getComputedStyle(platLeft).left) || 56;
-    const dockX = compact ? 16 : Math.max(vw * .44, pad + platLeft.offsetWidth + 40);
-    const x0 = (vw - MW * s) / 2;
+    const dockX = compact ? railI : Math.max(vw * .44, pad + platLeft.offsetWidth + 40);
+    const x0 = railI;
     mock.style.height = ((vh - top) / s) + 'px';
     mock.style.transform = `translate(${lerp(x0, dockX, e).toFixed(1)}px,${top}px) scale(${s.toFixed(4)})`;
     const sp2 = clamp((p - INTRO) / STEP, 0, STEPS - .001), ns = Math.floor(sp2), sub = sp2 - ns;
@@ -136,9 +138,6 @@
     if (step === 1) msgs.forEach((m, i) => m.classList.toggle('on', sub > .08 + i * .15));
     else if (step < 1) msgs.forEach(m => m.classList.remove('on'));
 
-    // research panel widens as it comes through
-    const rr = research.getBoundingClientRect();
-    research.style.setProperty('--g', clamp((vh - rr.top) / (vh * 1.1)).toFixed(3));
 
     // parallax
     if (teamFig) { const t = teamFig.getBoundingClientRect(); teamFig.style.setProperty('--y', clamp((vh - t.top) / (vh + t.height)).toFixed(3)); }
@@ -159,6 +158,9 @@
     requestAnimationFrame(raf);
   }
   const go = top => lenis ? lenis.scrollTo(top, { duration: 1.4 }) : scrollTo({ top, behavior: reduce ? 'auto' : 'smooth' });
+
+  const fitRails = () => { railsEl.style.top = hero.offsetHeight + 'px'; railsEl.style.bottom = footerEl.offsetHeight + 'px'; };
+  fitRails(); addEventListener('resize', fitRails); addEventListener('load', fitRails);
 
   let queued = false;
   const onScroll = () => { if (!queued) { queued = true; requestAnimationFrame(() => { queued = false; frame(); }); } };
