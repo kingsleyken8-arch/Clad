@@ -460,10 +460,10 @@ footer{border-top:1px solid var(--line);overflow:hidden}
 @media (min-width:961px) and (max-width:1280px){.mega-in,.mega-in.wide{grid-template-columns:auto}.mega-in.wide .mg{width:540px}.mega-in .mg.one{width:330px}.mg-card{display:none}}
 
 /* hero headline, a step smaller than the display size */
-.hero h1{font-size:clamp(32px,3.2vw,46px);letter-spacing:-2px;line-height:1.02}
-/* headings below the hero come down with it, so the hero stays the largest text on the page */
-:root{--t-h2:clamp(28px,2.9vw,40px);--t-h3:clamp(20px,1.7vw,24px)}
-.close h2{font-size:clamp(32px,3.2vw,46px);letter-spacing:-2px}
-.how h2{font-size:clamp(26px,2.6vw,36px)}.spot h2{font-size:clamp(24px,2.3vw,32px)}
-.plan .amt b{font-size:44px}
+.hero h1{font-size:clamp(36px,3.75vw,54px);letter-spacing:-2.4px;line-height:1}
+/* headings below the hero sit a step under it, so the hero stays the largest text on the page */
+:root{--t-h2:clamp(30px,3.2vw,46px);--t-h3:clamp(21px,1.8vw,26px)}
+.close h2{font-size:clamp(36px,3.75vw,54px);letter-spacing:-2.4px}
+.how h2{font-size:clamp(28px,2.8vw,40px)}.spot h2{font-size:clamp(26px,2.5vw,36px)}
+.plan .amt b{font-size:48px}
 @media (max-width:960px){.hero h1{letter-spacing:-.045em}}
