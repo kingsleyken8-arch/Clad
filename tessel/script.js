@@ -77,6 +77,8 @@
     const mr = mark.getBoundingClientRect();
     mark.style.setProperty('--f', clamp((vh - mr.top) / (mr.height * 1.2)).toFixed(3));
 
+    document.body.toggleAttribute('data-top', scrollY < 24);
+
     // nav colour follows the section beneath it
     let theme = 'light';
     for (const el of themed) { const b = el.getBoundingClientRect(); if (b.top <= 40 && b.bottom > 40) theme = el.dataset.theme; }
