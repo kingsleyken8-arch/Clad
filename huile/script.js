@@ -37,11 +37,16 @@
     el.innerHTML = [...el.textContent].map((c, i) => `<span style="--i:${i}">${c}</span>`).join('');
   });
   $$('[data-dup]').forEach(el => { el.innerHTML += el.innerHTML; });
+  $$('[data-dots]').forEach(el => {
+    let h = '';
+    for (let r = 0; r < 5; r++) for (let c = 0; c < 30; c++) h += `<i style="--c:${c};--o:${(.28 + .72 * c / 29).toFixed(2)}"${r === 4 && c === 29 ? ' class="last"' : ''}></i>`;
+    el.innerHTML = h;
+  });
 
   /* ---------- agent feature cards ---------- */
   const rows = $('[data-rows]');
   if (rows) {
-    const st = { Done: '#3c8a5e', Running: '#47689a', Waiting: '#c98a1b', Approved: '#3c8a5e', Escalated: '#c0504d' };
+    const st = { Done: '#3c8a5e', Running: '#f25c1f', Waiting: '#c98a1b', Approved: '#3c8a5e', Escalated: '#c0504d' };
     const data = [['#4471', 'Maya Chen', 'Move delivery', 'Just now', 'Running'], ['#4470', 'Orrin Freight', 'Invoice coding', '1 minute ago', 'Done'], ['#4469', 'Calder & Rowe', 'Meeting recap', '1 hour ago', 'Waiting'], ['#4468', 'Tallis', 'Refund request', 'Yesterday', 'Approved'], ['#4467', 'Maplestone', 'New account intake', 'Oct 6', 'Escalated'], ['#4466', 'Brightwell', 'Booking reminder', 'Oct 6', 'Done'], ['#4465', 'Fennick Supply', 'Renewal plan', 'Oct 5', 'Done'], ['#4464', 'Northgate', 'Collections follow-up', 'Oct 5', 'Waiting'], ['#4463', 'Kestrel', 'Weekly report', 'Oct 4', 'Approved'], ['#4462', 'Halden Co.', 'Quote request', 'Oct 4', 'Done']];
     rows.innerHTML = data.map(r => `<div class="tr">${r.slice(0, 4).map(c => `<span>${c}</span>`).join('')}<i style="--c:${st[r[4]]};color:${st[r[4]]}">${r[4]}</i></div>`).join('');
   }
@@ -101,6 +106,7 @@
     const pr = proof.getBoundingClientRect();
     const cover = clamp(1 - pr.top / vh);
     hero.style.setProperty('--dim', (cover * .75).toFixed(3));
+    document.body.toggleAttribute('data-top', cover < .9);
     if (heroVid) { if (cover >= 1 && !heroVid.paused) heroVid.pause(); else if (cover < 1 && heroVid.paused) heroVid.play().catch(() => {}); }
 
     // story: image grows to fill the frame and crossfades into the film
