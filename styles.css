@@ -342,7 +342,7 @@ body.menu-open .burger i+i{transform:rotate(-45deg)}
 
 /* closing */
 .close{padding:28px var(--edge)}
-.close .closer{border-radius:var(--r);background:url(assets/sky.jpg) center 70%/cover;text-align:center;padding:clamp(70px,9vw,130px) 20px;overflow:hidden;position:relative}
+.close .closer{border-radius:var(--r);background:url(assets/cta.jpg) center/cover;text-align:center;padding:clamp(70px,9vw,130px) 20px;overflow:hidden;position:relative}
 .close h2{font-size:var(--t-display);letter-spacing:-4px;margin-bottom:22px}
 .close .lead{color:#2a2f3a;max-width:420px;margin:0 auto 30px}
 .close .cta{display:flex;gap:10px;justify-content:center}
