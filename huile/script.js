@@ -5,6 +5,8 @@
   const lerp = (a, b, t) => a + (b - a) * t;
   const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   /* ---------- build repeated bits ---------- */
   const sideItems = [
     ['i-home', 'Home'], ['i-users', 'Customers'], ['i-cal', 'Conversations'], ['grp', 'AI team'],
@@ -36,6 +38,36 @@
   });
   $$('[data-dup]').forEach(el => { el.innerHTML += el.innerHTML; });
 
+  /* ---------- agent feature cards ---------- */
+  const rows = $('[data-rows]');
+  if (rows) {
+    const st = { Done: '#3c8a5e', Running: '#47689a', Waiting: '#c98a1b', Approved: '#3c8a5e', Escalated: '#c0504d' };
+    const data = [['#4471', 'Maya Chen', 'Move delivery', 'Just now', 'Running'], ['#4470', 'Orrin Freight', 'Invoice coding', '1 minute ago', 'Done'], ['#4469', 'Calder & Rowe', 'Meeting recap', '1 hour ago', 'Waiting'], ['#4468', 'Tallis', 'Refund request', 'Yesterday', 'Approved'], ['#4467', 'Maplestone', 'New account intake', 'Oct 6', 'Escalated'], ['#4466', 'Brightwell', 'Booking reminder', 'Oct 6', 'Done'], ['#4465', 'Fennick Supply', 'Renewal plan', 'Oct 5', 'Done'], ['#4464', 'Northgate', 'Collections follow-up', 'Oct 5', 'Waiting'], ['#4463', 'Kestrel', 'Weekly report', 'Oct 4', 'Approved'], ['#4462', 'Halden Co.', 'Quote request', 'Oct 4', 'Done']];
+    rows.innerHTML = data.map(r => `<div class="tr">${r.slice(0, 4).map(c => `<span>${c}</span>`).join('')}<i style="--c:${st[r[4]]};color:${st[r[4]]}">${r[4]}</i></div>`).join('');
+  }
+  const tiles = $('[data-tiles]');
+  if (tiles) {
+    tiles.innerHTML = '<i></i>'.repeat(12);
+    const ts = $$('i', tiles); let k = 0;
+    const paint = () => {
+      const n = [1, 2, 3, 2, 1, 0][k++ % 6];
+      ts.forEach((t, i) => { t.className = i === 4 ? 'idle' : (i > 4 && i <= 4 + n) ? 'live' : ''; });
+    };
+    paint(); if (!reduce) setInterval(paint, 1800);
+  }
+  const typed = $('[data-type]');
+  if (typed && !reduce) {
+    const lines = ['Call back everyone who rang after six yesterday', 'Reconcile the October statement for Fennick Supply', 'Send the recap from this morning and book the follow-up', 'Draft the weekly operations report for Monday'];
+    let li = 0, ci = 0, dir = 1, hold = 30;
+    setInterval(() => {
+      if (hold > 0) { hold--; return; }
+      const line = lines[li]; ci += dir;
+      if (ci <= 0) { typed.textContent = 'Message Huile'; typed.parentNode.classList.remove('typing'); dir = 1; li = (li + 1) % lines.length; hold = 20; ci = 0; return; }
+      typed.parentNode.classList.add('typing'); typed.textContent = line.slice(0, ci);
+      if (ci >= line.length) { dir = -3; hold = 45; }
+    }, 45);
+  }
+
   /* ---------- reveal on view ---------- */
   const io = new IntersectionObserver(es => es.forEach(e => {
     if (!e.isIntersecting) return;
@@ -56,7 +88,7 @@
 
   /* ---------- scroll driven scenes ---------- */
   const hero = $('.hero'), proof = $('.proof'), story = $('.story'), storyPin = $('.story-pin'), storyVid = $('.story-media video');
-  const plat = $('.platform'), mock = $('.mock'), screens = $$('.screen'), tabs = $$('.tab'), msgs = $$('.msg');
+  const plat = $('.platform'), platLeft = $('.plat-left'), mock = $('.mock'), screens = $$('.screen'), tabs = $$('.tab'), msgs = $$('.msg');
   const research = $('.research'), teamFig = $('.team figure'), big = $('footer .big'), heroVid = $('.hero video');
   const themed = $$('[data-theme]');
   const INTRO = .1, STEPS = 5, STEP = (1 - INTRO) / STEPS, MW = 1110;
@@ -89,7 +121,8 @@
     plat.dataset.theme = e > .5 ? 'dark' : 'light';
     const top = compact ? 262 : 128;
     const s = compact ? (vw - 32) / MW : Math.min(1, (vw * .78) / MW);
-    const dockX = compact ? 16 : Math.max(vw * .44, 56 + Math.min(430, vw * .32) + 60);
+    const pad = parseFloat(getComputedStyle(platLeft).left) || 56;
+    const dockX = compact ? 16 : Math.max(vw * .44, pad + platLeft.offsetWidth + 40);
     const x0 = (vw - MW * s) / 2;
     mock.style.height = ((vh - top) / s) + 'px';
     mock.style.transform = `translate(${lerp(x0, dockX, e).toFixed(1)}px,${top}px) scale(${s.toFixed(4)})`;
@@ -118,6 +151,15 @@
     if (document.body.dataset.nav !== theme) document.body.dataset.nav = theme;
   }
 
+  /* ---------- smooth scrolling ---------- */
+  let lenis = null;
+  if (window.Lenis && !reduce) {
+    lenis = new Lenis({ lerp: .09, wheelMultiplier: 1, smoothWheel: true, anchors: false });
+    const raf = t => { lenis.raf(t); requestAnimationFrame(raf); };
+    requestAnimationFrame(raf);
+  }
+  const go = top => lenis ? lenis.scrollTo(top, { duration: 1.4 }) : scrollTo({ top, behavior: reduce ? 'auto' : 'smooth' });
+
   let queued = false;
   const onScroll = () => { if (!queued) { queued = true; requestAnimationFrame(() => { queued = false; frame(); }); } };
   addEventListener('scroll', onScroll, { passive: true });
@@ -126,15 +168,15 @@
 
   tabs.forEach(t => t.addEventListener('click', () => {
     const total = plat.offsetHeight - innerHeight;
-    scrollTo({ top: plat.offsetTop + total * (INTRO + STEP * (+t.dataset.step + .35)), behavior: 'smooth' });
+    go(plat.offsetTop + total * (INTRO + STEP * (+t.dataset.step + .35)));
   }));
 
   /* ---------- film modal ---------- */
   const modal = $('.modal'), mv = $('video', modal);
   $$('[data-film]').forEach(b => b.addEventListener('click', () => {
-    mv.src = b.dataset.film || 'assets/hero.mp4'; modal.classList.add('on'); mv.play().catch(() => {});
+    mv.src = b.dataset.film || 'assets/hero.mp4'; modal.classList.add('on'); mv.play().catch(() => {}); lenis && lenis.stop();
   }));
-  const close = () => { modal.classList.remove('on'); mv.pause(); };
+  const close = () => { modal.classList.remove('on'); mv.pause(); lenis && lenis.start(); };
   $('button', modal).addEventListener('click', close);
   modal.addEventListener('click', e => { if (e.target === modal) close(); });
   addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
@@ -143,6 +185,6 @@
   $$('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
     const t = document.getElementById(a.getAttribute('href').slice(1));
     if (!t) return; e.preventDefault();
-    scrollTo({ top: t.getBoundingClientRect().top + scrollY - (t.id === 'top' ? 0 : 20), behavior: 'smooth' });
+    go(t.getBoundingClientRect().top + scrollY - (t.id === 'top' ? 0 : 20));
   }));
 })();
