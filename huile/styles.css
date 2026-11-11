@@ -369,7 +369,7 @@ sup.c{display:inline-grid;place-items:center;width:14px;height:14px;border-radiu
 /* footer */
 footer{background:var(--dark);color:#fff;padding:82px 0 0;overflow:hidden}
 footer .fc{display:grid;grid-template-columns:repeat(4,1fr);gap:30px;max-width:1440px;margin:0 auto;padding:0 var(--pad)}
-footer h4{margin:0 0 20px;font-size:20px;font-weight:400;color:var(--cream);letter-spacing:-.02em}
+footer h3{margin:0 0 20px;font-size:20px;font-weight:400;color:var(--cream);letter-spacing:-.02em}
 footer li{list-style:none;font-size:14px;line-height:2;color:rgba(255,255,255,.9)}
 footer ul{margin:0;padding:0}
 footer li a:hover{opacity:.6}
@@ -510,7 +510,7 @@ body{position:relative}
 /* 10 trio */
 .bc.feat{min-height:clamp(300px,26.4vw,500px);text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:clamp(44px,4.6vw,70px);padding-bottom:44px}
 .feat .ic{width:80px;height:80px;border-radius:20px;background:linear-gradient(#fff,#f3f3f0);border:1px solid rgba(36,37,41,.1);box-shadow:0 12px 28px rgba(36,37,41,.08);display:grid;place-items:center;font-size:26px;color:var(--blue);margin-bottom:54px}
-.feat h4{margin:0 0 20px;font-size:clamp(20px,1.82vw,26px);font-weight:400;letter-spacing:-.03em}
+.feat h3{margin:0 0 20px;font-size:clamp(20px,1.82vw,26px);font-weight:400;letter-spacing:-.03em}
 .feat p{color:var(--muted);font-size:16px;line-height:1.38;max-width:280px}
 /* 11 phone */
 .phone{left:50%;transform:translateX(-50%);top:35%;width:min(360px,74%);height:80%;border-radius:52px 52px 0 0;border:5px solid #d9d9d5;border-bottom:0;background:#fff;box-shadow:0 30px 70px rgba(36,37,41,.14);padding:22px 20px;font-size:11px}
@@ -634,9 +634,33 @@ body{position:relative}
 }
 
 /* one typeface for every heading: the display serif */
-h1,h2,h3,.h2,.tab .t,.feat h4,.out .v,.out .t,.team blockquote,.story-cap div,.paper h3,.badge b.xl,.eyebrow+h2{font-family:var(--display);font-weight:400}
+h1,h2,h3,.h2,.tab .t,.feat h3,.out .v,.out .t,.team blockquote,.story-cap div,.paper h3,.badge b.xl,.eyebrow+h2{font-family:var(--display);font-weight:400}
 h2,.h2,.proof h2,.journey h2,.integ h2,.b-intro h2,.cta h2,.story h2,.plat-left h2{letter-spacing:-.035em}
-.bc h3,.b-end h3,.col h3,.paper h3,.tab .t,.feat h4,.out .t{letter-spacing:-.03em}
+.bc h3,.b-end h3,.col h3,.paper h3,.tab .t,.feat h3,.out .t{letter-spacing:-.03em}
 .out .v{letter-spacing:-.045em}
 .team blockquote{letter-spacing:-.03em;line-height:1.16}
 .proof h2{line-height:1.25}
+
+/* type hierarchy: one scale, applied everywhere
+   display  hero headline
+   h2       every section title
+   lead     long opening statements and the team quote
+   h3       card and column titles
+   body-l   the paragraph under a section title
+   body     copy inside cards and lists
+   small    labels, captions, eyebrows */
+:root{--t-h2:clamp(32px,3.6vw,52px);--t-h3:clamp(21px,2vw,29px);--t-lead:clamp(22px,2.3vw,33px);--t-body-l:clamp(16px,1.25vw,18px);--t-body:16px;--t-small:14px}
+h2,.h2,.story h2,.plat-left h2,.journey h2,.b-intro h2,.integ h2,.cta h2{font-size:var(--t-h2);line-height:1.08}
+.proof h2,.team blockquote{font-size:var(--t-lead);line-height:1.22}
+.pc h3,.bc h3,.col h3,.paper h3,.b-end h3,.bc.feat h3,.tab .t,.out .t{font-size:var(--t-h3);line-height:1.14}
+.bc.feat h3{margin:0 0 16px;max-width:none}
+footer h3{font-size:20px;line-height:1.2;margin:0 0 20px;color:var(--cream);letter-spacing:-.02em}
+.sub,.b-intro p,.privacy .sub{font-size:var(--t-body-l);line-height:1.5}
+h2+.sub,.h2+.sub{margin-top:16px}
+.integ .sub{max-width:560px}.privacy .sub{max-width:600px}.b-intro p{max-width:520px}
+.paper .sub,.feat p,.col li,.tab .d,.tags span,.meter div,.minis div{font-size:var(--t-body);line-height:1.5}
+.pc small,.big span,.out .k,.out .f,.eyebrow,.badge small,.chart .hd small,.team cite,.hero-foot{font-size:var(--t-small)}
+.paper .tag{font-size:13px}
+.note-sm{font-size:13px}
+.eyebrow{color:var(--muted);letter-spacing:.01em}
+.b-intro{max-width:1240px}
