@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VANGUARD — Showcase</title>
+    <link
+      rel="stylesheet"
+      href="https://db.onlinewebfonts.com/c/8b75d9dcff6a48c35a46656192adf019?family=FSP+DEMO+-+PODIUM+Sharp+4.11"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+
+      html, body { height: 100%; }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background:
+          radial-gradient(60% 50% at 50% 38%, rgba(220, 38, 38, 0.18), transparent 70%),
+          radial-gradient(90% 70% at 50% 120%, rgba(120, 0, 0, 0.25), transparent 70%),
+          #050505;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        overflow: hidden;
+      }
+
+      /* faint mountain ridge silhouette */
+      body::after {
+        content: "";
+        position: fixed;
+        left: 0; right: 0; bottom: 0;
+        height: 38%;
+        background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+        pointer-events: none;
+      }
+
+      .brand {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        margin-bottom: 22px;
+      }
+      .brand .mark {
+        font-family: "FSP DEMO - PODIUM Sharp 4.11", sans-serif;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 26px;
+      }
+      .brand .tag {
+        margin-top: 6px;
+        font-size: 10px;
+        letter-spacing: 0.4em;
+        text-transform: uppercase;
+        color: rgba(255,255,255,0.45);
+      }
+
+      .window {
+        position: relative;
+        z-index: 2;
+        width: min(1180px, 92vw);
+        height: 82vh;
+        border-radius: 16px;
+        overflow: hidden;
+        background: #000;
+        border: 1px solid rgba(255,255,255,0.12);
+        box-shadow:
+          0 40px 120px rgba(0,0,0,0.7),
+          0 0 0 1px rgba(255,255,255,0.04) inset;
+      }
+
+      .bar {
+        height: 44px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 16px;
+        background: #161616;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+      }
+      .dot { width: 12px; height: 12px; border-radius: 50%; }
+      .dot.r { background: #ff5f57; }
+      .dot.y { background: #febc2e; }
+      .dot.g { background: #28c840; }
+      .url {
+        margin: 0 auto;
+        font-size: 12px;
+        color: rgba(255,255,255,0.5);
+        background: rgba(255,255,255,0.06);
+        padding: 5px 16px;
+        border-radius: 999px;
+        letter-spacing: 0.02em;
+        transform: translateX(-26px);
+      }
+
+      iframe {
+        width: 100%;
+        height: calc(100% - 44px);
+        border: 0;
+        display: block;
+        background: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="brand">
+      <div class="mark">Vanguard</div>
+      <div class="tag">Conquer The Trail</div>
+    </div>
+
+    <div class="window">
+      <div class="bar">
+        <span class="dot r"></span>
+        <span class="dot y"></span>
+        <span class="dot g"></span>
+        <span class="url">kingsleyken8-arch.github.io/Clad</span>
+      </div>
+      <iframe id="site" src="./" title="VANGUARD"></iframe>
+    </div>
+
+    <script>
+      // Auto-scroll the same-origin site on a loop so a single screen
+      // recording captures the whole page.
+      var iframe = document.getElementById("site");
+      var raf;
+
+      function start() {
+        var win = iframe.contentWindow;
+        var doc = win.document;
+        var DURATION = 75000; // ms for a full top -> bottom pass
+        var TOP_HOLD = 1500;
+        var BOTTOM_HOLD = 2500;
+        var y = 0;
+        var phase = "topHold";
+        var until = performance.now() + TOP_HOLD;
+        var last = performance.now();
+
+        function maxScroll() {
+          return Math.max(
+            doc.body.scrollHeight,
+            doc.documentElement.scrollHeight
+          ) - win.innerHeight;
+        }
+
+        function tick(now) {
+          var dt = now - last;
+          last = now;
+          var max = maxScroll();
+
+          if (phase === "topHold") {
+            if (now >= until) phase = "down";
+          } else if (phase === "down") {
+            y += (max / DURATION) * dt;
+            if (y >= max) {
+              y = max;
+              phase = "bottomHold";
+              until = now + BOTTOM_HOLD;
+            }
+          } else if (phase === "bottomHold") {
+            if (now >= until) {
+              y = 0;
+              phase = "topHold";
+              until = now + TOP_HOLD;
+            }
+          }
+
+          win.scrollTo(0, y);
+          raf = requestAnimationFrame(tick);
+        }
+
+        raf = requestAnimationFrame(tick);
+      }
+
+      iframe.addEventListener("load", function () {
+        // small delay so fonts/media settle before measuring height
+        setTimeout(start, 1200);
+      });
+    </script>
+  </body>
+</html>
