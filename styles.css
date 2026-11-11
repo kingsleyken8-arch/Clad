@@ -460,10 +460,25 @@ footer{border-top:1px solid var(--line);overflow:hidden}
 @media (min-width:961px) and (max-width:1280px){.mega-in,.mega-in.wide{grid-template-columns:auto}.mega-in.wide .mg{width:540px}.mega-in .mg.one{width:330px}.mg-card{display:none}}
 
 /* hero headline, a step smaller than the display size */
-.hero h1{font-size:clamp(36px,3.75vw,54px);letter-spacing:-2.4px;line-height:1}
+.hero h1{font-size:clamp(38px,4.1vw,59px);letter-spacing:-2.65px;line-height:1}
 /* headings below the hero sit a step under it, so the hero stays the largest text on the page */
 :root{--t-h2:clamp(30px,3.2vw,46px);--t-h3:clamp(21px,1.8vw,26px)}
 .close h2{font-size:clamp(36px,3.75vw,54px);letter-spacing:-2.4px}
 .how h2{font-size:clamp(28px,2.8vw,40px)}.spot h2{font-size:clamp(26px,2.5vw,36px)}
 .plan .amt b{font-size:48px}
 @media (max-width:960px){.hero h1{letter-spacing:-.045em}}
+
+/* hero top: a soft band of colour fading into a faint grid, with the Tessel mark above the headline */
+.hero{position:relative;overflow:clip}
+.hero>*{position:relative;z-index:1}
+.hero::before{content:"";position:absolute;z-index:0;left:-6%;right:-6%;top:-150px;height:330px;filter:blur(46px);opacity:.9;pointer-events:none;
+  background:radial-gradient(22% 60% at 12% 50%,#f6c1cf,transparent 70%),radial-gradient(20% 60% at 30% 46%,#f9dcc4,transparent 70%),radial-gradient(22% 60% at 50% 50%,#cfe6c3,transparent 70%),radial-gradient(20% 60% at 70% 46%,#c2dcf3,transparent 70%),radial-gradient(22% 60% at 88% 50%,#d2c8f1,transparent 70%)}
+.hero::after{content:"";position:absolute;z-index:0;inset:0 0 auto 0;height:620px;pointer-events:none;
+  background:linear-gradient(rgba(21,23,28,.055) 1px,transparent 1px) 0 64px/100% 84px,linear-gradient(90deg,rgba(21,23,28,.055) 1px,transparent 1px) 50% 0/84px 100%;
+  -webkit-mask-image:radial-gradient(70% 90% at 50% 20%,#000 20%,transparent 78%);mask-image:radial-gradient(70% 90% at 50% 20%,#000 20%,transparent 78%)}
+.hero-mark{position:relative;width:44px;height:44px;border-radius:var(--r);background:var(--ink);margin:0 auto 26px;display:block}
+.hero-mark::after{content:"";position:absolute;right:9px;bottom:9px;width:15px;height:15px;border-radius:3px;background:#fff}
+.hero{padding-top:128px}
+body[data-top] .nav::before{background:transparent;border-color:transparent;backdrop-filter:none;-webkit-backdrop-filter:none}
+@media (max-width:960px){.hero{padding-top:100px}.hero::before{top:-170px}.hero-mark{width:38px;height:38px;margin-bottom:20px}.hero-mark::after{right:8px;bottom:8px;width:13px;height:13px}
+  body.menu-open[data-top] .nav::before{background:#fff}}
