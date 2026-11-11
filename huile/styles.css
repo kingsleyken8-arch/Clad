@@ -632,3 +632,11 @@ body{position:relative}
   .rv,.chars span,.hero h1 .w,.hero-foot{opacity:1!important;transform:none!important;filter:none!important;animation:none!important;transition:none!important}
   .marq .track{animation:none}
 }
+
+/* one typeface for every heading: the display serif */
+h1,h2,h3,.h2,.tab .t,.feat h4,.out .v,.out .t,.team blockquote,.story-cap div,.paper h3,.badge b.xl,.eyebrow+h2{font-family:var(--display);font-weight:400}
+h2,.h2,.proof h2,.journey h2,.integ h2,.b-intro h2,.cta h2,.story h2,.plat-left h2{letter-spacing:-.035em}
+.bc h3,.b-end h3,.col h3,.paper h3,.tab .t,.feat h4,.out .t{letter-spacing:-.03em}
+.out .v{letter-spacing:-.045em}
+.team blockquote{letter-spacing:-.03em;line-height:1.16}
+.proof h2{line-height:1.25}
