@@ -278,7 +278,7 @@ body.menu-open .burger i+i{transform:rotate(-45deg)}
 /* pricing */
 .price{padding:110px 0 0;text-align:center;border-top:1px solid var(--line)}
 .price h2{max-width:14em;margin:0 auto 56px}
-.plans{display:grid;grid-template-columns:repeat(4,1fr);margin:0 var(--edge);border-top:1px solid var(--line);border-bottom:1px solid var(--line);text-align:left}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);margin:0 var(--edge);border-top:1px solid var(--line);border-bottom:1px solid var(--line);text-align:left}
 .plan{padding:clamp(16px,2.2vw,32px);border-left:1px solid var(--line);display:flex;flex-direction:column}
 .plan:first-child{border-left:0}
 .plan.pop{background:var(--soft)}
