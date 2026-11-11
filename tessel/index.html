@@ -26,14 +26,55 @@
   <symbol id="i-sun" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.500"/><path d="M8 1.500v2M8 12.500v2M1.500 8h2M12.500 8h2M3.400 3.400l1.400 1.400M11.200 11.200l1.400 1.400M3.400 12.600l1.400-1.400M11.200 4.800l1.400-1.400"/></symbol>
   <symbol id="i-dia" viewBox="0 0 16 16"><path d="M8 2 14 8l-6 6-6-6Z"/></symbol>
   <symbol id="i-hex" viewBox="0 0 16 16"><path d="M8 1.800 13.500 5v6L8 14.200 2.500 11V5Z"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 16 16"><path d="m4 6 4 4 4-4"/></symbol>
+  <symbol id="i-flow" viewBox="0 0 16 16"><rect x="2" y="2.500" width="4.500" height="4" rx="1"/><rect x="9.500" y="9.500" width="4.500" height="4" rx="1"/><path d="M6.500 4.500H10a2 2 0 0 1 2 2v3"/></symbol>
+  <symbol id="i-inbox" viewBox="0 0 16 16"><path d="M2.500 9.500 4.500 3h7l2 6.500V13h-11Z"/><path d="M2.500 9.500H6l.8 1.500h2.400l.8-1.500h3.500"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.500"/><path d="M8 5v3.200l2 1.300"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 16 16"><rect x="2.500" y="2.500" width="4.500" height="4.500" rx="1"/><rect x="9" y="2.500" width="4.500" height="4.500" rx="1"/><rect x="2.500" y="9" width="4.500" height="4.500" rx="1"/><rect x="9" y="9" width="4.500" height="4.500" rx="1"/></symbol>
+  <symbol id="i-build" viewBox="0 0 16 16"><path d="M3 13.500V4l5-1.500V13.500M8 6h5v7.500M2 13.500h12M5 6v.1M5 8.500v.1M5 11v.1M10.500 8.500v.1M10.500 11v.1"/></symbol>
+  <symbol id="i-truck" viewBox="0 0 16 16"><path d="M1.500 4h8v7h-8ZM9.500 6.500h3l2 2.500v2h-5"/><circle cx="4.500" cy="11.500" r="1.300"/><circle cx="11.500" cy="11.500" r="1.300"/></symbol>
+  <symbol id="i-case" viewBox="0 0 16 16"><rect x="2" y="5" width="12" height="8" rx="1.200"/><path d="M6 5V3.500h4V5M2 9h12"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 16 16"><path d="M4 11V7.500a4 4 0 0 1 8 0V11l1 1.500H3ZM6.800 14h2.400"/></symbol>
+  <symbol id="i-key" viewBox="0 0 16 16"><circle cx="5.500" cy="10.500" r="2.500"/><path d="m7.300 8.700 5.200-5.200M10.500 5.500l1.500 1.500M12 4l1.500 1.500"/></symbol>
+  <symbol id="i-redo" viewBox="0 0 16 16"><path d="M13 8a5 5 0 1 1-1.500-3.500M13 2.500v3h-3"/></symbol>
 </defs></svg>
 
 <div class="frame" aria-hidden="true"><i></i><i></i></div>
 
 <header class="nav">
   <a class="logo" href="#top"><b></b>Tessel</a>
-  <nav class="nav-links"><a href="#how">Product</a><a href="#pricing">Pricing</a><a href="#customers">Customers</a><a href="#changelog">Changelog</a><a href="#demo">Contact</a></nav>
-  <div class="nav-cta"><a href="#demo">Sign in</a><a class="btn dark" href="#demo">Book a demo</a></div>
+  <nav class="nav-links" id="site-menu" aria-label="Main" data-lenis-prevent>
+    <div class="has-menu">
+      <button class="nl" type="button" aria-expanded="false" aria-controls="menu-product">Product <svg class="i"><use href="#i-chev"/></svg></button>
+      <div class="mega" id="menu-product"><div class="mega-in wide">
+        <div class="mg">
+          <a href="#how"><i><svg class="i"><use href="#i-flow"/></svg></i><span><b>Workflow canvas</b>Triggers, AI steps and actions on one page.</span></a>
+          <a href="#how"><i><svg class="i"><use href="#i-shield"/></svg></i><span><b>Evidence checks</b>Every AI answer has to quote its source.</span></a>
+          <a href="#how"><i><svg class="i"><use href="#i-inbox"/></svg></i><span><b>Approval inbox</b>Nothing reaches a customer without a yes.</span></a>
+          <a href="#how"><i><svg class="i"><use href="#i-clock"/></svg></i><span><b>Run history</b>What ran, what it decided and why.</span></a>
+          <a href="#new"><i><svg class="i"><use href="#i-spark"/></svg></i><span><b>Drafts from a description</b>Type the job and get a first version.</span></a>
+          <a href="#features"><i><svg class="i"><use href="#i-grid"/></svg></i><span><b>All features</b>Rules, replays, alerts and model keys.</span></a>
+        </div>
+        <a class="mg-card" href="#new"><img src="assets/t1.jpg" alt="" loading="lazy"><small>New in 3.0</small><b>Workflows drafted from a description</b><span>See how it works <svg class="i"><use href="#i-arrow"/></svg></span></a>
+      </div></div>
+    </div>
+    <a class="nl" href="#pricing">Pricing</a>
+    <div class="has-menu">
+      <button class="nl" type="button" aria-expanded="false" aria-controls="menu-customers">Customers <svg class="i"><use href="#i-chev"/></svg></button>
+      <div class="mega" id="menu-customers"><div class="mega-in">
+        <div class="mg one">
+          <a href="#customers"><i><svg class="i"><use href="#i-build"/></svg></i><span><b>Harrowgate</b>Property. Every enquiry answered the same morning.</span></a>
+          <a href="#customers"><i><svg class="i"><use href="#i-truck"/></svg></i><span><b>Pellham</b>Logistics. Three tools and a shared inbox replaced.</span></a>
+          <a href="#customers"><i><svg class="i"><use href="#i-case"/></svg></i><span><b>Wrenfield</b>Professional services. Invoices coded before finance arrives.</span></a>
+        </div>
+        <a class="mg-card" href="#customers"><img src="assets/c1.jpg" alt="" loading="lazy"><small>Customer stories</small><b>Teams that stopped copying and pasting</b><span>Read the stories <svg class="i"><use href="#i-arrow"/></svg></span></a>
+      </div></div>
+    </div>
+    <a class="nl" href="#changelog">Changelog</a>
+    <a class="nl" href="#demo">Contact</a>
+    <div class="m-cta"><a class="btn" href="#demo">Sign in</a><a class="btn dark" href="#demo">Book a demo</a></div>
+  </nav>
+  <div class="nav-cta"><a class="signin" href="#demo">Sign in</a><a class="btn dark" href="#demo">Book a demo</a><button class="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-menu"><i></i><i></i></button></div>
 </header>
 
 <main id="top">
@@ -136,6 +177,41 @@
   <div class="stat rv d1"><b data-count="41" data-suf="%">41%</b><span>less time spent on enquiries in the first quarter</span></div>
   <div class="stat rv d2"><b data-count="2.6" data-dec="1" data-suf="×">2.6×</b><span>faster from request to reply</span></div>
   <div class="stat rv d3"><b data-count="99.98" data-dec="2" data-suf="%">99.98%</b><span>uptime over the last 12 months</span></div>
+</section>
+
+<section class="feats" id="features" data-theme="light">
+  <div class="wrap fhead"><span class="eyebrow rv">Features</span><h2 class="rv">Everything a workflow needs <span>before you can trust it with a customer.</span></h2><p class="lead rv">Rules, replays, alerts and costs, built into the same studio as the canvas.</p><a class="btn dark rv" href="#demo">Book a demo</a></div>
+  <div class="fgridc">
+    <article class="fc big rv">
+      <div class="fart"><div class="fa-rule">
+        <div class="r1"><span class="tag plain">Rule</span><b>Refunds over 100 need a manager</b></div>
+        <div class="r2"><span>If <em>amount</em> is over <em>100</em></span><span>ask <em>Manager</em></span><span>otherwise <em>Team lead</em></span></div>
+        <div class="r3"><i></i>Applies to 3 workflows</div>
+      </div></div>
+      <h3>Approval rules that fit your team</h3><p>Decide who signs off on what, by amount, by customer or by role. Small things move fast and big things wait for the right person.</p><a class="mini" href="#demo">Learn more</a>
+    </article>
+    <article class="fc big rv d1">
+      <div class="fart"><div class="fa-replay">
+        <div class="bar"><span class="mini k"><svg class="i"><use href="#i-redo"/></svg> Replay 48 runs</span><small>Last week’s enquiries</small></div>
+        <div class="rr"><b>Dana, Wrenfield</b><span>Qualified</span><span class="same">Same</span></div>
+        <div class="rr"><b>Theo, Pellham</b><span>Unknown</span><span class="chg">Now qualified</span></div>
+        <div class="rr"><b>Maya Chen</b><span>Not a fit</span><span class="same">Same</span></div>
+      </div></div>
+      <h3>Replay a change on real past data</h3><p>Before a change goes live, run it against last week’s enquiries and read every decision that would have been different.</p><a class="mini" href="#demo">Learn more</a>
+    </article>
+    <article class="fc rv">
+      <div class="fart"><div class="fa-quote"><span class="q">“ideally live before the end of March”</span><div><svg class="i ok"><use href="#i-check"/></svg>Found in the message</div></div></div>
+      <h3>Evidence beside every decision</h3><p>Each answer shows the exact words it came from, so reviewing a reply takes seconds.</p><a class="mini" href="#demo">Learn more</a>
+    </article>
+    <article class="fc rv d1">
+      <div class="fart"><div class="fa-alert"><div><svg class="i"><use href="#i-bell"/></svg><b>CRM refused 6 writes</b></div><p>Six tickets are held. None are lost.</p><span class="mini k">Reconnect</span></div></div>
+      <h3>Alerts before customers notice</h3><p>When a connection breaks, runs are held, not dropped, and the right person is told.</p><a class="mini" href="#demo">Learn more</a>
+    </article>
+    <article class="fc rv d2">
+      <div class="fart"><div class="fa-cost"><small>Cost per run</small><b>$0.013</b><div class="bars"><i style="height:38%"></i><i style="height:52%"></i><i style="height:44%"></i><i style="height:70%"></i><i style="height:58%"></i><i style="height:82%"></i><i class="on" style="height:64%"></i></div></div></div>
+      <h3>Your own model keys and costs</h3><p>Bring the models you already pay for and see what every workflow costs to run.</p><a class="mini" href="#demo">Learn more</a>
+    </article>
+  </div>
 </section>
 
 <section class="spot" id="new" data-theme="light">
