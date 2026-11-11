@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Huile — More room for good work.</title>
+<meta name="description" content="Huile is an AI workforce for everyday business. Agents that answer, schedule, document and reconcile, so your team has room for the work that needs them.">
+<link rel="preload" href="assets/fonts/hedvig-letters-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body data-nav="dark">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="mark" viewBox="0 0 24 24"><path d="M12 2.6c3.4 4 6.4 7.3 6.4 11.1a6.4 6.4 0 0 1-12.8 0c0-3.8 3-7.100 6.400-11.100Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9.300 14.200a2.800 2.800 0 0 0 2.700 2.800" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></symbol>
+    <symbol id="i-up" viewBox="0 0 16 16"><path d="M5 11l6-6M6 5h5v5"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4"/></symbol>
+    <symbol id="i-home" viewBox="0 0 16 16"><path d="M2.500 7.500 8 3l5.500 4.500V13h-11Z"/></symbol>
+    <symbol id="i-users" viewBox="0 0 16 16"><circle cx="6" cy="5.500" r="2.300"/><path d="M2 13c.4-2.300 2-3.500 4-3.500s3.600 1.200 4 3.500M11 3.500a2.200 2.200 0 0 1 0 4.200M12 9.800c1.200.5 1.900 1.600 2.100 3.200"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 16 16"><rect x="2.500" y="3.500" width="11" height="10" rx="1.500"/><path d="M2.500 6.800h11M5.500 2v3M10.500 2v3"/></symbol>
+    <symbol id="i-pen" viewBox="0 0 16 16"><path d="M3 13l.6-3L10.800 2.800l2.400 2.400L6 12.400ZM9.300 4.300l2.400 2.400"/></symbol>
+    <symbol id="i-head" viewBox="0 0 16 16"><path d="M3 10V8a5 5 0 0 1 10 0v2"/><rect x="2.200" y="9" width="3" height="4.500" rx="1.200"/><rect x="10.800" y="9" width="3" height="4.500" rx="1.200"/></symbol>
+    <symbol id="i-search" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.200"/><path d="m10.200 10.200 3.300 3.300"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="9" rx="2.500"/><path d="M5.500 7.500c.8 1 1.600 1 2.500 0s1.700-1 2.500 0"/></symbol>
+    <symbol id="i-ledger" viewBox="0 0 16 16"><rect x="2.500" y="2.500" width="11" height="11" rx="2"/><path d="M2.500 6h11M6 9.300h4M6 11.300h2"/></symbol>
+    <symbol id="i-plug" viewBox="0 0 16 16"><path d="M6 2v3M10 2v3M4 5h8v2.500a4 4 0 0 1-8 0ZM8 11.500V14"/></symbol>
+    <symbol id="i-help" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.500"/><path d="M6.300 6.500a1.800 1.800 0 1 1 2.500 1.700c-.5.300-.8.600-.8 1.300M8 11.500v.1"/></symbol>
+    <symbol id="i-check" viewBox="0 0 16 16"><path d="m3.500 8.300 3 3 6-6.500"/></symbol>
+    <symbol id="i-seal" viewBox="0 0 24 24"><path d="M12 2.500l2.300 1.700 2.900-.1.800 2.800 2.400 1.600-1 2.700 1 2.700-2.400 1.600-.8 2.800-2.900-.1L12 20.500l-2.300-1.700-2.900.1-.8-2.800-2.400-1.600 1-2.700-1-2.700L6 7.500l.8-2.800 2.900.1ZM8.500 11.800l2.500 2.500 4.500-5"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 16 16"><rect x="5.500" y="5.500" width="8" height="8" rx="1.500"/><path d="M10.500 3.500h-6a2 2 0 0 0-2 2v5"/></symbol>
+    <symbol id="i-redo" viewBox="0 0 16 16"><path d="M13 8a5 5 0 1 1-1.500-3.500M13 2.500v3h-3"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 16 16"><rect x="6" y="2" width="4" height="7" rx="2"/><path d="M3.500 8a4.500 4.500 0 0 0 9 0M8 12.500V14"/></symbol>
+    <symbol id="i-doc" viewBox="0 0 16 16"><path d="M4 2h5.500L12.500 5v9H4ZM9.500 2v3h3M6 8h4.500M6 10.500h4.500"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 16 16"><path d="M3 3.500c0 5 4.500 9.500 9.500 9.500l1-2.500-2.500-1.300-1.200 1.200c-1.500-.6-2.600-1.700-3.200-3.200L7.800 6 6.500 3.500Z"/></symbol>
+    <symbol id="i-route" viewBox="0 0 16 16"><circle cx="4" cy="12" r="1.500"/><circle cx="12" cy="4" r="1.500"/><path d="M4 10.500V8a2 2 0 0 1 2-2h4.500M4 4v2"/></symbol>
+    <symbol id="i-form" viewBox="0 0 16 16"><rect x="3" y="2.500" width="10" height="11" rx="1.500"/><path d="M5.500 6h5M5.500 8.500h5M5.500 11h2.500"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 16 16"><path d="M8 2 13 4v4c0 3-2.200 5-5 6-2.800-1-5-3-5-6V4Z"/></symbol>
+    <symbol id="i-wave" viewBox="0 0 16 16"><path d="M2.500 7v2M5.300 5v6M8 3v10M10.700 5.500v5M13.500 7v2"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 16 16"><path d="M8 2.500l1.300 3.700L13 7.500 9.300 8.800 8 12.500 6.700 8.800 3 7.500l3.700-1.300Z"/></symbol>
+    <symbol id="i-send" viewBox="0 0 16 16"><path d="M2.500 8 13.500 3 10 13.500 8 9Z"/></symbol>
+    <symbol id="i-coin" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.500"/><path d="M9.800 6.300c-.4-.6-1-.9-1.800-.9-1 0-1.800.5-1.800 1.300 0 1.900 3.700.8 3.700 2.700 0 .8-.8 1.300-1.900 1.300-.8 0-1.500-.3-1.900-.9M8 4.300v7.400"/></symbol>
+    <symbol id="i-x" viewBox="0 0 16 16"><path d="M3 3l10 10M13 3 3 13"/></symbol>
+    <symbol id="i-in" viewBox="0 0 16 16"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M5 7v4M5 5v.1M7.500 11V7M7.500 8.500c.3-1 1-1.500 1.800-1.500 1 0 1.500.7 1.500 1.800V11"/></symbol>
+  </defs>
+</svg>
+
+<div class="topbar">
+  <svg class="mark"><use href="#mark"/></svg><span>Introducing Huile API</span><span class="sep"></span>
+  <a class="disc" href="#platform">Discover <svg class="i"><use href="#i-chev"/></svg></a>
+</div>
+
+<header class="nav">
+  <a class="logo" href="#top" aria-label="Huile home">Huile</a>
+  <nav class="nav-links">
+    <a href="#platform">Product</a><a href="#integrations">Integrations</a><a href="#outcomes">Case Studies</a><a href="#team">About Us</a><a href="#research">Research</a><a href="#privacy">Docs</a>
+  </nav>
+  <div class="nav-cta"><a class="btn btn-white" href="#contact">Sign in</a><a class="btn btn-blue" href="#contact">Book a demo</a></div>
+</header>
+
+<main id="top">
+<div class="handoff">
+
+  <section class="hero" data-theme="dark">
+    <video autoplay muted loop playsinline preload="auto" poster="assets/hero-poster.jpg" src="assets/hero.mp4"></video>
+    <div class="shade"></div>
+    <div class="hero-copy">
+      <h1><span class="w" style="--i:0">More</span> <span class="w" style="--i:1">room</span><br><span class="w" style="--i:2">for</span> <span class="w" style="--i:3">good</span> <span class="w" style="--i:4">work.</span></h1>
+    </div>
+    <div class="hero-foot">
+      <span>Meet the teams behind the work</span>
+      <button data-film><span class="pl">▶</span>Watch the film · 00:10</button>
+    </div>
+    <div class="dim"></div>
+  </section>
+
+  <section class="proof" data-theme="light">
+    <div class="inner">
+      <h2 class="rv">Trusted by teams that handle over 2 million customer conversations a year.</h2>
+      <div class="grid rv">
+        <span class="cross"></span>
+        <div class="cell big"><div class="dots"></div><div class="who">FENNICK</div><div class="num chars" data-chars>4 Million</div><div class="lab">Tasks completed with Huile</div></div>
+        <div class="cell end"><div class="who"><svg class="i"><use href="#i-route"/></svg>ORRIN FREIGHT</div><div class="num chars" data-chars>$420,000</div><div class="lab">saved annually in front desk operating costs</div></div>
+        <div class="cell"><div class="who">CALDER &amp; ROWE</div><div class="num chars" data-chars>$1.2M</div><div class="lab">pipeline recovered from missed calls</div></div>
+        <div class="cell"><div class="who"><svg class="i"><use href="#i-spark"/></svg>Brightwell Hotels</div><div class="num chars" data-chars>10 → 2</div><div class="lab">days to open a new location</div></div>
+        <div class="cell end"><div class="who">TALLIS</div><div class="num chars" data-chars>31%</div><div class="lab">more enquiries answered</div></div>
+        <div class="cell"><div class="who">MAPLESTONE</div><q>“It remembers what the customer said last month. That is the part we never had time for.”</q><div class="by">Priya Nair, Head of Operations</div></div>
+        <div class="cell"><div class="who"><svg class="i"><use href="#i-route"/></svg>ORRIN FREIGHT</div><q>“As long as we have Huile, the rest of the stack is negotiable.”</q><div class="by">The Orrin Freight team</div></div>
+        <div class="cell end"><div class="who">CALDER &amp; ROWE</div><q>“We close the books faster, fewer things slip, and our admin load is down.”</q><div class="by">Daniel Okafor, Finance Director</div></div>
+        <div class="marq"><div class="track" data-dup>
+          <span class="wm a"><i></i>fennick</span><span class="wm b">Calder &amp; Rowe</span><span class="wm c">Tallis</span><span class="wm d">orrin</span><span class="wm e"><i class="sq"></i>Maplestone</span><span class="wm b">Brightwell</span><span class="wm a"><i class="tri"></i>northgate</span><span class="wm c">Kestrel</span><span class="wm e">Halden Co.</span>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="story" data-theme="light">
+    <div class="story-pin">
+      <h2>Making more room for good work.</h2>
+      <div class="story-media">
+        <img class="a" src="assets/corridor.jpg" alt="A man standing in a bright office corridor, looking at the camera">
+        <video class="b" muted loop playsinline preload="metadata" poster="assets/story.jpg" src="assets/story.mp4"></video>
+        <div class="story-cap"><small>Calder &amp; Rowe · A customer story</small><div>Room for the human.</div></div>
+        <button class="play" data-film="assets/story.mp4">Play</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<section class="platform" id="platform" data-theme="light">
+  <div class="plat-pin">
+    <div class="plat-left">
+      <h2>One Platform for Everyday Work</h2>
+      <div class="tabs">
+        <button class="tab on" data-step="0"><span class="t">Receptionist <svg class="i"><use href="#i-head"/></svg></span><span class="d"><span>Answer calls, coordinate bookings, and get every customer to the right person</span></span></button>
+        <button class="tab" data-step="2"><span class="t">Notetaker <svg class="i"><use href="#i-pen"/></svg></span><span class="d"><span>Turn conversations into structured notes and follow-ups, so your team can stay in the room</span></span></button>
+        <button class="tab" data-step="3"><span class="t">Bookkeeper <svg class="i"><use href="#i-ledger"/></svg></span><span class="d"><span>Suggest ledger codes from invoices and receipts, and keep your finance team in control of final review</span></span></button>
+        <button class="tab" data-step="4"><span class="t">Analyst <svg class="i"><use href="#i-chat"/></svg></span><span class="d"><span>Bring account history, evidence, and reasoning together to support your next decision</span></span></button>
+      </div>
+    </div>
+
+    <div class="mock" aria-label="Huile product preview">
+
+      <!-- 0: operations dashboard -->
+      <div class="screen on"><div class="app">
+        <aside class="side" data-side="Receptionist"></aside>
+        <div class="main">
+          <div class="crumb"><span>Receptionist / <b>Operations</b></span><span><svg class="i"><use href="#i-cal"/></svg> Oct 8, 2026</span></div>
+          <div class="row"><div><div class="ttl">Operations</div><small>A clear view of bookings and customer access</small></div><div class="seg"><span>Week</span><span class="on">Month</span></div></div>
+          <div class="lbl">Booking activity <small>Sep 9 – Oct 8</small></div>
+          <div class="tiles">
+            <div class="tile on"><b>2,318</b><span>Booked</span><small>Appointments</small></div>
+            <div class="tile"><b>641</b><span>Rescheduled</span><small>Appointments</small></div>
+            <div class="tile"><b>912</b><span>Confirmed</span><small>Appointments</small></div>
+            <div class="tile"><b>207</b><span>Cancelled</span><small>Appointments</small></div>
+          </div>
+          <div class="two">
+            <div class="card"><h4>When customers call <small>18,406 inbound calls</small></h4><div class="heat" data-heat></div></div>
+            <div class="card blue"><h4>Top reasons for calling <small>By call volume</small></h4>
+              <div class="rk"><span class="n">01</span><b>Book or move an appointment</b><span>6,912</span><small>38% of calls</small><div class="bar"><i style="width:92%"></i></div></div>
+              <div class="rk"><span class="n">02</span><b>Order and delivery status</b><span>4,180</span><small>23% of calls</small><div class="bar"><i style="width:58%"></i></div></div>
+              <div class="rk"><span class="n">03</span><b>Pricing and quotes</b><span>3,077</span><small>17% of calls</small><div class="bar"><i style="width:43%"></i></div></div>
+              <div class="rk"><span class="n">04</span><b>Billing question</b><span>2,240</span><small>12% of calls</small><div class="bar"><i style="width:30%"></i></div></div>
+              <div class="rk"><span class="n">05</span><b>Speak to a specialist</b><span>1,997</span><small>10% of calls</small><div class="bar"><i style="width:25%"></i></div></div>
+            </div>
+          </div>
+          <div class="lbl">Daily booking activity <small>Daily average</small></div>
+          <div class="avg"><div>Booked<b>77.3 <small>/ day</small></b></div><div>Rescheduled<b>21.4 <small>/ day</small></b></div><div>Confirmed<b>30.4 <small>/ day</small></b></div><div>Cancelled<b>6.9 <small>/ day</small></b></div></div>
+        </div>
+      </div></div>
+
+      <!-- 1: live call -->
+      <div class="screen"><div class="call">
+        <div class="brand">Huile</div>
+        <div class="hi"><span class="orb"><span class="wave"><i style="--i:0"></i><i style="--i:1"></i><i style="--i:2"></i><i style="--i:3"></i></span></span>Hi, I’m Huile</div>
+        <div class="msgs">
+          <div class="msg"><small>Huile</small>Thank you for calling Fennick Supply. I am Huile, the scheduling assistant. How can I help?</div>
+          <div class="msg u">Hi, I would like to move my delivery to Thursday</div>
+          <div class="msg"><small>Huile</small>Of course, Maya. I can see order 4471 is booked for Tuesday. Thursday has a slot between 9 and 11 in the morning. Shall I move it there?</div>
+          <div class="msg u">Yes please, that works</div>
+          <div class="msg sys"><svg class="i"><use href="#i-check"/></svg>Delivery moved to Thu, Oct 10 · 9:00–11:00 · Confirmation sent by text · Logged to the account</div>
+        </div>
+      </div></div>
+
+      <!-- 2: notetaker -->
+      <div class="screen"><div class="app">
+        <aside class="side" data-side="Conversations"></aside>
+        <div class="main note">
+          <div class="crumb"><span class="chip"><svg class="i"><use href="#i-users"/></svg> Fennick Supply · Quarterly review</span><span><svg class="i"><use href="#i-doc"/></svg> Summary &nbsp; <svg class="i"><use href="#i-redo"/></svg> History</span></div>
+          <div class="tools"><span class="chip"><svg class="i"><use href="#i-copy"/></svg>Copy all</span><span class="chip"><svg class="i"><use href="#i-redo"/></svg>Regenerate</span><span class="chip"><svg class="i"><use href="#i-mic"/></svg>Say edits</span><span class="chip"><svg class="i"><use href="#i-doc"/></svg>View transcript</span></div>
+          <div class="fmt"><span>T</span><span><b>B</b></span><span><i>I</i></span><span><u>U</u></span><span>☰</span><span class="chip ok" style="border:0"><svg class="i"><use href="#i-check"/></svg>Draft ready</span> Oct 8, 2026 · 12:00 PM</div>
+          <h5>Summary</h5>
+          <p>Quarterly review with Fennick Supply covering delivery performance and the renewal due in January</p>
+          <p>Late deliveries fell from 9% to 4% after the route change in August</p>
+          <p>Maya raised two billing disputes from September that are still open</p>
+          <p>The team is interested in adding a second warehouse location next year</p>
+          <h5>Decisions</h5>
+          <p>Keep the Thursday delivery window for the rest of the quarter</p>
+          <p>Credit the September duplicate charge once finance confirms it</p>
+          <h5>Open questions</h5>
+          <p>Whether the second warehouse needs its own account or a shared one</p>
+          <h5>Follow-ups</h5>
+          <p class="li">Send revised pricing for two locations by Oct 15</p>
+          <p class="li">Finance to confirm the duplicate charge and issue the credit</p>
+          <p class="li">Account owner to review and send the recap</p>
+          <div class="foot">Sample customer · Demonstration note</div>
+        </div>
+      </div></div>
+
+      <!-- 3: bookkeeper -->
+      <div class="screen"><div class="app">
+        <aside class="side" data-side="Bookkeeper"></aside>
+        <div class="main">
+          <div class="crumb"><span>Bookkeeper / <b>Invoice 2291</b></span><span><svg class="i"><use href="#i-cal"/></svg> Oct 8, 2026</span></div>
+          <div class="ttl">Coding review <span class="pill">● Ready for finance review</span></div><small>Fennick Supply · October statement · Alex Morgan</small>
+          <div class="banner"><svg class="i"><use href="#i-spark"/></svg>Huile suggested 3 codes from this invoice, each linked to the line that supports it</div>
+          <div class="split">
+            <div class="panel"><h4>Invoice <small>Approved by A. Morgan</small></h4>
+              <p style="color:#9a9b9f">Invoice 2291 · <mark>Existing supplier, 3 lines</mark></p>
+              <h5>Line 1</h5><p><mark>Pallet freight, Leeds to Bristol, 14 pallets</mark>, delivered Oct 2, signed for at the dock</p>
+              <h5>Line 2</h5><p><mark>Replacement barcode scanner</mark> for the returns desk, one unit, under the capital threshold</p>
+              <h5>Line 3</h5><p><mark>Annual route planning licence</mark>, renewal, 12 months from Oct 1</p>
+              <h5>Terms</h5><p>Net 30. Matches purchase order 7718 within tolerance</p>
+            </div>
+            <div>
+              <div class="search"><svg class="i"><use href="#i-search"/></svg>Search the chart of accounts to add a code</div>
+              <div class="sechd">Expense accounts</div>
+              <div class="code sel"><span class="cb">✓</span><code>5120</code><b>Freight and carriage</b><small>From the invoice: “Pallet freight, Leeds to Bristol, 14 pallets”</small></div>
+              <div class="code"><span class="cb">✓</span><code>6340</code><b>Equipment under threshold</b><small>From the invoice: “Replacement barcode scanner”</small></div>
+              <div class="sechd">Prepayments</div>
+              <div class="code"><span class="cb">✓</span><code>1410</code><b>Prepaid software, 12 months</b><small>From the invoice: “Annual route planning licence”</small></div>
+              <div class="row" style="margin-top:14px;font-size:11px;color:#9a9b9f;align-items:center"><span>3 of 3 codes selected · Final review stays with your team</span><span class="chip on">Save selections</span></div>
+            </div>
+          </div>
+        </div>
+      </div></div>
+
+      <!-- 4: analyst -->
+      <div class="screen"><div class="app">
+        <aside class="side" data-side="Analyst"></aside>
+        <div class="main">
+          <div class="crumb"><span>Analyst / <b>Fennick Supply</b></span><span><svg class="i"><use href="#i-cal"/></svg> Oct 8, 2026</span></div>
+          <div class="ttl">Fennick Supply</div><small>Quarterly review · Transcript and note ready</small>
+          <div class="ask"><span><svg class="i"><use href="#i-spark"/></svg>Draft a renewal plan for Fennick Supply</span><b>Generate</b></div>
+          <div class="tools" style="margin:0"><span class="chip on">Renewal plan</span><span class="chip">Risk review</span><span class="chip">Pricing options</span><span class="chip">Recap email</span></div>
+          <div class="plan">
+            <div class="panel"><h4>Renewal plan <span style="display:flex;gap:6px"><span class="chip" style="padding:4px 10px"><svg class="i"><use href="#i-copy"/></svg>Copy</span><span class="chip on" style="padding:4px 12px">Save</span></span></h4>
+              <small style="color:#9a9b9f;font-size:10px">Draft for your review · You edit and send</small>
+              <div class="sm">Where things stand</div>
+              <p>Late deliveries down from 9% to 4% since August<sup class="c">1</sup></p>
+              <p>Two billing disputes from September still open<sup class="c">2</sup><sup class="c">3</sup></p>
+              <div class="sm">Recommended</div>
+              <p>Resolve the duplicate charge before the renewal call<sup class="c">4</sup></p>
+              <p>Offer two-location pricing with a shared account<sup class="c">5</sup><sup class="c">6</sup></p>
+              <div class="sm">Talking points</div>
+              <p>Lead with the delivery improvement and what caused it<sup class="c">7</sup></p>
+              <p>Confirm the Thursday window stays in place<sup class="c">8</sup></p>
+              <div class="sm">Next step</div>
+              <p>Send revised pricing by Oct 15, review in two weeks<sup class="c">9</sup></p>
+            </div>
+            <div><div class="sechd" style="margin-top:0;display:flex;justify-content:space-between">From the transcript <small style="font-weight:400;color:#9a9b9f">9 quotes</small></div>
+              <div class="qt"><b><i>1</i>Customer<small>00:42</small></b>“Honestly the late drops have nearly stopped since you changed the route”</div>
+              <div class="qt"><b><i>2</i>Customer<small>04:10</small></b>“We were charged twice in September and nobody has come back to us”</div>
+              <div class="qt"><b><i>4</i>A. Morgan<small>04:36</small></b>“Let me get finance to confirm that this week”</div>
+              <div class="qt"><b><i>5</i>Customer<small>11:02</small></b>“If we open the second warehouse, we would want one bill”</div>
+              <div class="qt"><b><i>8</i>Customer<small>14:48</small></b>“Keep Thursdays, that works for the dock team”</div>
+            </div>
+          </div>
+        </div>
+      </div></div>
+
+    </div>
+  </div>
+</section>
+
+<section class="journey" data-theme="light">
+  <div class="wrap">
+    <h2 class="rv">One customer journey. Nothing falls through.</h2>
+    <div class="cols">
+      <div class="col rv"><h3>Before the conversation</h3><ul>
+        <li><svg class="i"><use href="#i-phone"/></svg>Answer calls</li><li><svg class="i"><use href="#i-cal"/></svg>Schedule</li><li><svg class="i"><use href="#i-route"/></svg>Route enquiries</li><li><svg class="i"><use href="#i-form"/></svg>Intake</li><li><svg class="i"><use href="#i-shield"/></svg>Account verification</li></ul>
+        <a class="go" href="#platform">Explore Front Desk</a></div>
+      <div class="col rv" style="transition-delay:.1s"><h3>During the conversation</h3><ul>
+        <li><svg class="i"><use href="#i-wave"/></svg>Capture the meeting</li><li><svg class="i"><use href="#i-mic"/></svg>Dictation</li><li><svg class="i"><use href="#i-spark"/></svg>Decision support</li><li><svg class="i"><use href="#i-doc"/></svg>Pre-brief</li><li><svg class="i"><use href="#i-chat"/></svg>Analyst</li></ul>
+        <a class="go" href="#platform">Explore Team Support</a></div>
+      <div class="col rv" style="transition-delay:.2s"><h3>After the conversation</h3><ul>
+        <li><svg class="i"><use href="#i-pen"/></svg>Complete the notes</li><li><svg class="i"><use href="#i-ledger"/></svg>Code the invoice</li><li><svg class="i"><use href="#i-redo"/></svg>Tasks &amp; follow-up</li><li><svg class="i"><use href="#i-send"/></svg>Customer outreach</li><li><svg class="i"><use href="#i-coin"/></svg>Collections</li></ul>
+        <a class="go" href="#platform">Explore Back Office</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="integ" id="integrations" data-theme="light">
+  <div class="wrap">
+    <h2 class="rv">Agents work better when they work inside your systems</h2>
+    <p class="sub rv">Huile reads and writes back customer context, notes, ledger codes, and bookings in the tools you already run. Your team keeps working in the system they know.</p>
+    <a class="arrow-link rv" href="#contact">Supported integrations <svg class="i"><use href="#i-arrow"/></svg></a>
+    <div class="logos rv">
+      <span class="s1">salesforce</span><span class="s2">HubSpot</span><span class="s3">zendesk</span><span class="s4">Slack</span><span class="s5">QuickBooks</span><span class="s6">xero</span>
+      <span class="s6">Google Workspace</span><span class="s1">Microsoft 365</span><span class="s5">Shopify</span><span class="s2">stripe</span><span class="s4">Twilio</span><span class="s3">Notion</span>
+    </div>
+  </div>
+</section>
+
+<section class="outcomes" id="outcomes" data-theme="dark">
+  <div class="wrap">
+    <div class="head"><h2 class="h2 rv" style="letter-spacing:-.02em;font-size:clamp(30px,3.9vw,56px)">More capacity. Real returns.</h2><a class="arrow-link rv" href="#contact">Explore customer stories <svg class="i"><use href="#i-arrow"/></svg></a></div>
+    <div class="outs">
+      <div class="out rv"><div class="k">Customer access</div><div class="v" data-count="480" data-pre="$" data-suf="K+">$480K+</div><div class="t">Saved by reducing abandoned customer calls.</div><div class="f">Regional services group, 40 locations</div><a class="arrow-link" href="#contact">Read more <svg class="i"><use href="#i-arrow"/></svg></a></div>
+      <div class="out rv" style="transition-delay:.12s"><div class="k">Back office</div><div class="v" data-count="1.6" data-dec="1" data-pre="$" data-suf="M+">$1.6M+</div><div class="t">Recovered through accurate upstream invoice coding.</div><div class="f">Distribution business, 200 staff</div><a class="arrow-link" href="#contact">Read more <svg class="i"><use href="#i-arrow"/></svg></a></div>
+    </div>
+  </div>
+</section>
+
+<section class="bench" data-theme="light">
+  <div class="wrap">
+    <h2 class="h2 rv">An architecture designed to hand off, not to guess.</h2>
+    <p class="sub rv">How often each approach resolved the task correctly or escalated it to the right person, in our internal evaluation.</p>
+    <div class="chart rv">
+      <div class="hd">Huile WorkBench · Safe resolution <small>Higher is better</small></div>
+      <div class="bar"><span class="nm"><svg class="i" style="color:var(--blue)"><use href="#mark"/></svg>Huile H1</span><span class="tr"><i style="--i:0;--w:96%;background:linear-gradient(90deg,#17204a,#2b55d8)"></i></span><span class="val">0.912</span></div>
+      <div class="bar"><span class="nm"><svg class="i"><use href="#i-spark"/></svg>General model + tools</span><span class="tr"><i style="--i:1;--w:83%;background:#3b3f5e"></i></span><span class="val">0.788</span></div>
+      <div class="bar"><span class="nm"><svg class="i"><use href="#i-chat"/></svg>General model</span><span class="tr"><i style="--i:2;--w:71%;background:#6f7390"></i></span><span class="val">0.671</span></div>
+      <div class="bar"><span class="nm"><svg class="i"><use href="#i-users"/></svg>Staff baseline</span><span class="tr"><i style="--i:3;--w:66%;background:#9a9db3"></i></span><span class="val">0.630</span></div>
+      <div class="bar"><span class="nm"><svg class="i"><use href="#i-form"/></svg>Scripted chatbot</span><span class="tr"><i style="--i:4;--w:44%;background:#c6c8d6"></i></span><span class="val">0.418</span></div>
+      <div class="bar"><span class="nm"><svg class="i"><use href="#i-phone"/></svg>Phone menu</span><span class="tr"><i style="--i:5;--w:19%;background:#e3e4ec"></i></span><span class="val">0.184</span></div>
+      <div class="axis"><span></span><div><span>0</span><span>0.2</span><span>0.4</span><span>0.6</span><span>0.8</span><span>1.0</span></div><span></span></div>
+      <p class="note-sm">Illustrative figures for design review. Replace with published results before launch.</p>
+    </div>
+  </div>
+</section>
+
+<section class="research" id="research" data-theme="light">
+  <div class="in-w">
+    <div class="head"><div><h2 class="h2 rv">Research behind the agents.</h2><p class="sub rv">Preprints, benchmarks and whitepapers from Huile Labs.</p></div><a class="arrow-link rv" href="#contact">All research <svg class="i"><use href="#i-up"/></svg></a></div>
+    <a class="paper rv" href="#contact"><div class="sheet"><b></b><b></b><div class="twoc"><i></i><i></i></div></div><div><div class="tag">Preprint · May 2026</div><h3>Ask Before You Act: the Handoff Mechanism</h3><p class="sub">A set of specialised agents that mirrors how a good team escalates, checks, and shares a decision.</p><span class="arrow-link">Read the paper <svg class="i"><use href="#i-up"/></svg></span></div></a>
+    <a class="paper rv" href="#contact"><div class="sheet"><b></b><b></b><div class="fig"></div><i></i></div><div><div class="tag">Benchmark · Jun 2026</div><h3>Model strengths vary by business function</h3><p class="sub">A cross-function benchmark showing how leading models differ in accuracy and reasoning across front desk, finance, and support work.</p><span class="arrow-link">Read the paper <svg class="i"><use href="#i-up"/></svg></span></div></a>
+    <a class="paper rv" href="#contact"><div class="sheet"><b></b><b></b><i></i><div class="twoc"><i></i><i></i></div></div><div><div class="tag">Whitepaper · 2026</div><h3>Large-scale analysis of language models in operations</h3><p class="sub">A continuously evolving benchmark of AI across scheduling, documentation, and bookkeeping tasks.</p><span class="arrow-link">Read the paper <svg class="i"><use href="#i-up"/></svg></span></div></a>
+    <a class="paper rv" href="#contact"><div class="sheet"><b></b><b></b><div class="twoc"><i></i><i></i></div><i style="flex:.6"></i></div><div><div class="tag">Whitepaper · Jun 2026</div><h3>Scalable architecture for multi-channel business AI</h3><p class="sub">Modular, purpose-built agents that share one communication layer and reach staff and customers wherever they are.</p><span class="arrow-link">Read the paper <svg class="i"><use href="#i-up"/></svg></span></div></a>
+  </div>
+</section>
+
+<section class="privacy" id="privacy" data-theme="light">
+  <div class="wrap">
+    <h2 class="h2 rv">Your data is private</h2>
+    <p class="sub rv">We are not just meeting the bar on compliance and security, we also make sure all your data is <b>private to you</b>. We do not use or train on your data.</p>
+    <div class="badges rv">
+      <div class="badge"><svg viewBox="0 0 66 78"><path d="M33 3 61 13v24c0 19-12 31-28 38C17 68 5 56 5 37V13Z" fill="#2b2c30"/><text x="33" y="34" text-anchor="middle" fill="#fff" font-size="13" font-weight="800" font-family="Arial">ISO</text><text x="33" y="48" text-anchor="middle" fill="#fff" font-size="8" font-family="Arial">27001</text></svg><b>ISO 27001</b><small>Information security management</small></div>
+      <div class="badge"><svg viewBox="0 0 66 78"><circle cx="33" cy="39" r="31" fill="#2b2c30"/><circle cx="33" cy="39" r="25" fill="none" stroke="#fff" stroke-width="1" stroke-dasharray="2 3"/><text x="33" y="38" text-anchor="middle" fill="#fff" font-size="12" font-weight="800" font-family="Arial">SOC 2</text><text x="33" y="49" text-anchor="middle" fill="#fff" font-size="6.500" font-family="Arial" letter-spacing="1">TYPE II</text></svg><b>SOC 2 Type II</b><small>Independent controls audit</small></div>
+      <div class="badge"><svg viewBox="0 0 66 78"><path d="M33 4 62 21v36L33 74 4 57V21Z" fill="#2b2c30"/><text x="33" y="44" text-anchor="middle" fill="#fff" font-size="13" font-weight="800" font-family="Arial">GDPR</text></svg><b>GDPR</b><small>Personal data privacy &amp; safeguards</small></div>
+      <div class="badge"><svg class="i ck" viewBox="0 0 24 24"><use href="#i-seal"/></svg><b class="xl">CCPA</b><em>ALIGNMENT</em><small>California consumer privacy</small></div>
+      <div class="badge"><svg class="i ck" viewBox="0 0 24 24"><use href="#i-seal"/></svg><b class="xl">PCI DSS</b><em>READINESS</em><small>Payment data protection</small></div>
+      <div class="badge"><svg class="i ck" viewBox="0 0 24 24"><use href="#i-seal"/></svg><b class="xl">SSO</b><em>SAML &amp; SCIM</em><small>Enterprise access control</small></div>
+    </div>
+    <a class="arrow-link rv" href="#contact">Explore our Trust Center <svg class="i"><use href="#i-arrow"/></svg></a>
+  </div>
+</section>
+
+<section class="team" id="team" data-theme="light">
+  <div class="wrap">
+    <blockquote class="rv">“A good hire makes the people around them better. We hold our agents to the same standard”</blockquote>
+    <cite class="rv">The Huile Team</cite>
+    <figure class="rv"><img src="assets/team.jpg" alt="Three colleagues talking and laughing around a table in a sunlit office" loading="lazy"></figure>
+  </div>
+</section>
+
+<section class="cta" id="contact" data-theme="light">
+  <svg class="mk"><use href="#mark"/></svg>
+  <h2 class="rv">Make more room for good work.</h2>
+  <a class="btn btn-dark rv" href="#contact">Book a demo</a>
+</section>
+</main>
+
+<footer data-theme="dark">
+  <div class="fc">
+    <div><h4>Solutions</h4><ul><li><a href="#platform">Receptionist</a></li><li><a href="#platform">Analyst</a></li><li><a href="#platform">Notetaker</a></li><li><a href="#platform">Bookkeeper</a></li></ul></div>
+    <div><h4>Company</h4><ul><li><a href="#platform">Products</a></li><li><a href="#integrations">Integrations</a></li><li><a href="#team">About Us</a></li><li><a href="#privacy">Security &amp; privacy</a></li></ul></div>
+    <div><h4>Resources</h4><ul><li><a href="#team">Careers</a></li><li><a href="#research">Labs</a></li><li><a href="#outcomes">Case Studies</a></li><li><a href="#platform">Huile API</a></li><li><a href="#research">Blog</a></li></ul></div>
+    <div><h4>Legal</h4><ul><li><a href="#privacy">Privacy Policies</a></li><li><a href="#privacy">Cookie Policy</a></li><li><a href="#privacy">Docs</a></li></ul></div>
+  </div>
+  <div class="legal"><span>© Huile AI 2026. All Rights Reserved.</span><span>·</span><svg class="i"><use href="#i-x"/></svg><svg class="i"><use href="#i-in"/></svg></div>
+  <div class="big" aria-hidden="true">Huile</div>
+</footer>
+
+<div class="modal" role="dialog" aria-label="Film"><button>Close ✕</button><video controls playsinline></video></div>
+
+<script src="script.js"></script>
+</body>
+</html>
