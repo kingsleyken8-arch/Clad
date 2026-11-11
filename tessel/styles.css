@@ -458,3 +458,7 @@ footer{border-top:1px solid var(--line);overflow:hidden}
 }
 /* on narrower desktops the dropdowns drop their picture tile so they always fit */
 @media (min-width:961px) and (max-width:1280px){.mega-in,.mega-in.wide{grid-template-columns:auto}.mega-in.wide .mg{width:540px}.mega-in .mg.one{width:330px}.mg-card{display:none}}
+
+/* hero headline, a step smaller than the display size */
+.hero h1{font-size:clamp(42px,5.4vw,78px);letter-spacing:-3.5px}
+@media (max-width:960px){.hero h1{letter-spacing:-.045em}}
