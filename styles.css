@@ -460,5 +460,5 @@ footer{border-top:1px solid var(--line);overflow:hidden}
 @media (min-width:961px) and (max-width:1280px){.mega-in,.mega-in.wide{grid-template-columns:auto}.mega-in.wide .mg{width:540px}.mega-in .mg.one{width:330px}.mg-card{display:none}}
 
 /* hero headline, a step smaller than the display size */
-.hero h1{font-size:clamp(40px,4.9vw,70px);letter-spacing:-3.2px}
+.hero h1{font-size:clamp(36px,4.2vw,60px);letter-spacing:-2.7px}
 @media (max-width:960px){.hero h1{letter-spacing:-.045em}}
