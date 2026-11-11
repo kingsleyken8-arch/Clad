@@ -41,7 +41,7 @@
 
   /* ---------- scroll driven scenes ---------- */
   const stage = $('.stage'), how = $('.how'), steps = $$('.step'), shots = $$('.shot');
-  const spot = $('.spot .vis'), card = $('.spot .card'), stories = $$('.story figure'), mark = $('.wordmark');
+  const spot = $('.spot .vis'), card = $('.spot .card'), stories = $$('.story figure'), mark = $('.foot-scene');
   const themed = $$('[data-theme]');
   const INTRO = .08;
   let cur = -1;
@@ -75,7 +75,7 @@
     // gentle parallax on the customer photos and the footer wordmark
     stories.forEach(f => { const b = f.getBoundingClientRect(); f.firstElementChild.style.setProperty('--py', clamp((vh - b.top) / (vh + b.height)).toFixed(3)); });
     const mr = mark.getBoundingClientRect();
-    mark.style.setProperty('--f', clamp((vh - mr.top) / (mr.height * 1.2)).toFixed(3));
+    mark.style.setProperty('--f', clamp((vh - mr.top) / mr.height).toFixed(3));
 
     document.body.toggleAttribute('data-top', scrollY < 24);
 
