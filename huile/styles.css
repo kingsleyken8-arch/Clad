@@ -664,3 +664,24 @@ h2+.sub,.h2+.sub{margin-top:16px}
 .note-sm{font-size:13px}
 .eyebrow{color:var(--muted);letter-spacing:.01em}
 .b-intro{max-width:1240px}
+
+/* corner radius: one scale, applied everywhere
+   lg    large surfaces: content cards, photos, the film, big floating panels
+   md    medium: product windows, inner tiles, feature art
+   sm    small: buttons, inputs, rows and panels inside the product screens
+   xs    tiny: tags, checkboxes and badges inside the product screens
+   full  pills, tracks and anything circular
+   Rows that run rail to rail (grid cells, research rows) stay square. */
+:root{--r-lg:clamp(18px,1.7vw,24px);--r-md:14px;--r-sm:8px;--r-xs:4px;--r-full:999px}
+.pc,.story-media,.team figure,.msg-box{border-radius:var(--r-lg)}
+.proof{border-radius:var(--r-lg) var(--r-lg) 0 0}
+.rec{border-radius:var(--r-lg) var(--r-lg) 0 0}
+.minis div,.feat .ic,.tiles-art i,.rowc span,.scan,.camp,.rec .cam,.modal video{border-radius:var(--r-md)}
+.scan .px{border-radius:0 0 var(--r-md) var(--r-md)}
+.mock,.report,.flow,.appr{border-radius:var(--r-md) var(--r-md) 0 0}
+.main{border-radius:var(--r-md) 0 0 0}
+.msg.u{border-radius:var(--r-md) var(--r-md) var(--r-xs) var(--r-md)}
+.btn,.col .go,.tile,.card,.banner,.panel,.qt,.side a,.seg,.code,.appr .row2 span,.report .win,.ctx .block b,.phone .it em,.msg.sys{border-radius:var(--r-sm)}
+.appr .tabbar span{border-radius:var(--r-sm) var(--r-sm) 0 0}
+.side a em,.heat i,.code .cb,.code code,sup.c,.qt b i,.report .hi span,.report .kp div,.seg span,.fmt span,.pill,.wm i.sq,.flow aside .on{border-radius:var(--r-xs)}
+.rk .bar,.rk .bar i,.orb .wave i,.bar .tr i,.meter i,.tags span,.play,.chip,.search,.ask,.ask b,.msg-box .chips span,.appr .row2 label i,.rec .bar em,.rec .pills span{border-radius:var(--r-full)}
