@@ -22,7 +22,7 @@
     const raf = t => { lenis.raf(t); requestAnimationFrame(raf); };
     requestAnimationFrame(raf);
   }
-  const go = top => lenis ? lenis.scrollTo(top, { duration: 1.3 }) : scrollTo({ top, behavior: reduce ? 'auto' : 'smooth' });
+  const go = top => { if (lenis) { lenis.start(); lenis.scrollTo(top, { duration: 1.3, force: true }); } else scrollTo({ top, behavior: reduce ? 'auto' : 'smooth' }); };
 
   /* ---------- reveal and count on view ---------- */
   const countUp = el => {
@@ -99,6 +99,29 @@
     if (!t) return; e.preventDefault();
     go(t.getBoundingClientRect().top + scrollY - (t.id === 'top' ? 0 : 63));
   }));
+
+  /* ---------- menus: hover or click on desktop, accordion inside the mobile menu ---------- */
+  const menus = $$('.has-menu'), burger = $('.burger'), isMobile = () => innerWidth <= 960;
+  const setOpen = (m, on) => { m.classList.toggle('open', on); $('.nl', m).setAttribute('aria-expanded', on); };
+  const closeAll = except => menus.forEach(m => m !== except && setOpen(m, false));
+  const setMenu = on => {
+    document.body.classList.toggle('menu-open', on);
+    burger.setAttribute('aria-expanded', on); burger.setAttribute('aria-label', on ? 'Close menu' : 'Open menu');
+    if (lenis) on ? lenis.stop() : lenis.start();
+    if (!on) closeAll();
+  };
+  menus.forEach(m => {
+    let timer;
+    m.addEventListener('mouseenter', () => { if (isMobile()) return; clearTimeout(timer); closeAll(m); setOpen(m, true); });
+    m.addEventListener('mouseleave', () => { if (isMobile()) return; timer = setTimeout(() => setOpen(m, false), 140); });
+    $('.nl', m).addEventListener('click', () => { const on = !m.classList.contains('open'); if (!isMobile()) closeAll(m); setOpen(m, on); });
+    m.addEventListener('focusout', e => { if (!isMobile() && !m.contains(e.relatedTarget)) setOpen(m, false); });
+  });
+  burger.addEventListener('click', () => setMenu(!document.body.classList.contains('menu-open')));
+  addEventListener('keydown', e => { if (e.key === 'Escape') { closeAll(); setMenu(false); } });
+  document.addEventListener('click', e => { if (!isMobile() && !e.target.closest('.has-menu')) closeAll(); });
+  $$('.nav-links a').forEach(a => a.addEventListener('click', () => { closeAll(); setMenu(false); }));
+  addEventListener('resize', () => { if (!isMobile() && document.body.classList.contains('menu-open')) setMenu(false); });
 
   /* ---------- demo form ---------- */
   const form = $('#demo-form');
