@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
+import gsap from "gsap";
 import Lenis from "lenis";
 import "./clad.css";
 import { asset, PROJECTS, STUDIO_PAGES } from "./content";
-import { Plaster } from "./gl/plaster";
-import { Wipe } from "./gl/wipe";
+import { Plaster, SWEEP } from "./gl/plaster";
 import { ContactForm } from "./ContactForm";
 import { Preloader } from "./Preloader";
 import { Cursor, Mark } from "./bits";
@@ -17,40 +17,25 @@ import Contact from "./pages/Contact";
 import Work from "./pages/Work";
 import Case from "./pages/Case";
 
-type RGB = [number, number, number];
-const PAPER: RGB = [0.91, 0.91, 0.91];
-const INK: RGB = [0.012, 0.012, 0.012];
-
 const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const finePointer = window.matchMedia("(pointer: fine)").matches;
-const frame = () => new Promise<void>((r) => requestAnimationFrame(() => r()));
 
-/** What the route change is painted with. */
-type Fx = {
-  cover(origin: { x: number; y: number }, color: RGB, duration?: number): Promise<void>;
-  release(duration?: number): Promise<void>;
-  destroy(): void;
-};
+/** The parts of the wall a page change animates. Stands in for the renderer where WebGL is missing. */
+type Wall = Pick<
+  Plaster,
+  | "intro" | "dim" | "zoomDay" | "shiftDay" | "scrollDay"
+  | "black" | "zoomNight" | "rollNight" | "shiftNight" | "scrollNight"
+  | "mix" | "sweep"
+> & { clear(): void; rebase(): void };
 
-/** Plain cross-fade for browsers without WebGL. */
-function fadeFx(host: HTMLElement): Fx {
-  const el = document.createElement("div");
-  el.style.cssText = "position:absolute;inset:0;opacity:0;transition:opacity .45s ease";
-  host.appendChild(el);
-  const wait = (ms: number) => new Promise<void>((r) => window.setTimeout(r, ms));
-  return {
-    async cover(_origin, c) {
-      el.style.background = `rgb(${c.map((v) => Math.round(v * 255)).join(",")})`;
-      el.style.opacity = "1";
-      await wait(470);
-    },
-    async release() {
-      el.style.opacity = "0";
-      await wait(470);
-    },
-    destroy: () => el.remove(),
-  };
-}
+const noWall = (): Wall => ({
+  intro: 1, dim: 0, zoomDay: 1, shiftDay: 0, scrollDay: null,
+  black: 0, zoomNight: 1, rollNight: 0, shiftNight: 0, scrollNight: null,
+  mix: 0, sweep: SWEEP.shut, clear() {}, rebase() {},
+});
+
+/** Where the night wall's camera starts from as it is carried in. */
+const NIGHT_ENTRY = { zoomNight: 1.12, rollNight: 0.045 };
 
 function Page({ route }: { route: Route }) {
   switch (route.name) {
@@ -72,7 +57,8 @@ function Page({ route }: { route: Route }) {
 export default function Site() {
   const brand = useContent().text.brand;
   const [route, setRoute] = useState(() => parseRoute(window.location.hash));
-  const [phase, setPhase] = useState<"idle" | "leaving" | "entering">("idle");
+  /** the page being brought in, mounted out of sight while the current one leaves */
+  const [incoming, setIncoming] = useState<Route | null>(null);
   /** the preloader has started to lift: the page may move */
   const [ready, setReady] = useState(EMBED);
   const [loading, setLoading] = useState(!EMBED);
@@ -82,29 +68,23 @@ export default function Site() {
   const [atFoot, setAtFoot] = useState(false);
 
   const routeRef = useRef(route);
-  const page = useRef<HTMLElement>(null);
+  const root = useRef<HTMLDivElement>(null);
   const plasterHost = useRef<HTMLDivElement>(null);
-  const wipeHost = useRef<HTMLDivElement>(null);
   const plaster = useRef<Plaster | null>(null);
-  const fx = useRef<Fx | null>(null);
+  const wall = useRef<Wall>(noWall());
   const lenis = useRef<Lenis | null>(null);
   const busy = useRef(false);
-  const origin = useRef<{ x: number; y: number } | null>(null);
+  const change = useRef<gsap.core.Timeline | null>(null);
+  const peek = useRef<gsap.core.Tween | null>(null);
   const lastLight = useRef("/");
   const loaded = useRef({ textures: 0, fonts: 0 });
+  /** how long after a page becomes current its content starts to show (ms) */
+  const arrival = useRef(0);
 
-  const paint = useCallback((r: Route) => {
-    const p = plaster.current;
-    if (p) {
-      p.night = r.dark ? 1 : 0;
-      p.shift = r.shift;
-      p.intro = r.flat ? 0 : 1;
-      p.clear();
-    }
-    document.documentElement.classList.toggle("cl-dark", r.dark);
-  }, []);
+  const pageEl = (path: string) =>
+    root.current?.querySelector<HTMLElement>(`.cl-page[data-path="${CSS.escape(path)}"]`) ?? null;
 
-  /* ---------- renderers + smooth scroll ---------- */
+  /* ---------- renderer + smooth scroll ---------- */
   useEffect(() => {
     const html = document.documentElement;
     html.classList.add("cl-root");
@@ -123,52 +103,48 @@ export default function Site() {
     lenis.current = l;
 
     const sm = window.innerWidth < 820 ? "-sm" : "";
-    const wall = document.createElement("canvas");
-    plasterHost.current!.appendChild(wall);
+    const canvas = document.createElement("canvas");
+    plasterHost.current!.appendChild(canvas);
     let p: Plaster | null = null;
     try {
-      p = new Plaster(wall, {
+      p = new Plaster(canvas, {
         wall: asset(`clad/wall${sm}.jpg`),
         reliefs: [asset(`clad/relief-a${sm}.jpg`), asset(`clad/relief-b${sm}.jpg`), asset(`clad/relief-c${sm}.jpg`)],
+        noise: asset("clad/noise.jpg"),
       });
       p.onProgress = (v) => (loaded.current.textures = v);
     } catch {
-      wall.remove();
+      canvas.remove();
       html.classList.add("cl-nogl");
       loaded.current.textures = 1;
     }
     plaster.current = p;
+    const w: Wall = p ?? noWall();
+    wall.current = w;
 
-    const veil = document.createElement("canvas");
-    wipeHost.current!.appendChild(veil);
-    let f: Fx;
-    try {
-      f = new Wipe(veil);
-    } catch {
-      veil.remove();
-      f = fadeFx(wipeHost.current!);
-    }
-    fx.current = f;
+    // the wall as the first page needs it
+    const r = routeRef.current;
+    w.mix = r.dark ? 1 : 0;
+    w.shiftDay = w.shiftNight = r.shift;
+    w.intro = r.flat ? 0 : 1;
+    html.classList.toggle("cl-dark", r.dark);
 
     document.fonts?.ready.then(() => (loaded.current.fonts = 1));
     window.setTimeout(() => (loaded.current.fonts = 1), 2500);
 
-    paint(routeRef.current);
-
     return () => {
       cancelAnimationFrame(raf);
+      change.current?.kill();
+      peek.current?.kill();
       l?.destroy();
       p?.destroy();
-      f.destroy();
-      wall.remove();
-      veil.remove();
+      canvas.remove();
       plaster.current = null;
-      fx.current = null;
       lenis.current = null;
       html.classList.remove("cl-root", "cl-dark", "cl-nogl");
       html.style.overflow = "";
     };
-  }, [paint]);
+  }, []);
 
   /* ---------- hold the page still under the preloader and the form ---------- */
   useEffect(() => {
@@ -178,42 +154,178 @@ export default function Site() {
     document.documentElement.style.overflow = hold && !EMBED ? "hidden" : "";
   }, [ready, formOpen]);
 
-  /* ---------- route changes ---------- */
-  const sync = useCallback(async () => {
+  /* ---------- route changes ----------
+   * The wall does the travelling; the pages only fade. Timings and easings
+   * follow the reference build:
+   *   light -> light  the wall dissolves to flat paper and back
+   *   light -> dark   a torn, smoke-edged front carries the night wall in from the top-right
+   *   dark  -> light  the stone sinks to black and dissolves into plaster
+   *   dark  -> dark   a push in through black
+   */
+  const sync = useCallback(() => {
     if (!isSiteHash(window.location.hash)) return;
     const next = parseRoute(window.location.hash);
-    if (busy.current || next.path === routeRef.current.path) return;
+    const from = routeRef.current;
+    if (busy.current || next.path === from.path) return;
     busy.current = true;
     setFormOpen(false);
-    setPhase("leaving");
 
-    const from = origin.current ?? { x: window.innerWidth - 64, y: 48 };
-    origin.current = null;
+    // let anything still settling from the last change finish first
+    change.current?.progress(1);
+    peek.current?.kill();
+    const w = wall.current;
+
+    // Mount the next page now, out of sight. Its cost lands before anything
+    // has started to move, so nothing stutters part-way through.
+    flushSync(() => setIncoming(next));
+    const oldEl = pageEl(from.path);
+    const newEl = pageEl(next.path);
+    if (newEl) gsap.set(newEl, { opacity: 0 });
     lenis.current?.stop();
-    await fx.current?.cover(from, next.dark ? INK : PAPER, reduced ? 200 : 1250);
 
-    routeRef.current = next;
-    if (!next.dark) lastLight.current = next.path;
-    flushSync(() => {
-      setRoute(next);
-      setPhase("entering");
-      setScrolled(false);
-      setAtFoot(false);
+    const swap = () => {
+      const y = window.scrollY;
+      // the wall that is leaving keeps the scroll it had; the one arriving follows the new page
+      if (from.dark) w.scrollNight = y;
+      else w.scrollDay = y;
+      routeRef.current = next;
+      if (!next.dark) lastLight.current = next.path;
+      flushSync(() => {
+        setRoute(next);
+        setIncoming(null);
+        setScrolled(false);
+        setAtFoot(false);
+      });
+      window.scrollTo(0, 0);
+      lenis.current?.resize();
+      lenis.current?.scrollTo(0, { immediate: true, force: true });
+      lenis.current?.start();
+      document.documentElement.classList.toggle("cl-dark", next.dark);
+      // Where the wall is out of sight at this moment its pressure is wiped;
+      // otherwise carvings already raised are left to sink back on their own.
+      if (from.dark === next.dark) w.clear();
+      else w.rebase();
+      if (next.dark) w.scrollNight = null;
+      else w.scrollDay = null;
+    };
+
+    const free = () => {
+      busy.current = false;
+      // the address may have moved on while we were busy (back/forward)
+      if (parseRoute(window.location.hash).path !== routeRef.current.path) sync();
+    };
+
+    const tl = gsap.timeline({
+      onComplete: () => {
+        if (newEl) gsap.set(newEl, { clearProps: "opacity" });
+      },
     });
-    window.scrollTo(0, 0);
-    lenis.current?.resize();
-    lenis.current?.scrollTo(0, { immediate: true, force: true });
-    paint(next);
-    await frame();
-    await frame();
-    lenis.current?.start();
-    await fx.current?.release(reduced ? 200 : 900);
+    change.current = tl;
 
-    setPhase("idle");
-    busy.current = false;
-    // the address may have moved on while we were busy (back/forward)
-    if (parseRoute(window.location.hash).path !== next.path) void sync();
-  }, [paint]);
+    /** the new page's content: titles one after another where it has them, otherwise a soft fade */
+    const arrive = (at: number) => {
+      if (!newEl) return;
+      const parts = newEl.querySelectorAll("[data-in]");
+      if (parts.length) {
+        tl.set(newEl, { opacity: 1 }, at);
+        tl.fromTo(
+          parts,
+          { opacity: 0, y: 16 },
+          { opacity: 1, y: 0, duration: 1, ease: "sine.out", stagger: 0.09, clearProps: "opacity,transform" },
+          at,
+        );
+      } else {
+        tl.to(newEl, { opacity: 1, duration: 1, ease: "sine.inOut" }, at);
+      }
+    };
+    const leave = (duration: number, ease: string) => {
+      if (oldEl) tl.to(oldEl, { opacity: 0, duration, ease }, 0);
+    };
+
+    if (reduced) {
+      // no travel: a short cross-fade
+      leave(0.2, "none");
+      tl.add(() => {
+        swap();
+        w.mix = next.dark ? 1 : 0;
+        w.shiftDay = w.shiftNight = next.shift;
+        w.intro = next.flat ? 0 : 1;
+        w.scrollDay = w.scrollNight = null;
+      }, 0.22);
+      if (newEl) tl.to(newEl, { opacity: 1, duration: 0.25, ease: "none" }, 0.24);
+      tl.add(free, 0.3);
+      arrival.current = 0;
+    } else if (!from.dark && !next.dark) {
+      leave(0.4, "sine.inOut");
+      // (if the night wall was leaning in at the corner, send it back)
+      tl.to(w, { sweep: SWEEP.shut, duration: 0.3, ease: "sine.out" }, 0);
+      tl.to(w, { intro: 0, duration: 0.45, ease: "sine.inOut" }, 0);
+      tl.add(() => {
+        swap();
+        w.shiftDay = next.shift;
+        w.zoomDay = 1.045;
+      }, 0.5);
+      tl.to(w, { intro: next.flat ? 0 : 1, duration: 1.2, ease: "sine.inOut" }, 0.55);
+      tl.to(w, { zoomDay: 1, duration: 2, ease: "power1.out" }, 0.55);
+      arrive(0.64);
+      tl.add(free, 1.25);
+      arrival.current = 140;
+    } else if (!from.dark && next.dark) {
+      w.shiftNight = next.shift;
+      w.scrollNight = 0;
+      w.black = 0;
+      // if Menu was being hovered the front is already on its way: carry on from there
+      if (w.sweep <= SWEEP.shut + 0.001) Object.assign(w, NIGHT_ENTRY);
+      leave(0.5, "sine.out");
+      tl.to(w, { sweep: SWEEP.open, duration: 2.25, ease: "power2.inOut" }, 0);
+      tl.to(w, { dim: 0.56, duration: 1.5, ease: "sine.inOut" }, 0);
+      tl.to(w, { zoomDay: 1.05, duration: 2.4, ease: "sine.inOut" }, 0);
+      tl.to(w, { zoomNight: 1, rollNight: 0, duration: 4, ease: "power3.out" }, 0.2);
+      tl.add(swap, 0.55);
+      tl.add(() => {
+        w.mix = 1;
+        w.sweep = SWEEP.shut;
+        w.dim = 0;
+        w.zoomDay = 1;
+        w.scrollDay = null;
+      }, 2.25);
+      arrive(1.45);
+      tl.add(free, 2);
+      arrival.current = 900;
+    } else if (from.dark && !next.dark) {
+      w.shiftDay = next.shift;
+      w.intro = next.flat ? 0 : 1;
+      w.scrollDay = 0;
+      w.zoomDay = 1.045;
+      w.dim = 0;
+      leave(0.5, "sine.out");
+      tl.to(w, { black: 1, duration: 1.2, ease: "sine.inOut" }, 0);
+      tl.add(swap, 0.52);
+      tl.to(w, { mix: 0, duration: 1.2, ease: "power2.inOut" }, 0.55);
+      tl.to(w, { zoomDay: 1, duration: 2, ease: "power1.out" }, 0.55);
+      tl.add(() => {
+        w.black = 0;
+        w.scrollNight = null;
+      }, 1.8);
+      arrive(1.05);
+      tl.add(free, 1.6);
+      arrival.current = 530;
+    } else {
+      leave(0.45, "sine.out");
+      tl.to(w, { black: 1, duration: 0.8, ease: "sine.inOut" }, 0);
+      tl.to(w, { zoomNight: 1.2, duration: 0.85, ease: "power2.in" }, 0);
+      tl.add(() => {
+        swap();
+        w.shiftNight = next.shift;
+        w.zoomNight = 1.14;
+      }, 0.86);
+      tl.to(w, { black: 0, duration: 1.25, ease: "sine.inOut" }, 0.9);
+      tl.to(w, { zoomNight: 1, duration: 2.8, ease: "power3.out" }, 0.9);
+      arrive(1.3);
+      tl.add(free, 1.8);
+      arrival.current = 440;
+    }
+  }, []);
 
   useEffect(() => {
     if (EMBED) return;
@@ -221,15 +333,33 @@ export default function Site() {
     return () => window.removeEventListener("hashchange", sync);
   }, [sync]);
 
-  const go = useCallback<Shell["go"]>((path, e) => {
+  const go = useCallback<Shell["go"]>((path) => {
     if (busy.current) return;
     if (parseRoute(`#${path}`).path === routeRef.current.path) {
       if (lenis.current) lenis.current.scrollTo(0, { duration: 1.6 });
       else window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
-    origin.current = e ? { x: e.clientX, y: e.clientY } : null;
     window.location.hash = path;
+  }, []);
+
+  /** Resting on Menu lets the night wall lean in at the corner; leaving sends it back. */
+  const lean = useCallback((on: boolean) => {
+    const w = wall.current;
+    if (!finePointer || reduced || busy.current || routeRef.current.dark) return;
+    peek.current?.kill();
+    if (on) {
+      if (w.sweep <= SWEEP.shut + 0.001) {
+        w.shiftNight = 0;
+        w.scrollNight = 0;
+        w.black = 0;
+        Object.assign(w, NIGHT_ENTRY);
+      }
+      peek.current = gsap.to(w, { sweep: SWEEP.peek, duration: 2.5, ease: "expo.out" });
+    } else {
+      const left = (w.sweep - SWEEP.shut) / (SWEEP.peek - SWEEP.shut);
+      peek.current = gsap.to(w, { sweep: SWEEP.shut, duration: Math.max(0.05, left), ease: "none" });
+    }
   }, []);
 
   const openForm = useCallback(() => {
@@ -240,9 +370,9 @@ export default function Site() {
 
   /* ---------- things that appear as they scroll into view ---------- */
   useEffect(() => {
-    if (!ready || !page.current) return;
-    const root = page.current;
-    const pending = () => root.querySelectorAll<HTMLElement>("[data-reveal]:not(.is-in)");
+    const host = pageEl(route.path);
+    if (!ready || !host) return;
+    const pending = () => host.querySelectorAll<HTMLElement>("[data-reveal]:not(.is-in)");
     const make = (margin: string) =>
       new IntersectionObserver(
         (entries, io) =>
@@ -255,20 +385,23 @@ export default function Site() {
       );
     const text = make("0px 0px -22% 0px");
     const media = make("0px 0px -6% 0px");
-    pending().forEach((el) => (el.dataset.reveal === "media" ? media : text).observe(el));
-
     // anything too close to the end of the page to cross the line still gets shown
     const atEnd = () => {
       if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 12) {
         pending().forEach((el) => el.classList.add("is-in"));
       }
     };
-    window.addEventListener("scroll", atEnd, { passive: true });
-    const settle = window.setTimeout(atEnd, 1200);
+    // wait until the page itself is fading in, so its first words are seen arriving
+    const start = window.setTimeout(() => {
+      pending().forEach((el) => (el.dataset.reveal === "media" ? media : text).observe(el));
+      window.addEventListener("scroll", atEnd, { passive: true });
+    }, arrival.current);
+    const settle = window.setTimeout(atEnd, arrival.current + 1200);
     return () => {
       text.disconnect();
       media.disconnect();
       window.removeEventListener("scroll", atEnd);
+      window.clearTimeout(start);
       window.clearTimeout(settle);
     };
   }, [route.path, ready]);
@@ -277,7 +410,7 @@ export default function Site() {
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > window.innerHeight * 0.55);
     window.addEventListener("scroll", onScroll, { passive: true });
-    const foot = page.current?.querySelector(".cl-foot");
+    const foot = pageEl(route.path)?.querySelector(".cl-foot");
     const io = new IntersectionObserver(([en]) => setAtFoot(en.isIntersecting), { rootMargin: "0px 0px -12% 0px" });
     if (foot) io.observe(foot);
     return () => {
@@ -302,7 +435,7 @@ export default function Site() {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
       if (formOpen) setFormOpen(false);
-      else if (routeRef.current.dark) go(lastLight.current, null);
+      else if (routeRef.current.dark) go(lastLight.current);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -336,7 +469,6 @@ export default function Site() {
     ready,
     openForm,
     lenis: () => lenis.current,
-    plaster: () => plaster.current,
   };
 
   const inIndex = route.dark;
@@ -353,6 +485,7 @@ export default function Site() {
   return (
     <ShellContext.Provider value={shell}>
       <div
+        ref={root}
         className={[
           "cl",
           route.dark ? "is-dark" : "",
@@ -362,13 +495,19 @@ export default function Site() {
       >
         <div className="cl-plaster" ref={plasterHost} aria-hidden />
 
-        <main
-          ref={page}
-          key={route.path}
-          className={`cl-page ${phase === "entering" ? "is-entering" : ""} ${phase === "leaving" ? "is-leaving" : ""}`}
-        >
-          <Page route={route} />
-        </main>
+        {[route, incoming].map(
+          (r) =>
+            r && (
+              <main
+                key={r.path}
+                data-path={r.path}
+                className={`cl-page ${r === incoming ? "is-incoming" : ""}`}
+                aria-hidden={r === incoming || undefined}
+              >
+                <Page route={r} />
+              </main>
+            ),
+        )}
 
         {/* fixed chrome */}
         <Link to="/" className={`cl-mark ${on && showMark ? "is-on" : ""}`} aria-label={`${brand} — home`}>
@@ -392,7 +531,9 @@ export default function Site() {
             type="button"
             className={`cl-menu ${inIndex ? "is-open" : ""}`}
             aria-label={inIndex ? "Close" : "Menu"}
-            onClick={(e) => go(inIndex ? lastLight.current : "/menu", e.detail === 0 ? null : e)}
+            onClick={() => go(inIndex ? lastLight.current : "/menu")}
+            onPointerEnter={() => lean(true)}
+            onPointerLeave={() => lean(false)}
           >
             <span className="cl-menu__label" aria-hidden>
               <span>Menu</span>
@@ -425,8 +566,6 @@ export default function Site() {
           </div>
           {formKey > 0 && <ContactForm key={formKey} active={formOpen} wide />}
         </div>
-
-        <div className="cl-wipe" ref={wipeHost} aria-hidden />
 
         {loading && (
           <Preloader

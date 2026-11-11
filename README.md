@@ -14,8 +14,13 @@ raw **WebGL**, **GSAP** and **Lenis**.
   then the carving swells out of the wall and sinks back. `src/clad/gl/plaster.ts`
 - **Night wall** — the menu, studio and contact pages sit on the same carving
   in black stone; light breaks through in slivers under the pointer.
-- **Page transitions** — a ragged, smoke-edged front sweeps out from wherever
-  you clicked and the next page is underneath. `src/clad/gl/wipe.ts`
+- **Page transitions** — the wall itself does the travelling, so a change of
+  page is one continuous motion rather than something drawn over the top.
+  Ordinary pages dissolve through flat paper; the dark section arrives behind
+  a torn, white-edged front of smoke from the Menu corner (rest the pointer on
+  Menu and it leans in); leaving it, the stone sinks to black and dissolves
+  back into plaster. The next page is mounted before anything moves, so
+  nothing stutters part-way. Timings live in `src/clad/Site.tsx`.
 - **Pages** — home, index (menu), five studio pages, contact, project list
   with category filter, and a page per project.
 - **Contact form** — one question at a time; posts JSON to an n8n webhook.

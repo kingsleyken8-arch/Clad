@@ -75,8 +75,7 @@ html.cl-root .lenis.lenis-smooth { scroll-behavior: auto !important; }
 
 /* ---------- canvases ---------- */
 .cl-plaster { position: fixed; inset: 0; z-index: 0; }
-.cl-wipe { position: fixed; inset: 0; z-index: 900; pointer-events: none; }
-.cl-plaster canvas, .cl-wipe canvas { display: block; width: 100%; height: 100%; }
+.cl-plaster canvas { display: block; width: 100%; height: 100%; }
 html.cl-nogl .cl-plaster { background: #dedede url("/clad/wall.jpg") center / cover; }
 html.cl-nogl.cl-dark .cl-plaster { background: #050505; }
 .cl-sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
@@ -95,11 +94,8 @@ html.cl-nogl.cl-dark .cl-plaster { background: #050505; }
 
 /* ---------- page container & transitions ---------- */
 .cl-page { position: relative; z-index: 1; }
-.cl-page.is-leaving { pointer-events: none; }
-/* on the night wall, type inverts wherever light breaks through behind it */
-.cl.is-dark .cl-page { mix-blend-mode: difference; }
-.cl-page.is-entering { animation: cl-page-in 0.9s var(--ease-sine) both; }
-@keyframes cl-page-in { from { opacity: 0; } to { opacity: 1; } }
+/* the page being brought in waits here, laid out but unseen, until the wall has changed */
+.cl-page.is-incoming { position: fixed; inset: 0; overflow: hidden; opacity: 0; pointer-events: none; }
 
 /* ---------- reveal on scroll ---------- */
 .cl [data-reveal] { opacity: 0; transition: opacity 1.4s var(--ease-sine), transform 1.6s var(--ease-out), filter 1.4s var(--ease-sine); transform: translateY(18px); filter: blur(6px); will-change: opacity, transform; }

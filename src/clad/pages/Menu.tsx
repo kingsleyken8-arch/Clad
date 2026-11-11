@@ -7,7 +7,7 @@ export default function Menu() {
     <div className="cl-menupage">
       <ul className="cl-index">
         {STUDIO_PAGES.map((p) => (
-          <li key={p.slug}>
+          <li key={p.slug} data-in="">
             <Link to={`/${p.slug}`} aria-label={p.title}>
               {p.title}
               <span className="cl-index__more" aria-hidden>
@@ -21,7 +21,7 @@ export default function Menu() {
           </li>
         ))}
       </ul>
-      <Link to="/contact" className="cl-menupage__cta" aria-label="Contact us">
+      <Link to="/contact" className="cl-menupage__cta" aria-label="Contact us" data-in="">
         Contact{" "}
         <span className="cl-swap" aria-hidden>
           <span>us</span>

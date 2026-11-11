@@ -1,6 +1,5 @@
 import { createContext, useContext } from "react";
 import type Lenis from "lenis";
-import type { Plaster } from "./gl/plaster";
 import { isEmbed } from "./store";
 
 /* ------------------------------------------------------------------ */
@@ -45,10 +44,9 @@ export const EMBED = isEmbed();
 
 export type Shell = {
   route: Route;
-  /** Navigate with the wipe; pass the click event so the wipe starts under the pointer. */
-  go: (path: string, e?: { clientX: number; clientY: number } | null) => void;
+  /** Navigate with the page transition. */
+  go: (path: string) => void;
   lenis: () => Lenis | null;
-  plaster: () => Plaster | null;
   /** true once the preloader has finished */
   ready: boolean;
   openForm: () => void;
@@ -61,7 +59,7 @@ export const useShell = () => {
   return s;
 };
 
-/** Anchor that navigates through the wipe transition. */
+/** Anchor that navigates with the page transition. */
 export function Link({
   to,
   className,
@@ -85,10 +83,7 @@ export function Link({
         if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
         e.preventDefault();
         if (EMBED) return; // keep editor frames on their page
-        // keyboard activation has no pointer position: start from the link itself
-        const r = e.currentTarget.getBoundingClientRect();
-        const at = e.detail === 0 ? { clientX: r.left + r.width / 2, clientY: r.top + r.height / 2 } : e;
-        go(to, at);
+        go(to);
       }}
       {...rest}
     >
