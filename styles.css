@@ -232,3 +232,6 @@ cite::before{content:"";width:24px;height:1px;background:currentColor}
 /* on a dark page the clips need an edge, or their dark areas merge with the background */
 .ph::after,.featured::after,.screen::after,.aimg::after{content:"";position:absolute;inset:0;border:1px solid var(--line);border-radius:inherit;pointer-events:none}
 .aimg{position:relative}
+
+/* two-line headings on a phone need a little more air between the lines */
+@media (max-width:820px){h2{line-height:.84}}

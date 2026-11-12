@@ -82,5 +82,5 @@
     const t = rv.currentTime; runtime.textContent = two(t / 60) + ':' + two(t % 60);
     tc.textContent = '00:' + two(t / 60) + ':' + two(t % 60) + ':' + two((t % 1) * 30);
   });
-  sound.addEventListener('click', () => { rv.muted = !rv.muted; sound.textContent = rv.muted ? '[ SOUND OFF ]' : '[ SOUND ON ]'; });
+  sound.addEventListener('click', () => { rv.muted = !rv.muted; sound.textContent = rv.muted ? 'AUDIO: OFF' : 'AUDIO: ON'; });
 })();
