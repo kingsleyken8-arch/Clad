@@ -11,7 +11,10 @@
     { src: 'assets/shapes/sydney.jpg', name: 'Sydney' },
     { src: 'assets/shapes/greatwall.jpg', name: 'Beijing' }
   ];
-  const HOLD = 4000, MORPH = 950;
+  // ?hold=1500 shortens the pause on each landmark and ?still opens with the first one already drawn.
+  // Both exist for screen recordings; the site itself uses the defaults.
+  const QUERY = new URLSearchParams(location.search);
+  const HOLD = +QUERY.get('hold') || 4000, MORPH = 950, STILL = QUERY.has('still');
   const FRAME_W = 1200, FRAME_H = 960;                      // the reference frame the layout was measured from
   const INK = [76, 76, 82], BLUE = [72, 86, 255];
   // highlighted regions, as fractions of the frame (measured from the reference: x 0-274, y 331-595)
@@ -115,6 +118,12 @@
     resize();
     let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { resize(); if (!morphing) paint(performance.now()); }, 120); });
     if (reduce) { shapes.push(s0); paint(performance.now()); return; }
+    const others = () => Promise.all(SHAPES.slice(1).map(s => load(s.src).then(im => { const r = sample(im); r.name = s.name; return r; }).catch(() => null)));
+    if (STILL) {
+      shapes.push(s0); paint(performance.now());
+      others().then(rest => { rest.forEach(s => s && shapes.push(s)); setTimeout(() => { advance(); setInterval(advance, HOLD + MORPH); }, HOLD); });
+      return;
+    }
     // open by gathering the first landmark out of scattered dust
     const dust = { X: new Float32Array(N), Y: new Float32Array(N), V: new Float32Array(N).fill(.3), B: new Uint8Array(N) };
     for (let i = 0; i < N; i++) { dust.X[i] = Math.random(); dust.Y[i] = Math.random(); }
