@@ -3,21 +3,32 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Build lasting relationships.</title>
-<meta name="description" content="Conversational AI platform for modern financial institutions: agents that handle the full borrower lifecycle across email, SMS, and voice.">
+<title>Meridian · Borders are just lines.</title>
+<meta name="description" content="Meridian moves money between 40 countries in minutes, at the real exchange rate, tracked from the moment it leaves to the moment it lands.">
 <link rel="preload" href="assets/fonts/bricolage-grotesque-latin-standard-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="styles.css?v=1794474808">
+<link rel="stylesheet" href="styles.css?v=1794475633">
 </head>
 <body>
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="mark" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="16" cy="16" r="13"/><ellipse cx="16" cy="16" rx="5.500" ry="13"/><path d="M3 16h26M16 3v26"/></g></symbol>
+  <symbol id="arrow" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</defs></svg>
+
 <div class="scene" aria-hidden="true"><canvas id="particles"></canvas></div>
 
-<main>
+<header class="top">
+  <nav class="top-l" aria-label="Main"><a href="#what">Send</a><a href="#corridors">Corridors</a><a href="#track">Tracking</a><a href="#numbers">Pricing</a></nav>
+  <a class="brand" href="#home" aria-label="Meridian home"><svg><use href="#mark"/></svg><span>Meridian</span></a>
+  <div class="top-r"><a href="#start">Log in</a><a class="pill-btn" href="#start">Open account</a><button class="burger" type="button" aria-label="Open menu" aria-expanded="false"><i></i><i></i></button></div>
+</header>
+
+<main id="home">
   <section class="hero">
-    <h1><span>Build</span> lasting<br>relationships.</h1>
-    <p>Conversational AI platform for modern financial institutions - agents that handle the full borrower lifecycle across email, SMS, and voice.</p>
-    <a class="btn" href="#what">Book A Demo</a>
-    <div class="place" aria-live="polite"><i></i><span id="place">Rome</span></div>
+    <h1><span>Borders</span> are<br>just lines.</h1>
+    <p>Meridian moves money between 40 countries in minutes, at the real exchange rate, tracked from the moment it leaves to the moment it lands.</p>
+    <a class="btn" href="#start">Open An Account</a>
+    <div class="place" aria-live="polite"><i></i>Now landing in <span id="place">Rome</span></div>
   </section>
 
   <section class="what" id="what">
@@ -26,19 +37,77 @@
     </svg>
     <div class="what-head">
       <div>
-        <span class="label"><i>(</i>WHAT DO WE DO?<i>)</i></span>
-        <h2>Conversations that<br>build momentum</h2>
+        <span class="label"><i>(</i>WHAT WE DO<i>)</i></span>
+        <h2>Transfers that<br>keep their word</h2>
       </div>
-      <p>Conversational AI built for regulated financial institutions. Agents that hold a real conversation, plug into the systems you run, and show their work.</p>
+      <p>One account to send, receive and hold money across borders. The rate you see is the rate you get, and you can watch every step of the way.</p>
     </div>
     <div class="cards">
-      <article><span class="n">01 / Conversational</span><div><h3>Talks like your best agent</h3><p>Natural back and forth on email, SMS and voice, with the full history of the borrower in view.</p></div></article>
-      <article><span class="n">02 / Connected</span><div><h3>Works inside your stack</h3><p>Reads from and writes to your loan system, CRM and dialler, so nothing is keyed in twice.</p></div></article>
-      <article><span class="n">03 / Compliant</span><div><h3>Shows its work</h3><p>Every message is logged with the rule it followed, ready for audit the moment it is sent.</p></div></article>
+      <article class="rv"><div class="ic-row"><svg class="ico" data-ico="burst" viewBox="0 0 100 100"></svg><span class="num">01</span></div><div><h3>The real rate</h3><p>We use the mid-market rate with one small fee shown up front. Nothing is hidden inside the exchange.</p></div></article>
+      <article class="rv d1"><div class="ic-row"><svg class="ico" data-ico="hex" viewBox="0 0 100 100"></svg><span class="num">02</span></div><div><h3>Tracked end to end</h3><p>Follow each transfer from your bank to theirs, with a timestamp at every handover.</p></div></article>
+      <article class="rv d2"><div class="ic-row"><svg class="ico" data-ico="lattice" viewBox="0 0 100 100"></svg><span class="num">03</span></div><div><h3>There in minutes</h3><p>We hold funds locally in every corridor, so most transfers land in under ten minutes.</p></div></article>
     </div>
+  </section>
+
+  <section class="corr" id="corridors">
+    <div class="corr-pin">
+      <div class="corr-copy">
+        <span class="label"><i>(</i>CORRIDORS<i>)</i></span>
+        <h2>One account.<br>The whole map.</h2>
+        <ol class="routes">
+          <li class="on" data-a="abuja" data-b="newyork"><b>Abuja <svg><use href="#arrow"/></svg> New York</b><span>Naira to dollars · about 6 minutes · 0.45% fee</span></li>
+          <li data-a="newyork" data-b="rome"><b>New York <svg><use href="#arrow"/></svg> Rome</b><span>Dollars to euros · about 4 minutes · 0.35% fee</span></li>
+          <li data-a="rome" data-b="athens"><b>Rome <svg><use href="#arrow"/></svg> Athens</b><span>Euros to euros · seconds · no fee</span></li>
+          <li data-a="athens" data-b="sydney"><b>Athens <svg><use href="#arrow"/></svg> Sydney</b><span>Euros to Australian dollars · about 9 minutes · 0.4% fee</span></li>
+          <li data-a="sydney" data-b="beijing"><b>Sydney <svg><use href="#arrow"/></svg> Beijing</b><span>Australian dollars to yuan · about 11 minutes · 0.5% fee</span></li>
+        </ol>
+      </div>
+      <div class="globe-wrap"><canvas id="globe" aria-label="A dotted globe showing the active transfer corridor"></canvas></div>
+    </div>
+  </section>
+
+  <section class="numbers" id="numbers">
+    <div class="stat rv"><b data-count="40">40</b><span>countries you can send to and receive from</span></div>
+    <div class="stat rv d1"><b data-count="8" data-suf=" min">8 min</b><span>median time from sent to landed</span></div>
+    <div class="stat rv d2"><b data-count="0.4" data-dec="1" data-suf="%">0.4%</b><span>average fee, shown before you send</span></div>
+    <div class="stat rv d3"><b data-count="100" data-suf="%">100%</b><span>of transfers tracked at every step</span></div>
+  </section>
+
+  <section class="track" id="track">
+    <div class="track-copy">
+      <span class="label rv"><i>(</i>TRACKING<i>)</i></span>
+      <h2 class="rv">Watch it land.</h2>
+      <p class="rv">Every transfer has a timeline you can share. You, your supplier and your accountant all see the same four steps, with the time each one happened.</p>
+      <a class="btn rv" href="#start">Open An Account</a>
+    </div>
+    <div class="ticket rv">
+      <div class="tk-top"><div><small>You send</small><b>1,000.00 USD</b></div><svg><use href="#arrow"/></svg><div><small>They get</small><b>921.40 EUR</b></div></div>
+      <div class="tk-meta"><span>New York to Rome</span><span>Fee 3.50 USD</span><span>Ref MRD-48213</span></div>
+      <ol class="steps">
+        <li><i></i><div><b>Sent from New York</b><span>Funds received from your bank</span></div><time>09:41:02</time></li>
+        <li><i></i><div><b>Converted at the real rate</b><span>Locked for this transfer, no margin added</span></div><time>09:41:05</time></li>
+        <li><i></i><div><b>Released in Rome</b><span>Paid out from our local euro account</span></div><time>09:43:30</time></li>
+        <li><i></i><div><b>Landed</b><span>In the recipient’s account, ready to use</span></div><time>09:45:11</time></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="start" id="start">
+    <svg class="ico big" data-ico="burst" viewBox="0 0 100 100" aria-hidden="true"></svg>
+    <h2 class="rv">Your money has<br>places to be.</h2>
+    <p class="rv">Open an account in ten minutes and send your first transfer today.</p>
+    <a class="btn rv" href="#home">Open An Account</a>
   </section>
 </main>
 
-<script src="script.js?v=1794474808"></script>
+<footer class="foot">
+  <nav><a href="#what">Send</a><a href="#corridors">Corridors</a><a href="#track">Tracking</a><a href="#numbers">Pricing</a></nav>
+  <a class="brand" href="#home"><svg><use href="#mark"/></svg><span>Meridian</span></a>
+  <p>© 2026 Meridian. A concept site: the company, figures and rates are illustrative.</p>
+</footer>
+
+<script src="lenis.min.js"></script>
+<script src="script.js?v=1794475633"></script>
+<script src="page.js?v=1794475633"></script>
 </body>
 </html>
