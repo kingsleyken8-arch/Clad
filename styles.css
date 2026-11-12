@@ -1,0 +1,70 @@
+@font-face{font-family:"Bricolage Grotesque";src:url(assets/fonts/bricolage-grotesque-latin-wght-normal.woff2) format("woff2");font-weight:200 800;font-display:swap}
+@font-face{font-family:"Urbanist";src:url(assets/fonts/urbanist-latin-wght-normal.woff2) format("woff2");font-weight:100 900;font-display:swap}
+
+:root{
+  --ink:#141414;--grey:#5c5c5c;--text:#555;--line:#e4e4e4;--box:#f4f4f4;--blue:#4f5cff;
+  --display:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
+  --sans:"Urbanist","Helvetica Neue",Arial,sans-serif;
+  /* everything is sized from the 1200px reference frame */
+  --u:calc(min(100vw,1600px)/1200);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;position:relative;background:#fff;color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3,p{margin:0;font-weight:400}
+a{color:inherit;text-decoration:none}
+
+/* particle scene: sits behind everything, the same 4:3 frame as the drawing */
+.scene{position:absolute;left:50%;top:0;width:calc(1200*var(--u));height:calc(900*var(--u));transform:translateX(-50%);z-index:0;pointer-events:none}
+.scene::before{content:"";position:absolute;inset:0;background:radial-gradient(#d9d9d9 .7px,transparent 1.1px) 0 0/calc(11.5*var(--u)) calc(11.5*var(--u));
+  -webkit-mask-image:linear-gradient(#000 55%,transparent 72%);mask-image:linear-gradient(#000 55%,transparent 72%)}
+#particles{position:absolute;inset:0;width:100%;height:100%;display:block}
+main{position:relative;z-index:1;width:calc(1200*var(--u));margin:0 auto}
+
+/* hero */
+.hero{height:calc(595*var(--u));text-align:center;padding-top:calc(98*var(--u));position:relative}
+.hero h1{font-family:var(--display);font-weight:300;font-size:calc(66*var(--u));line-height:.98;letter-spacing:-.03em}
+.hero h1 span{color:var(--grey)}
+.hero p{font-size:calc(15.5*var(--u));line-height:1.3;color:var(--text);max-width:calc(440*var(--u));margin:calc(24*var(--u)) auto 0;letter-spacing:.005em}
+.btn{display:inline-flex;align-items:center;justify-content:center;width:calc(184*var(--u));height:calc(33*var(--u));margin-top:calc(46*var(--u));background:#1d1d1d;color:#fff;border-radius:calc(4*var(--u));font-size:calc(14.5*var(--u));font-weight:500;letter-spacing:.01em;transition:background .2s}
+.btn:hover{background:#000}
+.place{position:absolute;right:calc(34*var(--u));top:calc(34*var(--u));display:flex;align-items:center;gap:calc(8*var(--u));font-size:calc(11*var(--u));letter-spacing:.14em;text-transform:uppercase;color:#8a8a8a}
+.place i{width:calc(6*var(--u));height:calc(6*var(--u));border-radius:50%;background:var(--blue)}
+.place span{transition:opacity .35s}
+.place.swap span{opacity:0}
+
+/* what we do: a white sheet laid over the drawing */
+.what{position:relative;margin-left:calc(245*var(--u));background:#fff;padding:calc(120*var(--u)) calc(56*var(--u)) calc(90*var(--u)) calc(34*var(--u));border-top-right-radius:calc(64*var(--u)) calc(110*var(--u))}
+.lines{position:absolute;left:0;top:0;width:100%;height:calc(400*var(--u));color:#ececec;pointer-events:none}
+.what-head{position:relative;display:grid;grid-template-columns:calc(397*var(--u)) 1fr;gap:calc(30*var(--u));align-items:end;padding-bottom:calc(30*var(--u));border-bottom:1px solid var(--line);margin:0 calc(-56*var(--u)) 0 calc(-34*var(--u));padding-left:calc(34*var(--u));padding-right:calc(56*var(--u))}
+.label{display:block;font-size:calc(8.500*var(--u));letter-spacing:.02em;color:#222;margin-bottom:calc(16*var(--u))}
+.label i{font-style:normal;color:#b5b5b5;margin:0 calc(3*var(--u))}
+.what h2{font-family:var(--display);font-weight:300;font-size:calc(39*var(--u));line-height:1.16;letter-spacing:-.028em}
+.what-head p{font-size:calc(14.5*var(--u));line-height:1.32;color:#6a6a6a;max-width:calc(430*var(--u));padding-bottom:calc(2*var(--u))}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:calc(17*var(--u));margin-top:calc(38*var(--u))}
+.cards article{background:var(--box);border:1px solid var(--line);min-height:calc(300*var(--u));padding:calc(19*var(--u)) calc(18*var(--u));display:flex;flex-direction:column;justify-content:space-between}
+.n{font-family:var(--display);font-size:calc(13.5*var(--u));color:#3a3a3a;letter-spacing:-.005em}
+.cards h3{font-family:var(--display);font-weight:400;font-size:calc(21*var(--u));letter-spacing:-.015em;margin-bottom:calc(8*var(--u))}
+.cards p{font-size:calc(14*var(--u));line-height:1.35;color:#6a6a6a}
+
+@media (max-width:760px){
+  :root{--u:calc(100vw/520)}
+  .scene{width:100vw;height:auto;aspect-ratio:1/1.5;left:0;transform:none}
+  #particles{opacity:.42}
+  .hero h1,.hero p{text-shadow:0 0 14px #fff,0 0 6px #fff}
+  main{width:100%}
+  .hero{height:auto;padding:110px 22px 0;min-height:118vw}
+  .hero h1{font-size:13.2vw}
+  .hero p{font-size:16px;max-width:340px;margin-top:20px}
+  .btn{width:190px;height:44px;font-size:15px;border-radius:5px;margin-top:30px}
+  .place{right:18px;top:18px;font-size:10px;gap:7px}.place i{width:6px;height:6px}
+  .what{margin-left:14vw;padding:56px 22px 60px;border-top-right-radius:0}
+  .lines{display:none}
+  .what-head{grid-template-columns:1fr;gap:16px;margin:0 -22px;padding:0 22px 24px}
+  .label{font-size:10px;margin-bottom:12px}
+  .what h2{font-size:8.2vw}
+  .what-head p,.cards p{font-size:15px;max-width:none}
+  .cards{grid-template-columns:1fr;gap:12px;margin-top:24px}
+  .cards article{min-height:190px;padding:18px}
+  .n{font-size:14px}.cards h3{font-size:21px;margin-bottom:6px}
+}
