@@ -8,7 +8,7 @@ A one-page site for a creative digital studio. Plain HTML, CSS and JavaScript wi
 | --- | --- |
 | All text, names, numbers, awards | `index.html` |
 | The studio name | Search `index.html` for `RONIN` (the hero spells it one letter per `<span>`) |
-| Colours and sizes | The variables at the top of `styles.css` (`--bg` cream, `--red` accent) |
+| Colours and sizes | The variables at the top of `styles.css` (`--bg` background, `--accent` for all text and highlights) |
 | The clock's city | `timeZone` in `script.js`, and the `LOS` label in `index.html` |
 
 ## Media
