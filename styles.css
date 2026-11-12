@@ -1,7 +1,7 @@
 @font-face{font-family:"Jaro";src:url(assets/fonts/jaro.woff2) format("woff2");font-display:swap}
 @font-face{font-family:"Geist Mono";src:url(assets/fonts/geist-mono.woff2) format("woff2");font-weight:400 600;font-display:swap}
 
-:root{--bg:#0f0f10;--accent:#ff5a1f;--ink:#1a1a1c;--line:rgba(255,90,31,.26);--on-media:#f6ecd8;--pad:40px;--gap:20px;--r:8px;--ease:cubic-bezier(.2,.7,.2,1);
+:root{--bg:#0a0a0a;--accent:#f5141b;--ink:#141414;--line:rgba(245,20,27,.32);--on-media:#f6ecd8;--pad:40px;--gap:20px;--r:8px;--ease:cubic-bezier(.2,.7,.2,1);
   --word:clamp(110px,24.600vw,356px);--h2:clamp(58px,8.330vw,120px);--h3:clamp(28px,2.780vw,40px);--big:clamp(20px,2.220vw,32px)}
 *{box-sizing:border-box;margin:0;padding:0}
 html{color-scheme:dark;background:var(--bg)}
