@@ -29,10 +29,10 @@ main{position:relative;z-index:1;width:calc(1200*var(--u));margin:0 auto}
 .hero h1 span{color:var(--grey)}
 /* a soft white halo keeps the copy readable when a drawing passes behind it */
 .hero h1,.hero p{text-shadow:0 0 calc(10*var(--u)) #fff,0 0 calc(5*var(--u)) #fff,0 0 calc(2*var(--u)) #fff}
-.hero p{font-size:calc(15.5*var(--u));line-height:1.2;color:var(--text);max-width:calc(440*var(--u));margin:calc(24*var(--u)) auto 0;letter-spacing:.005em}
-.btn{display:inline-flex;align-items:center;justify-content:center;width:calc(184*var(--u));height:calc(33*var(--u));margin-top:calc(46*var(--u));background:#1d1d1d;color:#fff;border-radius:calc(4*var(--u));font-size:calc(14.5*var(--u));font-weight:500;letter-spacing:.01em;transition:background .2s}
+.hero p{font-size:calc(15.5*var(--u));line-height:1.2;color:var(--text);max-width:calc(440*var(--u));margin:calc(12*var(--u)) auto 0;letter-spacing:.005em}
+.btn{display:inline-flex;align-items:center;justify-content:center;width:calc(184*var(--u));height:calc(33*var(--u));margin-top:calc(24*var(--u));background:#1d1d1d;color:#fff;border-radius:calc(4*var(--u));font-size:calc(14.5*var(--u));font-weight:500;letter-spacing:.01em;transition:background .2s}
 .btn:hover{background:#000}
-.place{display:flex;align-items:center;justify-content:center;gap:calc(7*var(--u));margin-top:calc(20*var(--u));font-size:calc(10.5*var(--u));letter-spacing:.14em;text-transform:uppercase;color:#7c7c80;text-shadow:0 0 calc(8*var(--u)) #fff,0 0 calc(3*var(--u)) #fff}
+.place{display:flex;align-items:center;justify-content:center;gap:calc(7*var(--u));margin-top:calc(16*var(--u));font-size:calc(10.5*var(--u));letter-spacing:.14em;text-transform:uppercase;color:#7c7c80;text-shadow:0 0 calc(8*var(--u)) #fff,0 0 calc(3*var(--u)) #fff}
 .place i{width:calc(6*var(--u));height:calc(6*var(--u));border-radius:50%;background:var(--blue);animation:beat 2s ease-in-out infinite}
 @keyframes beat{50%{box-shadow:0 0 0 calc(5*var(--u)) rgba(79,92,255,.16)}}
 .place span{color:var(--ink);transition:opacity .35s}
@@ -149,8 +149,8 @@ body[data-tone=dark] .pill-btn{background:#fff;color:#151515}
   main{width:100%}
   .hero{height:auto;padding:110px 22px 0;min-height:118vw}
   .hero h1{font-size:13.2vw}
-  .hero p{font-size:16px;max-width:340px;margin-top:20px}
-  .btn{width:190px;height:44px;font-size:15px;border-radius:5px;margin-top:30px}
+  .hero p{font-size:16px;max-width:340px;margin-top:12px}
+  .btn{width:190px;height:44px;font-size:15px;border-radius:5px;margin-top:20px}
   .place{font-size:10.5px;gap:7px;margin-top:18px}.place i{width:6px;height:6px}
   .what{padding:56px 22px 60px;border-top-right-radius:0}
   .lines{display:none}
