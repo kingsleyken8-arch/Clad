@@ -207,3 +207,6 @@ body[data-tone=dark] .pill-btn{background:#fff;color:#151515}
   .foot nav{justify-content:center;gap:18px}.foot .brand{justify-content:center}.foot p{text-align:center;font-size:12px}
 }
 @media (prefers-reduced-motion:reduce){.rv{opacity:1!important;transform:none!important;filter:none!important}.ico *{stroke-dashoffset:0!important;transition:none!important}}
+
+/* links that sit over the drawing keep a soft white halo so they stay readable */
+body:not([data-scrolled]):not([data-tone=dark]) .top-l a{text-shadow:0 0 calc(8*var(--u)) #fff,0 0 calc(4*var(--u)) #fff,0 0 calc(2*var(--u)) #fff;color:#2a2a2e}
