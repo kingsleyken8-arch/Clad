@@ -4,7 +4,12 @@
      Every drawing shares one composition: a tall element down the left edge and
      the rest of the structure sweeping right across the middle of the frame. */
   const SHAPES = [
-    { src: 'assets/shapes/colosseum.jpg', name: 'Rome' }
+    { src: 'assets/shapes/colosseum.jpg', name: 'Rome' },
+    { src: 'assets/shapes/abuja.jpg', name: 'Abuja' },
+    { src: 'assets/shapes/brooklyn.jpg', name: 'New York' },
+    { src: 'assets/shapes/parthenon.jpg', name: 'Athens' },
+    { src: 'assets/shapes/sydney.jpg', name: 'Sydney' },
+    { src: 'assets/shapes/greatwall.jpg', name: 'Beijing' }
   ];
   const HOLD = 4000, MORPH = 950;
   const FRAME_W = 1200, FRAME_H = 960;                      // the reference frame the layout was measured from
