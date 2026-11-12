@@ -15,6 +15,9 @@
   // Both exist for screen recordings; the site itself uses the defaults.
   const QUERY = new URLSearchParams(location.search);
   const HOLD = +QUERY.get('hold') || 4000, MORPH = 950, STILL = QUERY.has('still');
+  // ?first=Sydney starts the cycle on that city (also for recordings and stills)
+  const firstAt = SHAPES.findIndex(x => x.name.toLowerCase() === (QUERY.get('first') || '').toLowerCase());
+  if (firstAt > 0) SHAPES.push(...SHAPES.splice(0, firstAt));
   const FRAME_W = 1200, FRAME_H = 960;                      // the reference frame the layout was measured from
   const INK = [76, 76, 82], BLUE = [72, 86, 255];
   // highlighted regions, as fractions of the frame (measured from the reference: x 0-274, y 331-595)
@@ -22,6 +25,7 @@
 
   const canvas = document.getElementById('particles'), ctx = canvas.getContext('2d');
   const place = document.querySelector('.place'), placeName = document.getElementById('place');
+  if (firstAt > 0 && placeName) placeName.textContent = SHAPES[0].name;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const small = matchMedia('(max-width: 760px)').matches;
   const N = small ? 90000 : 420000;
