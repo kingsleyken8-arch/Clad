@@ -1,6 +1,6 @@
 # Ronin
 
-A one-page site for a creative digital studio. Plain HTML, CSS and JavaScript with no build step.
+A one-page site for an AI cinematic video agency. Plain HTML, CSS and JavaScript with no build step.
 
 ## Editing
 
