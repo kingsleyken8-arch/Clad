@@ -27,6 +27,8 @@ main{position:relative;z-index:1;width:calc(1200*var(--u));margin:0 auto}
 .hero{height:var(--hero);text-align:center;padding-top:calc(96*var(--u));position:relative}
 .hero h1{font-family:var(--display);font-weight:300;font-stretch:96%;font-size:calc(71*var(--u));line-height:calc(66*var(--u));letter-spacing:-.005em}
 .hero h1 span{color:var(--grey)}
+/* a soft white halo keeps the copy readable when a drawing passes behind it */
+.hero h1,.hero p{text-shadow:0 0 calc(10*var(--u)) #fff,0 0 calc(5*var(--u)) #fff,0 0 calc(2*var(--u)) #fff}
 .hero p{font-size:calc(15.5*var(--u));line-height:1.2;color:var(--text);max-width:calc(440*var(--u));margin:calc(24*var(--u)) auto 0;letter-spacing:.005em}
 .btn{display:inline-flex;align-items:center;justify-content:center;width:calc(184*var(--u));height:calc(33*var(--u));margin-top:calc(46*var(--u));background:#1d1d1d;color:#fff;border-radius:calc(4*var(--u));font-size:calc(14.5*var(--u));font-weight:500;letter-spacing:.01em;transition:background .2s}
 .btn:hover{background:#000}
